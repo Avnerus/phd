@@ -2,14 +2,12 @@
 title: Intergroup Contact via Robotic Telepresence
 author: Avner Peled
 date: 04/2020
-documentclass: article
+documentclass: cas-dc
 indent: true
-csl: apa2.csl
-bibliography: [aalto.bib]   
-abstract: Abstract goes here    
+biblio-style: cas-model2-names
+bibliography: aalto.bib   
+abstract: Abstract goes here Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here       
 header-includes: |
-    \usepackage{xeCJK}
-    \usepackage{xelatexemoji}
     \usepackage{float}
     \usepackage{fvextra}
     \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breaksymbolleft={\quad},commandchars=\\\{\}}
@@ -19,12 +17,23 @@ header-includes: |
 ...
 ---
 
-\maketitle
-\newpage
-\tableofcontents
-\pagebreak
+\title[mode=title]{}
 
-[[TOC]]
+\author[1,2]{Avner Peled}[type=editor,
+    auid=000,bioid=1,
+    prefix=Sir,
+    role=Researcher,
+    orcid=0000-0001-7511-2910,
+    facebook=<facebook id>,
+    twitter=<twitter id>,
+    linkedin=<linkedin id>,
+    gplus=<gplus id>]
+
+\begin{keywords}
+ First keyword \sep Second keyword \sep Third keyword \sep Fourth keyword
+\end{keywords}
+
+\maketitle
 
 # Introduction
 
