@@ -8,12 +8,7 @@ biblio-style: cas-model2-names
 bibliography: aalto.bib   
 abstract: Abstract goes here Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here       
 header-includes: |
-    \usepackage{float}
-    \usepackage{fvextra}
-    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breaksymbolleft={\quad},commandchars=\\\{\}}
-    \makeatletter
-    \def\fps@figure{H}
-    \makeatother
+    \usepackage[square,numbers]{natbib}
 ...
 ---
 
