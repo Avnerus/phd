@@ -67,7 +67,7 @@ Not much opportunities for online contact, especially in the age of filter bubbl
 
 Leading into proposing telepresence robot contact as a midway between online and face to face which could solve a lot of the issues with online contact but preserve some of its benefits.
 
-# 2. Telepresence robot
+# 2. Telepresence robots
 
 History and terminology:
 
@@ -75,31 +75,64 @@ History and terminology:
  
 -  fully operated / semi-autonomous functions
 
-# 3. General forms of interaction
+# 3. Telepresence systems
 
-## 3.1 Two types of interaction flows:
+A communication event that is mediated by telepresence robots could manifest in one of many different architectures. A single architecture  could be defined as a _telepresence system_. 
 
-From systems theory:
+## 3.1 Signal and physical interactions
 
-1. Signal / information flow: abstract, virtual, logical.
+Before presenting the systems in focus for intergroup contact, we define two types of interactions that can exist within such system. 
+Utilizing concepts from Paynter's generalized systems theory [@paynterAnalysisDesignEngineering1961], Hannaford has distinguished between the two types of interaction that occur in telepresence, _information_ and _energetic_ [@hannafordFeelingBelievingHistory2000]. We will  refer to them simply as _signal_ and _physical_ interactions. _Physical_ interactions refer to real word interactions between elements sharing a physical environment, such as a hand-shake or holding an object. In physical terms, a bidirectional _energy bond_ is formed between the interacting elements. _Signal_ interactions, on the other hand, occur on an abstract level. They represent a unidirectional logical flow of cause and effect; for example, text that is typed on one end of an online communication and appears on the other end. Intuitively, a physical interaction appears closer and more significant than a flow of signals because it involves our body. The tight bond between our cognition and our physicality is shown in a variety of conceptual frameworks [@deweyExperienceEducation1986;
+@gallagherHowBodyShapes2006
+@malafourisHowThingsShape2013] that reject the old cartesian dualism of a mind that is separated from the body. 
 
-2. Energy bond: Physical, flowing, corporeal, nonlinear.
+In online communication, a signal would always be a reduction and an abstraction of the physical action that caused it. When operating a telerobot through a remote control interface, the flow consists of three stages:
+1. Beginning with an intent for action, a physical interaction occurs between the operator and a local control interface. 
+2. Control signals are sent through a communication medium to the robot. 
+3. The robot receives the signal, processes it and performs an physical interaction with its own environment. 
 
-## 3.2 Symmetric and asymmetric telepresence
+According to Minsky, when the control interaction is so seamless and synchronous with the robot in terms of responsiveness and feedback, the operator may feel as if they are physically present in the remote environment, i.e  _telepresence_.
 
-We detail two general forms in which a telepresence dialog could be implemented:
+## 3.2 Telepresence systems
 
-![Symmetric and asymmetric telepresence contact](sym_asym.jpg){#fig:sym_asym}
+If we consider solely the condition of _telepresence_, that is, having a telerobot operated remotely and used for communication, we identify three different systems of communication [see @fig:sym_asym]:
 
- - Suggestions for implementation.
- - The handshake scenario
+1. _Asymmetric_: The most commonly used system for telepresence communication. One participant is represented by a telerobot and is operating it from a remote location, typically their home, using a computer or mobile device. The other participant is interacting with the robot in a shared physical space. The system is asymmetric because the interaction experience is qualitatively different for the operator and the interlocutor. Common implementations include industry robots, surgical robots, office-based telepresence and social service robots.
 
-A symmetric form is more equal, but asymmetry may fulfill different needs.  
+2. _Symmetric bidirectional_: In this system both participants are operating a telerobot, which serves both as an avatar for their conversation partner as well a control interface for their telerobot. The interface, in that case, is completely transparent to the operator and typically uses body tracking. No control feedback is available to the operator and operation may commence without any knowledge of the remote telerobot by the participants. This type of system is more resource-heavy than the asymmetric type, and currently only a few implementations exist as prototypes and proofs-of-concept [@nagendranSymmetricTelepresenceUsing2015].
 
-A symmetric form has to use a completely _transparent_ operation interface embedded in the robot (otherwise there would be major attention problems) [@nagendranSymmetricTelepresenceUsing2015]. The robot is both an input interface and and output body. It uses all round body tracking and is more complicated to implement. 
+3. _Symmetric unidirectional_: In this system both participants are operating a telerobot via a control interface, without physically interacting with an avatar. The two robots share the same space, while the participants are separated. Common implementations of this system include cooperative multi-robot tasks [@sirouspourMultioperatorMultirobotTeleoperation2005] and _Robot combat_ competitions [@clarksonBattleBotsOfficialGuide2002].As in the asymmetric system, operation is usually performed from a computer or mobile device. 
+
+![Systems of telepresence communication](sym_asym_v3.jpg){#fig:sym_asym}
+
+
+While the _symmetric unidirectional_ system may facilitate contact in cooperative or confrontational events in front of an audience, since the scope of this article involves at least one person physically interacting with a robot, we would turn the focus toward the first two systems.
+
+## 3.3 The handshake paradigm
+
+To further illustrate the mechanics of the two systems, we will use the common example of the handshake. The handshake is an important and common social gesture in most parts of the world [@schiffrinHandworkCeremonyCase1974]. It is a reciprocal action, beginning with one person reaching out in an open request and then reciprocated by the partner. It is also a haptic gesture in which subtle forms of touch can have a great social significance [@hillewaertTacticsTactilitySensory2016].
+
+In an asymmetric system, the telerobot is usually equipped with a camera that streams the robot's vision back to the operator. When the interaction partner reaches out their hand, the operator will see this via the interface. The operator uses the control interface to reciprocate and have the robot reach out its hand. Movement is initiated with the push of a button in the most basic interface, or by moving a motion tracking device in a more advanced one. Once the interaction partner touches the robot, the handshake is picked up via a pressure sensor on the robot's palm and is transmitted back to the control interface. The touch could manifest as a screen flicker or a sound effect on the operator's computer, or as a vibration in a motion tracking device. 
+
+In a symmetric system, both of the participants interact only with the telerobot in front of them. The handshake is initiated when one participant reaches their hand toward the robot. The gesture is picked up by a body tracker and causes the opposing robot to mirror the behavior of its operator and reach out its hand to the interaction partner on the other side. The partner reciprocates and now both robots have their hands reached out. When touch sensors on the robots detect that both participants are now shaking their respective robot's hand, a squeezing actuation commences in both robots to generate the feeling of the handshake for both partners.
+
+# 3.4 A CMC component in asymmetric systems
+
+Whether participant is interacting with a telerobot, or with a control interface in a symmetric or asymmetric system, telepresence communication is always mediated by a computer (CMC: _Computer Mediated Communication_). Interactions can be therefore anonymous, visibility and identity can be manipulated and conversation content can be augmented. There is still, however, a qualitative difference between an experience of physically interacting with a robot and that of operating one via an interface. When interacting with a telerobot, the perception of it as an avatar could suspend the participant's disbelief and regard the avatar as a present social agent [@banksAvatarsAreSometimes2016]. In that moment, interaction with the avatar becomes directly embodied and the robot's function as a medium is completely transparent. One may argue that a similar suspension could be achieved in an immersive virtual reality environment, but the depth and richness of sensory feedback when operating in a real environment is still measures beyond what can be provided by a virtual one [@borgmannInformationNearnessFarness2000].  
+
+Taking this difference into account implies that some social psychology models that apply to CMC, would only apply to one side of an asymmetric telepresence system, the side that is operating the robot via a control interface. The other side, and both sides of a symmetric system, are experiencing an interaction that resembles more of an FtF encounter than a mediated one, depending on the degree in which the robot is perceived as an avatar rather than a medium. Factors may moderate this perception are discussed in following sections.
+
+Having a strong CMC component only on the operator side of an asymmetric systems could create a mix of behaviors in which one side has more _agency_ in the conversation than the other. The _deindivudation_ model, initially expounded by Zimbardo,[-@zimbardoHumanChoiceIndividuation1969] refers to the effect of anonymity on social behavior. The classic account warns that anonymity may release a person from social regulation and norms, resulting in radical and dangerous behavior. More recent findings, however, suggest a contrasting view in which anonymity in fact motivates individuals to act under a group context, while pronouncing enhanced norms and tropes (SIDE theory; Spears et al. 2002). This would imply an increase in group salience during interaction, and could assist in generalizing positive outcomes of online intergroup contact. Research on forms of CMC that are not anonymous, [@kimIntergroupContactOnline2018;@gollmitzerClosenessControlInterpersonal] suggests that complete anonymity is not necessary for effects of deindividuation to occur.
+
+
+
+
+# 3.5 Equality in symmethetric systems
 
 
 # 3. Multiple dimensions of bias
+
+
 
 Because participants have bias toward robots, we are adding another dimension of bias.
 
