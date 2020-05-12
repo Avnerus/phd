@@ -1,5 +1,5 @@
 ---
-title: Intergroup Contact via Telepresence Robots
+title: The telepresence contact hypothesis
 author: Avner Peled
 date: 04/2020
 documentclass: cas-dc
@@ -75,11 +75,20 @@ History and terminology:
  
 -  fully operated / semi-autonomous functions
 
-# 3. Telepresence systems
+# 3. A path model for telepresence contact
+
+Previous research on intergroup contact provides us with conceptual and computational tools which we can use to model the path from initial contact to the eventual reduction of prejudice toward the generalized out-group. The stages model suggested by Pettigrew [@pettigrewIntergroupContactTheory1998] outlines the path to prejudice reduction: contact initially _decategorizes_ the individual out-group member from its group, then reduces prejudice from the general out-group, and finally dissolves the border between in-group and out-group. Researches have also shown empirically verifiable models for various mediators and moderators involved in prejudice reduction [@vociIntergroupContactPrejudice2003;@brownIntegrativeTheoryIntergroup2005;@pagottoEffectivenessIntergroupContact2010].
+
+Inspired by those findings, we suggest a conceptual model for telepresence conact. Due to the presence of the telerobot, we add another stage on the path to prejudice reduction [@fig:path_model]. We hypothesize that an in-group member first develops an attitude toward the robot itself before projecting it on operator, the out-group member. Attitude toward the robot could be influenced by previous bias on robots or by characteristics of the particular robot which we will address in this article. We estimate that the projection of the robot on the operator will be moderated by the degree of how much the robot is perceived as an avatar of the operator, or as a simple medium of communication. Finally, a generalized attitude toward the out-group will be moderated by the level of group salience apparent in the conversation with the telepresence robot.
+
+![Telepresence Contact: Conceptual path model](./path_model.jpg){#fig:path_model} 
+
+
+# 4. Telepresence systems
 
 A communication event that is mediated by telepresence robots could manifest in one of many different architectures. A single architecture  could be defined as a _telepresence system_. 
 
-## 3.1 Signal and physical interactions
+## 4.1 Signal and physical interactions
 
 Before presenting the systems in focus for intergroup contact, we define two types of interactions that can exist within such system. 
 Utilizing concepts from Paynter's generalized systems theory [@paynterAnalysisDesignEngineering1961], Hannaford has distinguished between the two types of interaction that occur in telepresence, _information_ and _energetic_ [@hannafordFeelingBelievingHistory2000]. We will  refer to them simply as _signal_ and _physical_ interactions. _Physical_ interactions refer to real word interactions between elements sharing a physical environment, such as a hand-shake or holding an object. In physical terms, a bidirectional _energy bond_ is formed between the interacting elements. _Signal_ interactions, on the other hand, occur on an abstract level. They represent a unidirectional logical flow of cause and effect; for example, text that is typed on one end of an online communication and appears on the other end. Intuitively, a physical interaction appears closer and more significant than a flow of signals because it involves our body. The tight bond between our cognition and our physicality is shown in a variety of conceptual frameworks [@deweyExperienceEducation1986;
@@ -93,7 +102,7 @@ In online communication, a signal would always be a reduction and an abstraction
 
 According to Minsky, when the control interaction is so seamless and synchronous with the robot in terms of responsiveness and feedback, the operator may feel as if they are physically present in the remote environment, i.e  _telepresence_.
 
-## 3.2 Telepresence systems
+## 4.2 Types of systems
 
 If we consider solely the condition of _telepresence_, that is, having a telerobot operated remotely and used for communication, we identify three different systems of communication [see @fig:sym_asym]:
 
@@ -103,12 +112,12 @@ If we consider solely the condition of _telepresence_, that is, having a telerob
 
 3. _Symmetric unidirectional_: In this system both participants are operating a telerobot via a control interface, without physically interacting with an avatar. The two robots share the same space, while the participants are separated. Common implementations of this system include cooperative multi-robot tasks [@sirouspourMultioperatorMultirobotTeleoperation2005] and _Robot combat_ competitions [@clarksonBattleBotsOfficialGuide2002].As in the asymmetric system, operation is usually performed from a computer or mobile device. 
 
-![Systems of telepresence communication](sym_asym_v3.jpg){#fig:sym_asym}
+![Systems of telepresence communication](sym_asym_v4.jpg){#fig:sym_asym}
 
 
 While the _symmetric unidirectional_ system may facilitate contact in cooperative or confrontational events in front of an audience, since the scope of this article involves at least one person physically interacting with a robot, we would turn the focus toward the first two systems.
 
-## 3.3 The handshake paradigm
+## 4.3 The handshake paradigm
 
 To further illustrate the mechanics of the two systems, we will use the common example of the handshake. The handshake is an important and common social gesture in most parts of the world [@schiffrinHandworkCeremonyCase1974]. It is a reciprocal action, beginning with one person reaching out in an open request and then reciprocated by the partner. It is also a haptic gesture in which subtle forms of touch can have a great social significance [@hillewaertTacticsTactilitySensory2016].
 
@@ -116,7 +125,7 @@ In an asymmetric system, the telerobot is usually equipped with a camera that st
 
 In a symmetric system, both of the participants interact only with the telerobot in front of them. The handshake is initiated when one participant reaches their hand toward the robot. The gesture is picked up by a body tracker and causes the opposing robot to mirror the behavior of its operator and reach out its hand to the interaction partner on the other side. The partner reciprocates and now both robots have their hands reached out. When touch sensors on the robots detect that both participants are now shaking their respective robot's hand, a squeezing actuation commences in both robots to generate the feeling of the handshake for both partners.
 
-# 3.4 A CMC component in asymmetric systems
+# 4.4 A CMC component in asymmetric systems
 
 Whether participant is interacting with a telerobot, or with a control interface in a symmetric or asymmetric system, telepresence communication is always mediated by a computer (CMC: _Computer Mediated Communication_). Interactions can be therefore anonymous, visibility and identity can be manipulated and conversation content can be augmented. There is still, however, a qualitative difference between an experience of physically interacting with a robot and that of operating one via an interface. When interacting with a telerobot, the perception of it as an avatar could suspend the participant's disbelief and regard the avatar as a present social agent [@banksAvatarsAreSometimes2016]. In that moment, interaction with the avatar becomes directly embodied and the robot's function as a medium is nearly transparent. One may argue that a similar suspension could be achieved in an immersive virtual reality environment, but the depth and richness of sensory feedback when operating in a real environment is still measures beyond what can be provided by a virtual one [@borgmannInformationNearnessFarness2000].  
 
@@ -125,30 +134,25 @@ Taking this difference into account implies that some social psychology models t
 A number of CMC models that affect the outcome of contact and the reduction of prejudice in conversation have been identified by researchers[@waltherComputermediatedCommunicationReduction2015]. The _deindividuation_ model warns that anonymity may release a person from social regulation and norms, leading to a negative effect on the conversation. The SIDE theory [@spearsWhenAreNet2002] provides a contrasting view in which a depersonalized encounter increases group salience, as it motivates individuals to act under a group context while pronouncing enhanced norms and tropes. Models such as SIP and _hyperpersonal_ communication 
 [@waltherComputermediatedCommunicationImpersonal1996] advocate that more intimate interpersonal relations may form in online contact because of the need for the participants to make up for the lack of non-verbal cues. Having a strong CMC component only on one end of an asymmetric system could create a mix of behaviors in which one side experiences stronger senses of _agency_ in _ownership_ in the conversation than the other [@gallagherPhilosophicalConceptionsSelf2000]. Ideally, this could evolve into a positive outcome in which an out-group member on the side of the operator enjoys the benefits of anonymity and distance, while the in-group member is fully engaged in physical contact, assimilating new meanings and dissolves existing bias. Realistically however, the asymmetric nature of the conversation alone can have implications on contact, as we hypothesize in the following section.
 
-# 3.5 Equality in telepresence systems
+# 4.5 Equality in telepresence systems
 
-One of Allport’s basic conditions for positive intergroup contact is having an equal status between group members, such as an equal position in a workplace context (Allport 1954, 274). This condition has been verified in multiple studies [@pettigrewMetaanalyticTestIntergroup2006]. The condition can be further differentiated to Equality in _situation_, i.e in contact only; a more realistic condition when group members carry persistent power differences and are long-lasting and deep-rooted conflicts [@maozDoesContactWork2011].
+One of Allport’s basic conditions for positive intergroup contact is having an equal status between group members, such as an equal position in a workplace context (Allport 1954, 274). While the general idea was verified in multiple studies [@pettigrewMetaanalyticTestIntergroup2006], the condition can be further differentiated to equality in status or in _situation_, i.e in contact only; a more realistic condition when group members carry persistent power differences and are in long-lasting and deep-rooted conflicts [@maozDoesContactWork2011].
 
 It was shown that having symmetry and equality in communication, such as equal turn-taking and mutual respect, is beneficial for contact in groups that are in asymmetric conflict such as Israelis and Palestinians [@maozEvaluatingCommunicationGroups2005]. However, this does not mean that existing power relations should be ignored during contact. In fact, it was found that a communication model that “emphasizes the conflict and power relations between the sides”, although more risky, produces a higher equality within the contact [@maozDoesContactWork2011]. Furthermore, equality emerges when the interaction focuses on fulfilling the different needs of the group members. While an advantaged group member needs to feel morally acceptance, a disadvantaged group requires a feeling of empowerment [@shnabelNeedsbasedModelReconciliation2008]. A failure to address inequality in status during contact may even hinder ensuing motivation for social change [@saguyIronyHarmonyIntergroup2009]. 
 
-# Hello this is me.
+Symmetric telepresence systems provide the hardware foundation for equal contact. As will be shown in the proceeding sections, it is up to the software and organizational implementation to make sure that the conversation is handled in an equal manner. An asymmetric system, however, tilts the balance toward one end, and may have implications for contact. 
 
-# 3. Multiple dimensions of bias
+Consider the situation in which a disadvantaged-group member is operating a telerobot anonymously from their home, while the advantaged-group member is interacting with it in a public space. The operator may feel free of social anxiety in their comfort zone, and empowered by the ability to see through the robot's camera and not be seen. This in turn may encourage bringing up more difficult topics related to conflict during the conversation. Alternatively, the asymmetry in the participant's visibility may also bring up anxiety and discomfort. In our initial test for intergroup telepresence contact, participants of both sides expressed discomfort regarding the unequal asymmetric setting. One member of a minority group noted that they felt as if they are a government official investigating their exposed partners.
 
+Conversely, in an an asymmetric system inequality may surface due to a difference in freedom of movement and in appearance between the robotic avatar and the human interlocutor. While some have raised concerns of social robots restricting the freedom of humans [@whitby15YouWant2011;@hoornTheoryRobotCommunication2018a], the opposite is also possible, as humans are in many cases more free and resilient than their robotic counterparts. Moreover, in the case of oppressed group members that are experiencing day-to-day restrictions on movement, an asymmetric system may highlight the power relations and reduce the sense of equality in the conversation. To summarize, the easier to implement asymmetric telepresence system may create both negative and positive perturbances in contact, and therefore should be designed with great consideration.
 
+# 4. Operator visibility
 
-Because participants have bias toward robots, we are adding another dimension of bias.
+A key question in telepresence systems concerns the visibility level of the operator; how much of the operator's real-time body, actions and intentions are exposed through the avatar? This concerns not only visual sensibilities, but also auditory: exposing the operator's voice. We examine the implications of visibility on intergroup contact in detail in this section.
 
-![Multiple dimensions of bias](dimensions_of_bias.jpg){#fig:multiple_dimensions}
+## 4.1 Face visibility
 
-![Moderated mediation](moderated_mediation.jpg){#fig:moderated_mediation} 
-
-
-# 4. The use of the operator's face and voice
-
-## 4.1 Showing the operator's face VS a uniform avatar
-
-Defining avatar
+The telepresence robot market is rapidly growing, and is predicted to accelerate even more in the upcoming years with increase needs for remote working and social services. Telerobot forms are continuously branching into new directions, but as of 2020 the dominant form remains to be that of a tablet device attached to a motoric vehicle such as robots by market leaders _Double Robotics_ ^[https://www.doublerobotics.com/].     
 
 The 'ipad on segway' form is now the most common form of telepresence. It's not really an avatar incarnated. There is no suspension of disbelief that the robot _is_ the operator.
 
