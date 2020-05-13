@@ -108,7 +108,7 @@ If we consider solely the condition of _telepresence_, that is, having a telerob
 
 1. _Asymmetric_: The most commonly used system for telepresence communication. One participant is represented by a telerobot and is operating it from a remote location, typically their home, using a computer or mobile device. The other participant is interacting with the robot in a shared physical space. The system is asymmetric because the interaction experience is qualitatively different for the operator and the interlocutor. Common implementations include industry robots, surgical robots, office-based telepresence and social service robots.
 
-2. _Symmetric bidirectional_: In this system both participants are operating a telerobot, which serves both as an avatar for their conversation partner as well a control interface for their telerobot. The interface, in that case, is completely transparent to the operator and typically uses body tracking. No control feedback is available to the operator and operation may commence without any knowledge of the remote telerobot by the participants. This type of system is more resource-heavy than the asymmetric type, and currently only a few implementations exist as prototypes and proofs-of-concept [@nagendranSymmetricTelepresenceUsing2015].
+2. _Symmetric bidirectional_: In this system both participants are operating a telerobot, which serves both as an avatar for their conversation partner as well a control interface for their telerobot. The interface, in that case, is completely transparent to the operator and typically uses body tracking. No control feedback is available to the operator and operation may commence without any knowledge of the remote telerobot by the participants. This type of system is more resource-heavy than the asymmetric type, and currently only a few implementations exist as prototypes and proofs-of-concept [@nagendranSymmetricTelepresenceUsing2015]. The lack of feedback in this system also heavily restricts the ability of the operator to travel around the space, as they are unable to see the remote environment.
 
 3. _Symmetric unidirectional_: In this system both participants are operating a telerobot via a control interface, without physically interacting with an avatar. The two robots share the same space, while the participants are separated. Common implementations of this system include cooperative multi-robot tasks [@sirouspourMultioperatorMultirobotTeleoperation2005] and _Robot combat_ competitions [@clarksonBattleBotsOfficialGuide2002].As in the asymmetric system, operation is usually performed from a computer or mobile device. 
 
@@ -142,32 +142,24 @@ It was shown that having symmetry and equality in communication, such as equal t
 
 Symmetric telepresence systems provide the hardware foundation for equal contact. As will be shown in the proceeding sections, it is up to the software and organizational implementation to make sure that the conversation is handled in an equal manner. An asymmetric system, however, tilts the balance toward one end, and may have implications for contact. 
 
-Consider the situation in which a disadvantaged-group member is operating a telerobot anonymously from their home, while the advantaged-group member is interacting with it in a public space. The operator may feel free of social anxiety in their comfort zone, and empowered by the ability to see through the robot's camera and not be seen. This in turn may encourage bringing up more difficult topics related to conflict during the conversation. Alternatively, the asymmetry in the participant's visibility may also bring up anxiety and discomfort. In our initial test for intergroup telepresence contact, participants of both sides expressed discomfort regarding the unequal asymmetric setting. One member of a minority group noted that they felt as if they are a government official investigating their exposed partners.
+Consider the situation in which a disadvantaged-group member is operating a telerobot anonymously from their home, while the advantaged-group member is interacting with it in a public space. The operator may feel free of social anxiety in their comfort zone, and empowered by the ability to see through the robot's camera and not be seen. This in turn may encourage bringing up more difficult topics related to conflict during the conversation. Alternatively, the asymmetry in the participant's visibility may also bring up anxiety and discomfort. In our initial test for intergroup telepresence contact, participants of both sides expressed discomfort regarding the unequal asymmetric setting. One member of a minority group noted that they felt as if they are a government official investigating their exposed partners [@peledSoftRoboticIncarnation2019, p.132].
 
 Conversely, in an an asymmetric system inequality may surface due to a difference in freedom of movement and in appearance between the robotic avatar and the human interlocutor. While some have raised concerns of social robots restricting the freedom of humans [@whitby15YouWant2011;@hoornTheoryRobotCommunication2018a], the opposite is also possible, as humans are in many cases more free and resilient than their robotic counterparts. Moreover, in the case of oppressed group members that are experiencing day-to-day restrictions on movement, an asymmetric system may highlight the power relations and reduce the sense of equality in the conversation. To summarize, the easier to implement asymmetric telepresence system may create both negative and positive perturbances in contact, and therefore should be designed with great consideration.
 
-# 4. Operator visibility
+# 4. The use of a 2D display and the dual-ecologies problem
 
-A key question in telepresence systems concerns the visibility level of the operator; how much of the operator's real-time body, actions and intentions are exposed through the avatar? This concerns not only visual sensibilities, but also auditory: exposing the operator's voice. We examine the implications of visibility on intergroup contact in detail in this section.
+The telepresence robot market is rapidly growing, and is predicted to accelerate even more in the upcoming years with increase needs for remote working and social services ^[https://www.marketwatch.com/press-release/telepresence-robots-market-size-2020-to-showing-impressive-growth-by-2024-industry-trends-share-size-top-key-players-analysis-and-forecast-research-2020-04-20]. Telerobot forms are continuously branching into new directions, but as of 2020 the dominant form remains to be that of a tablet device attached to a motoric vehicle (See [@fig:double_robot]). The tablet typically displays the operators head, as in a Skype call. Examples from market leaders include _Double Robotics_ ^[https://www.doublerobotics.com/], _Mantaro_ ^[http://www.mantarobot.com/products/teleme-2/index.htm] and Revolve Robotics ^[https://telepresencerobots.com/robots/kubi]. Such telepresence robots are oriented for remote offices and public service environments such as hospitals or schools.    
 
-## 4.1 Face visibility
+In a contact situation, it is likely that the telerobot operator would want to remain anonymous, or at least present themselves differently than their actual form. In this case, it is best if the exposure of the face would be optional, or that the operator could manipulate the image. However, there is a more fundamental, ontological issue with using a 2D display on a telepresence robot. The problem was described as the "dual ecologies" problem, and was investigated in a case-study by Choi and Kwak [@choiCanYouFeel2016]. In their study, a remote partner's presence in a tablet-based video call was found to be stronger when it is disembodied than when it was attached to wheeled robotic body. The authors explain this by referring to the different ecologies present on the same robot: One is a 2D projection of the operator's remote location and another is the physical presence of the robotic body in a shared space. They suggest that the receiver of communication experiences confusion, having to interact simultaneously with the immediate environment and with he depiction of the remote environment. 
 
-The telepresence robot market is rapidly growing, and is predicted to accelerate even more in the upcoming years with increase needs for remote working and social services. Telerobot forms are continuously branching into new directions, but as of 2020 the dominant form remains to be that of a tablet device attached to a motoric vehicle such as robots by market leaders _Double Robotics_ ^[https://www.doublerobotics.com/].     
+The dual ecologies problem could be extended further, as our initial test shows that even utilitarian use of a display on the telerobot's body to perform a task, has disrupted the participants' view of the robot as a uniform avatar. Instead, participants reported reverting to the experience of using a phone-like device while they were interacting with the display, despite having to touch the robot to initiate actions in the virtual interface [@peledSoftRoboticIncarnation2019, p.127]. Back projection solutions such as those of _Furhat Robotics_ ^[https://furhatrobotics.com/] attempt to solve this incongruence by projecting 3d-mapped virtual information directly on the robot's surface. While this may moderate the negative effects of the display, it does address entirely the dual ecologies problem of having two different spaces combined into one.  
 
-The 'ipad on segway' form is now the most common form of telepresence. It's not really an avatar incarnated. There is no suspension of disbelief that the robot _is_ the operator.
+An interference with the experience interacting with the avatar may negate the positive benefits of physical interaction such as non verbal cues and direct engagement, and disrupt the flow of attitude forming toward the out-group member. Therefore, the use of a display should be planned carefully for intergroup contact. Alternatively, the robot's appearance could be designed with an emphasis on uniformity and consistency. Considerations for appearance are discussed in the following section.
 
-![Telepresence ipad](telepresence_ipad.jpg){#fig:telepresnce_ipad}
-
-From the operator's side, exposing of the face could increase anxiety and reduce hyperpersonal behavior, but may increase accountability.
-
-From the partner side, seeing the operator's face could create a more personal connection with the operator, but because it challenges the belief of the robot being an avatar, the partner perceives the robot as a communication device. This reduces the efficacy of embodied interaction. In fact, using any type of display can subvert the perception of the avatar [Can I reference the qualitative research of my own MA?]
-    
-
-## 4.2 Using the operator's voice VS an artificial voice
-
-Using the operator's voice might have similar effects on individuation as using the face, but adding an artificial voice also provides the ability to speak in many languages The operator's voice can even be cloned. However, mistakes in translation my increase anxiety in both sides.
 
 # 5. Appearance of the telepresence robot
+
+A key question in telepresence systems concerns the visibility level of the operator; how much of the operator's real-time body, actions and intentions are exposed through the avatar? This concerns not only visual sensibilities, but also auditory: exposing the operator's voice. We examine the implications of visibility on intergroup contact in detail in this section.
 
 ## 5.1 Humanoid vs non-humanoid
 
@@ -192,6 +184,11 @@ We are not limited to forms that exist in real life. It is possible to include v
 
 # 6. Embodied interaction
 
+
+## 4.2 Using the operator's voice VS an artificial voice
+
+Using the operator's voice might have similar effects on individuation as using the face, but adding an artificial voice also provides the ability to speak in many languages The operator's voice can even be cloned. However, mistakes in translation my increase anxiety in both sides.
+
 ## 6.1 Non-verbal cues in tele-operation
 
 A robot can show non verbal cues such as: body
@@ -209,7 +206,8 @@ Active bodily expressions could be triggered for example by a simple click on an
 
 ## 6.3 Interaction with the robot
 
-A robot could have sensors that pick up the interaction of the partner with the robot and sends it back to the operator. In the symmetric form this is the only type of interaction possible, but in asymmetric form it is possible to use a camera to capture interaction.
+A robot could have sensors that pick up the interaction of the partner 
+with the robot and sends it back to the operator. In the symmetric form this is the only type of interaction possible, but in asymmetric form it is possible to use a camera to capture interaction.
 
 # 6.4 Feedback in operation
 
