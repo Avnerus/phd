@@ -224,27 +224,14 @@ An important factor in robot design is the choice of materials. In industrial ro
 
 Previous research in social robotics supports the use of soft materials for the outer skin of robots, especially in interaction with children [@kozimaSocialRobotsChildren2006] and in elderly care [@broekensAssistiveSocialRobots2009;@kiddSociableRobotEncourage2006]. The reason being the presence of _affective touch_ between the robot and humans [@kerruishAffectiveTouchSocial;@stiehlDesignTherapeuticRobotic2005]. The human body and another natural forms are inherently soft, and co-exist better with other materials that are soft [@daneseSoftMachine2003]. Nevertheless, here too, carrying an object closer to the realm of the living may invoke an uncanny feeling, for example when touching a smooth, soft, material that is also cold [@willemseAffectiveBehavioralResponses2017;@nieCanYouHold2012].
 
-A soft touch on the surface doesn't necessarily imply a softness as a whole. For example, a gripping robotic hand made from powerful servo motors that are wrapped in a soft skin could still easily, and inadvertently, crush soft tissue. _Soft Robotics_ is a rapidly developing research field for robots that operate on soft materials down the level of actuation [@baoSoftRoboticsAcademic2018]. Research is often, but not always, bio-inspired; commonly used materials are fabrics and silicone rubbers while the most common form of actuation is pneumatic: applying air pressure or vacuum. Presently, the largest consumers of soft robotics are the medical industry, utilizing the soft materials for invasive and surgical procedures. Nevertheless, uses and appeal of soft robots for human interaction are being studied [@bewleyDesigningBlonutDesign2018;@jorgensenAppealPerceivedNaturalness2018;@zhengSoftGrippersNot], uniformly arriving to the conclusion that the smooth, organic-like motion of soft actuators has an expressive quality, and affects humans in a manner highly different from traditional robotics. Our small-scale test on soft robotic telepresence has reached similar conclusions [@peledSoftRoboticIncarnation2019, p.126]. As predicted by Mori, movement has an effect on the uncanny, and soft actuation has potential to fall into the a negative category. If designed correctly, movmement can bestow a robot with a relatable, expressive quality, despite it having a completely non-anthropomorphic appearance [@hoffmanDesigningRobotsMovement2014].  
+A soft touch on the surface doesn't necessarily imply a softness as a whole. For example, a gripping robotic hand made from powerful servo motors that are wrapped in a soft skin could still easily, and inadvertently, crush soft tissue. _Soft Robotics_ is a rapidly developing research field for robots that operate on soft materials down the level of actuation [@baoSoftRoboticsAcademic2018]. Research is often, but not always, bio-inspired; commonly used materials are fabrics and silicone rubbers while the most common form of actuation is pneumatic: applying air pressure or vacuum. Presently, the largest consumers of soft robotics are the medical industry, utilizing the soft materials for invasive and surgical procedures. Nevertheless, uses and appeal of soft robots for human interaction are being studied [@bewleyDesigningBlonutDesign2018;@jorgensenAppealPerceivedNaturalness2018;@zhengSoftGrippersNot], uniformly arriving to the conclusion that the smooth, organic-like motion of soft actuators has an expressive quality, and affects humans in a manner highly different from traditional robotics. Our small-scale test on soft robotic telepresence has reached similar conclusions [@peledSoftRoboticIncarnation2019, p.126]. As predicted by Mori, movement has an effect on the uncanny, and soft actuation has potential to fall into the a negative category. If designed correctly, movmement can bestow a robot with a relatable, expressive quality, despite it having a  non-anthropomorphic appearance [@hoffmanDesigningRobotsMovement2014].  
 
-safety, punching, hugging
+All things considered, a soft approach deems appropriate for telepresence contact. Insofar as the presentation of the avatar remains balanced in respet to the principles outlined in this section, adding soft movement and touch may increase empathy and initmacy in contact and lead to a more positive outcome. A soft approach also presents a notion of safety, and an inability to cause harm; a desirable climate in situations of intergroup conflict.
 
 
 Robot’s Height
 
 Using non-human embodied imagery for the the operator affects group identity and anxiety [@kimTwoRoutesLeading2011]
-
-A non-humanoid would have to work harder for emotional expression and empathy, if there are no human facial expressions, but using animalistic expressive movement or semi-anthropomorphic gestures is possible 
-
-## 5.2 A combined approach: Group markers on a non-humanoid form
-
-We are not limited to forms that exist in real life. It is possible to include various identifying markers on the non-humanoid avatar to increase group salience during contact. Markers such as:
-
- - Group symbols
- - Typical name/nickname
- - Native language
- - Other conversation content
-
-
 
 # 6. Embodied interaction
 
