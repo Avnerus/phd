@@ -239,14 +239,27 @@ As described in the beginning of this article, the term _physical interaction_ d
 
 In this section we explore possible affordances [@gibsonSensesConsideredPerceptual1966, p.285] in telerobot design, and theorize over different modalities [@kressMultimodalitySocialSemiotic2009]: modes for interaction, that may assist in intergroup contat. We detail suggestions toward implementation in the two types of systems discussed: symmetric and asymmetric. For every implementation, we consider the level of agency alloted to the operator, and conversely the level of autonomy required from the robot. While we strive to grant full agency to the operator, some modalities require an intervention from the robot to ensure a smooth exprience, while other modalities may benefit from being augmented with the robot's capabilities.
 
-A robot can theoretically do anything that a human can do, and more, but 
+## 6.1 Movement in space
+
+The ability to move a body in space is what mainly distinguishes a robot from other interactive technologies. However, not all robots have the same degrees of freedom and granularity when it comes to movement. In the field of social robots,_mobile robots_ typically travel around using wheeled motion. Examples include service robots, such as Pepper^[https://www.softbankrobotics.com/emea/en/pepper] and Samsung bots^[https://research.samsung.com/robot], and telepresence robots such as Double Robotics^[https://www.doublerobotics.com/] and Beam^[https://suitabletech.com/]. Other robots only move their body while remaining stationary in place. For example care robot such as PARO ^[http://www.parorobots.com/], and Ishiguro laboratories' telepresence robots ^[http://www.geminoid.jp/en/robots.html]. Due to the complexity of maintaining both modalities in interaction, mobile robots usually keep a physical distance from the user, interacting mostly using voice and visual information as they travel around. Stationary robots, on the other hand, tend to rely more on haptic interaction, allowing the user to hold and touch them. Only a few robots attempt to combine both modalities, such as Teo [@bonariniHuggableMobileRobot2016].
+
+Touch-based interactions' affective role in human-robot relations  [@andreassonAffectiveTouchHuman2018;@kerruishAffectiveTouchSocial] renders them meaningful for contact, as it was shown that the outcome of contact is tightly integrated with affective measures. Thus it may prove beneficial to place touch modalities in a higher priority than the ability to move around in space. Moreover, in the caes of symmetric telepresence, moving around is nearly impossible, as the operator does not have a dedicated interface for traveling, and movement can rely only on limited body tracking. Even in asymmetric systems, complexities added by the need to navigate a robot using a camera may divert attention from the main task at hand, having a meaningful interpersonal interaction.
+
+One exeception in which acquiring mobility may be paramount is in situations of assymetrical conflict where the oppressed group suffers from movement restricitons in their daily life, as is the situation in Palestine [@brownImmobileMassMovement2004]. In such case, an oppressed group may get empowered by having the ability to travel around, using their telepresence robot, in areas that are normally out of their reach. This, in turn, may contribute to greater sense of equality and confidence within the conversation.  
+
+## 6.2 Nonverbal communication and emotional expression
+
+Nonverbal communcation (NVC) plays a substantial role in our day-to-day interactions. In a pioneering work by Michael Argyle [@argyleBodilyCommunication2013], nonverbal signals were listed as follows: facial expressions, gaze, gestures, posture, bodily contact, spatial behavior, appearance, non-verbal vocalizations and smell. A telerobot has the capacity to use all of those signals, but the main challenge lies with the reliable transmision of signals from the operator's intention to the re-emboided form of the robot. Signal have to picked up accurately from the operator, and then translated to the telerobot's body to convery the same meaning.
+
+Argyle categorizes types of NVCs according to their level of awarenss within the sender and the receiver. The majority of NVCs are defined as _mostly unaware_ on part of the sender and _mostly aware_ on the receiver side. For example: we are only slighty conscious that we are smiling during a covnersation, but the sentiment is registered more attentively with our conversation partner. 
+
+Since NVCs communicate emotion, they should be handled with great care in telepresence contact. While unaware signals can be detected on the operator using facial recognition, speech tone analysis and body tracking, the ratios for successful classification are still far from perfect [@kessousMultimodalEmotionRecognition2010]. A mistake in assumption could lead to confusion and frustration in the conversation, therefore it is safer to rely stricly on explicit gestures made by the operator, with full awareness. Expression of emotions in an asymmetric sytem could be invoked by the operator using Emojis[@kayeEmojisInsightsAffordances2017] or other dedicated buttons. In a symmetric system, explicit touch-based interactions could be used to express emotion, such as a pat or a stroke on the robot's body.
+
+Once the operator's intention is picked up, it can be expressed by the avatar, and here too is a risk of confusion. If using a humanoid avatar, a combination of gaze and smooth eyebrow motion can display expressive facial expressions, as shown in the SEER robot [@todoSEERSimulativeEmotional2018]. Theories of universiality in facial expression, originating in Darwin's account of emotional expression [@darwinExpressionEmotionsMan1998suggest] suggest a common basis for expression across cultures [@hareliFacialExpressionsEmotion2017]. However, the findings are inconclusive [@jackFacialExpressionsEmotion2012], and studies of emotion expression in virtual humanoids avatar have shown that they add an element of confusion and mis-representation [@pelczerExpressionsEmotionsVirtual2007]. When using a non-humanoid, facial expressions are very limited. Instead, body movement can be used to express emotions. Laban's movement analysis  [@labanMasteryMovement1971] (LMA), a framework from the field of dance was shown to be applicable for robots [@nakataExpressionEmotionIntention1998;@masudaMotionRenderingSystem2010]. LMA analyzes movements components such as _effort_ and _shape_, that can be assigned to basic emotions [@shafirEmotionRegulationMovement2016]. Using dance as an inspiration for robotic expression also benefits from its cross-culture universality [@sieversMusicMovementShare2013]. Another model, the PAD emotional state model [@mehrabianApproachEnvironmentalPsychology1974], was successfully applied to robot movement design [@ardilaAdaptiveFuzzyPredictive2019;@noguchiOMOYHandheldRobotic2020]. PAD describes emotions in three dimensions: Pleasure, Arousal and Dominace. Defining and evaluating the robot's emotional state on the PAD scale allows designers to correlate emotions with specific mechanical movements.
 
 
-## 4.2 Using the operator's voice VS an artificial voice
 
-Using the operator's voice might have similar effects on individuation as using the face, but adding an artificial voice also provides the ability to speak in many languages The operator's voice can even be cloned. However, mistakes in translation my increase anxiety in both sides.
 
-## 6.1 Non-verbal cues in tele-operation
 
 A robot can show non verbal cues such as: body
 attitude, gaze, head nods, and facial expression (as the model allows it). They could smoothen the turn taking in the conversation and increase empathy.
@@ -255,13 +268,12 @@ However, such tacit queues are not actively initiated by the operator and would 
 
 In asymmetrical form that involves a camera, gaze can be operated by controlling the camera and changing where the robot looks.
 
-## 6.2 Bodily expressions
 
-An operator could have the robot show bodily expressions. Depending on the operating interface, these could be actively initiated or captured by a gesture sensor. The active method is less prone to mistakes which could reduce anxiety.
+## 6.3 Verbal interactions
 
-Active bodily expressions could be triggered for example by a simple click on an emoji, or using more sophisticated forms such as body tracking, or using the phone's accelerometer.
+Using the operator's voice VS an artificial voice
 
-## 6.3 Interaction with the robot
+Using the operator's voice might have similar effects on individuation as using the face, but adding an artificial voice also provides the ability to speak in many languages The operator's voice can even be cloned. However, mistakes in translation my increase anxiety in both sides.
 
 A robot could have sensors that pick up the interaction of the partner 
 with the robot and sends it back to the operator. In the symmetric form this is the only type of interaction possible, but in asymmetric form it is possible to use a camera to capture interaction.
