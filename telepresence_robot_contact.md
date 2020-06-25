@@ -309,14 +309,13 @@ More traditional forms of conflict resolution and peacebuilding can also be supp
 
 The content suggested above only scratches the surface of conflict resolution and peacebuilding methods, as the possibilities for interaction are boundless. It is important to note, howver, that in a telepresence context the sense of co-presence may be affected as the mediating autonomy of the robot increases. The robot may be perceived more as a middle-agent rather than an avatar, which in turn may reduce the effect of positive outcome toward its operator. Mediating functions should be kept as transparent and seemless as possible.
 
-# 9. Real-world conflict considerations
+# 9. Ethical considerstions
 
-## 9.1 Empowerment via education in robotics
-Art therapy, theater of the oppressed.
-
-## 9.2 Legal and ethical considerations
-Border crossing, normalization, social pressure.
-
-## 9.3 Israel-Palestine test case
+# 10. Summary table
+| Aspect | Hypothesis | Considerations for asymmetrics systems | Considerations for symmetric systems |
+| ------ | ---------- | -------------------------------------- | ------------------------------------ |
+| boo    | baa        | boo                                    | baa                                  |
+| boo    | baa        | boo                                    | baa                                  |
+| boo    | baa        | boo                                    | baa                                  |
 
 # References
