@@ -30,52 +30,33 @@ header-includes: |
 
 \maketitle
 
-General introduction paragraph  
-Recognizing other uses for robots in contact, such as FtF mediator and simulated contact.
-Defining the scope of the work:
+The pervasive role of technology in intensifying the ability of mankind to harm one another is well known; the use of technology to promote peace at both the collective and personal levels is considerably more modest. Over the years there have been calls within the Human-Computer Interaction research community to promote the use of technology to support peace in world conflicts [@hourcadeHCIPeaceCall2011;@eckertIndustryTrends20402019]. Often when people think of a technological contribution to conflict resolution, emphasis is placed on negotiation and decision support for policy makers and nation leaders. A different question that is addressed in the current paper, is how to help reconcile the ‘common’ people in a situation of conflict and build more positive intergroup relations from the bottom up.
 
-- Intergroup contact with emphasis on prejudice in asymmetric, conflicted groups.
-- At least one group member is physically interacting with a robot in a shared space, which is operated by a member of the opposing group.
+One of the most prominent models that acts as a guideline for this approach is the contact hypothesis [@allportNaturePrejudice1954], that states that under the right conditions, encounters with members of the opposing group (i.e., the outgroup) can lead to reduced prejudice and more harmonious intergroup relations. We propose using telepresence robots as a communication medium for such contact, combining elements from the virtual world of online interactions and from real face-to-face encounters.
+
+We begin by reviewing research on intergroup contact and the need a new technological medium, introducing robots as an alternative form of contact that has to our knowledge not been considered previously. We then present a conceptual framework based on previous research, outlining the conditions, considerations and hypotheses that we believe are essential for robot-mediated contact. We conclude with an agenda for research in this newly emerging field of robotic intergroup contact. 
 
 
 # 1. Intergroup contact hypothesis
 
-## 1.1 Contact hypothesis
-
-Review, leading into the need and rise of mediated contact, of which online is most prominent
-
+The contact hypothesis as formulated by Gordon Allport in his seminal book _The Nature of Prejudice_ [@allportNaturePrejudice1954] specifies four conditions that need to be fulfilled during contact: equal status, having common goals, active cooperation, and institutional support. Fifty years later, a meta-analysis validated the hypothesis across a large number of studies [@pettigrewMetaanalyticTestIntergroup2006]. It was shown, however, that Allport’s conditions are not strictly essential for a positive outcome, rather they are factors among others that facilitate it. Later research focused on expanding the theory to more conditions such as forming cross-group friendships, identifying the affective drivers, such as empathy and anxiety, that play a mediating role in contact, and discussing how levels of _group salience_ moderate the generalization of attitudes from the interpersonal level to the group level [@pettigrewRecentAdvancesIntergroup2011;@brownIntegrativeTheoryIntergroup2005]
 
 
 ## 1.2 Online contact
 
-Review, leading into the issues with current online contact:
+Communication technologies expand the models of contact and add new modalities of interaction while compromising on the benefits of traditional face-to-face encounters. Research on online intergroup contact has shown its potential reduce prejudice and aid in conflict resolution [@amichai-hamburgerStructuredUnstructuredIntergroup2015;@haslerOnlineIntergroupContact2013;@waltherComputermediatedCommunicationReduction2015]. Virtual reality has also been studied as a medium, both as a space for dialog, and as an “empathy machine” that allows intergroup members to immerse themselves in the perspective of the other side [@haslerVirtualPeacemakersMimicry2014;@hassonEnemyGazeImmersive2019;@kabiljoVirtualRealityFostering2019]. Nevertheless, online contact is not always constructive. The distant nature of the remote medium reduces the sense of _presence_ in the social situation [@goffmanBehaviorPublicPlaces2008;@lombardHeartItAll1997], which in turn participants less accountable for their actions and less engaged in the conversation [@whiteImprovingIntergroupRelations2015;@schumannWhenComputermediatedIntergroup2017]. The lack of non-verbal cues [@burgoonNonverbalSignals1994] obstructs the path to a mutual understanding and impairs the turn-taking process, which may evoke negative feelings between the group members such as anger and frustration [@johnsonAngerFlamingComputermediated2009].
 
-## 1.3 Issues with online contact
+Critical theorists have repeatedly warned against an abstraction of human nature. Terms such as _reification_, _rationalization_, and _fetishism_ are used to describe the underlying condition of prejudice, where virtual properties are incorrectly assigned to a material being [marxCapitalCritiquePolitical2015;lukacsReificationConsciousnessProletariat2017;@silvaReificationFetishismProcesses2013;@horkheimerEclipseReason2004;@juttenColonizationThesisHabermas2011;@ahmedStrangeEncountersEmbodied2000]. Despite the inherent abstraction of the virtual medium, little attention has been given to robots; telepresence robots exist in the physical world but are operated through a virtual medium. They provide corporeal depth to mediated contact, creating a bridge between online communication and a face-to-face meeting.
 
-1. Lack of self-accountability
+Moreeover, the promise of social media networks to bridge between groups and create opportunities for contact has been negated by the presence of echo chambers and filter bubbles. User of social media are typically exposed only like-minded people, and consume biased new that contribute to group polarization and an increase of prejudice [@delvicarioEchoChambersEmotional2016]. Telepresence robots can occupy public spaces, transcending both physical borders and virtual bubbles, making them highly suitable for contact. We begin by reviewing the associated terminology.
 
-"individuals may feel less accountable for the content they post online or underestimate the social sanctioning of their behavior" [@whiteImprovingIntergroupRelations2015]
+# 2. Terminology and scope
+Originally, the term _telepresence_ was used by Marvin Minsky and Patrick Gunkel to describe a vision of a futuristic economy in which people perform manual, physical labor from remote locations [@minskyTelepresence1980]. Although the term is also used nowadays to describe a human's presence in a virtual environment [@steuerDefiningVirtualReality1992], telepresence originally refers to the experience of being in a remote environment that is _real_ , and mediated by a physical sensing agent, i.e, a _telerobot_. [@campanellaEdenWireWebcameras2000; @kacTelepresenceBioArt2005]. In phenomenological terms, the experience of operating a telerobot is dubbed _re-embodiment_ [@dolezalRemoteBodyPhenomenology2009]. Today's telerobots go beyond industrial use and are deployed in social care [@michaudTelepresenceRobotHome], education [@tanakaTelepresenceRobotHelps2014] , and interpersonal communication [@ogawaTelenoidTelepresenceAndroid2011], utilizing the internet as the broad medium for tele-operation.
 
-2.  Lack of engagement with a reduced social presence
+When a telerobot poses as a remote manifestation of a human operator, it is referred to as its _avatar_; the human operator could then be referred to as the _inhabiter_ of that avatar. An avatar is an antonym for _agent_, a computer-controlled entity that acts autonomously without any human intervention. A telerobot is usually, however, _semi-autonomous_, combining some computer-controlled behavior with human teleoperation. A semi-autonomous telerobot is sometimes referred to as a _surrogate_ [@hughesHumanSurrogatesRemote2014;@nagendranSymmetricTelepresenceUsing2015], a combination of agent and avatar.
 
- “Out-group members' reduced social presence was further associated with negative out-group attitudes, notably because the intergroup interaction itself was considered as less interesting, satisfying, cheerful, and involving” [@schumannWhenComputermediatedIntergroup2017]
+In this article with are limiting our scope to considerations of intergroup contact when at least one of the group members is represented by a robotic avatar (or surrogate), and is physically interacting with another group member. This excludes contexts in which the robot acts a mediator [@hoffmanDesignEvaluationPeripheral2015;@shenStopSeeConflict2018], or a simulated agent [@haslerVirtualPeacemakersMimicry2014], or when the telerobots are interacting with each other and not with humans. 
 
-3. Lack of physical turn taking cues.
-
-"a delayed response in an interaction can also work to incite tension in the intergroup relationship...This is particularly pertinent point for online interactions where there can be a lack of physical cues" [@whiteImprovingIntergroupRelations2015]
-
-4. Lack of opportunity for contact 
-Not much opportunities for online contact, especially in the age of filter bubbles and echo chambers.
-
-Leading into proposing telepresence robot contact as a midway between online and face to face which could solve a lot of the issues with online contact but preserve some of its benefits.
-
-# 2. Telepresence robots
-
-History and terminology:
-
-- telerobot, telepresence, tele-operation, avatar, re-embodiment.
- 
--  fully operated / semi-autonomous functions
 
 # 3. A path model for telepresence contact
 
