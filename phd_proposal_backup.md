@@ -5,7 +5,6 @@ author: Avner Peled
 date: 11/2019
 documentclass: article
 indent: true
-csl: apa2.csl
 bibliography: [aalto.bib]   
 header-includes: |
     \usepackage{xeCJK}
