@@ -1,112 +1,91 @@
 ---
-title: Doctoral Candidate in Digital Learning
-subtitle: Soft Robotic Telepresence in Conflict Resolution | Research Plan
+title: Aalto University Doctoral Program
+subtitle: Intergroup contact via Telepresence Robots | Research Plan
 author: Avner Peled
-date: 03/2020
+date: 10/2020
 documentclass: article
 indent: true
-csl: apa2.csl
 bibliography: [aalto.bib]   
+biblio-style: apalike
 header-includes: |
-    \usepackage{xeCJK}
-    \usepackage{xelatexemoji}
-    \usepackage{float}
-    \usepackage{fvextra}
-    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breaksymbolleft={\quad},commandchars=\\\{\}}
-    \makeatletter
-    \def\fps@figure{H}
-    \makeatother
-...
 ---
 
 \maketitle
-\newpage
 \tableofcontents
 \pagebreak
     
-# Statement
-I am applying for the position of Doctoral Candidate in Digital Learning in the Learning Environments research group at the Aalto Media Lab. My Master's thesis at the Aalto Media Lab: _Soft Robotic Incarnation_ [@peledSoftRoboticIncarnation2019] incorporated a wide range of theoretical and engineering explorations. Now, I wish to focus on depth rather than breadth and perform fieldwork in education and conflict resolution. The same motivation that brought me to the Media Lab in the first place: the dire need for creative and technological solutions in the Israeli-Palestinian conflict, remains to be my main motivation. I am hoping that through my doctoral studies I will be able to promote positive social change not only in my home country but also in other locations suffering from similar issues of prejudice and alienation.
+# 1 Introduction
+The proposed research investigates how robots could facilitate contact between groups in conflict who are
+unable to meet face-to-face. It uses a multidisciplinary approach, combining communication and media
+studies, social psychology, art, design, and robot engineering with one principal objective: reducing prejudice
+between groups. 
+Telepresence robots (robots that are remotely operated by humans) are increasingly used in
+social situations, social situations, from public services such as health care and education to the private sector in working places and residential homes. New demands for robotic avatars also surfaced in light of the COVID-19 pandemic, where physical distancing is imposed on society. The theoretical foundation for the research stems from the principles of intergroup contact outlined by Gordon Allport in the 1954 seminal work _The Nature of Prejudice_ [-@allportNaturePrejudice1954]. The spiritual motivation for the research is the dire need for practical, innovative solutions to the violent, long-term conflict in my home country, Israel. From this extreme use-case, wider-scale lessons regarding social robot design, physical interaction, and mediated communication can be acquired and applied in other contexts of social relations.
 
-With lessons learned from the production of the soft robotic telepresence: HITODAMA, I will produce a new toolkit that allows inexperienced workshop participants to design and produce their soft avatar. The robots would be deployed in a public space and controllers would manage interactions with passersby through their mobile devices or desktops. At the core test case, participants from Palestine would construct their avatars in a workshop and have them pop-up in public spaces in Israel.  The Palestinians will be able to converse with Israelis beyond the separation wall without exposing their identity. Due to the wall and cultural alienation, encounters between Israelis and Palestinians are scarce and very difficult to organize. This research asks the question of whether a soft telerobot might help in facilitating contact.
+This research will contribute to the academic community in three main goals over four years: 
 
-By opening the soft robot's production to a participatory workshop in an intergroup conflict context [@tajfelIntegrativeTheoryIntergroup1979], I hope to achieve two main outcomes: 1) Proliferation of technical and scientific knowledge and empowerment in minority groups. 2) Maximum artistic and emotional expression in mediated encounters. The research will be divided into milestones in which design decisions and hypotheses would be put to the test and a publication would follow. First, I will analyze and optimize the use of soft robotics as a medium for intergroup contact. Second, I will evaluate the advantages of designing your own robotic avatar compared to using a pre-designed solution. Finally, I will conduct workshops and deploy solutions in conflict situations, focusing on the Israeli-Palestinian conflict, and analyze the results. 
+1) Conceptualization of the robotic telepresence contact hypothesis; theorizing on the conditions required for a positive robot-mediated encounter between groups in conflict.
 
-# Research overview
+2) A novel design for a robotic avatar toolkit that is tailored specifically for telepresence contact and is designed to be fabricated in a dedicated workshop by an inexperienced user.
 
-## Conflict resolution through the release of prejudice
+3) The first field test for robotic telepresence contact in the context of the Israeli-Palestinian conflict. 
 
-This dissertation will focus on prejudice as a major component in intergroup conflict [@pettigrewIntergroupPrejudiceIts2011], identifying the major drivers of prejudice and therefore possible paths for mitigation. The research will be approached from two different schools of thoughts: That of social psychology and that of metaphysics and phenomenology. From a metaphysical perspective, prejudice could be seen as a particular case of _Reification_. From a social psychology perspective, research will follow Gordon Allport's _Nature of Prejudice_ and the theories of contact that follow.
+Each milestone includes a publication, with the final dissertation aggregating and concluding the research
 
-### Metaphysics of prejudice: From reification to incarnation
-
-
-The notion of reification was popularized by Lukács' interpretation [-@lukacsHistoryClassConsciousness1971] of Marx's commodity fetishism [@marxCapitalCritiquePolitical2015]. Marx wrote about the transition that occurred in how society values objects: While at first objects were valued by their essence, their objective nature and their use-value; capitalist society 'fetishized' objects by assigning them abstract properties that are not a part of the actual object, i.e their exchange-value. Lukács took this one step further and showed how the entire organization of society and human consciousness gets 'reified'. Wage labor in effect transforms the human into a commodity and societal processes are rationalized under arbitrary systems of value. Adorno and Horkheimer of the Frankfurt school of critical theory took these theories as the basis for the moral deterioration of society and the loss of our raw human nature into rationalized systems of rules such as those that emerged in World War II [@adornoDialecticEnlightenment1997].
-
-There is a clear connection between reification, rationalization, and intergroup prejudice. Sarah Ahmed, for instance, developed a theory of _Stranger Fetishism_ [-@ahmedStrangeEncountersEmbodied2000], demonstrating the clear connection between prejudice and commodity fetishism. In Ahmed's view, abstract information about the stereotypical figure of the stranger circulates through mass-media, intensifying, like a currency, as it is exchanged from source to source. This wounds up creating an emotional fetishism toward the figure of the _other_. We can also approach the same scenario through Jürgen Habermas' thesis of the colonization [-@habermasTheoryCommunicativeAction1984a] of the _Lifeworld_. Habermas views invasive _steering media_, such as money and power, as an interference to the process of reaching a rational agreement inter-subjectively. Without a mutual agreement on rationality, Habermas asserts, political discussion is not possible.
-
- Since this research deals with technological mediation in intergroup conflict, I am interested both in identifying the reifying forces in current communication technology, such as social media [@heymanSocialMediaDelinguistification2015], and the technologies that could be used to mitigate those forces. Borrowing from the writings of Simone Weil [-@weilGravityGrace2002] and Edgar Orion [-@edgarThingsSeenUnseen2012], I have previously dubbed the name _incarnation_ as a reversal of reification [@peledSoftRoboticIncarnation2019]. I assert that in a mediated conversation between individuals, when a depth of irreducible human qualities is reliably communicated, it is likely to reduce fetishism and prejudice. Following this assumption, I hypothesize that an incarnation could be achieved via two main factors: 1) Expressiveness and 2) Corporeality. In contrast to technological initiatives that attempt to expose nuanced human qualities in mediated interaction using biofeedback sensors, I opt for active expression by the interlocutors. In a robotic telepresence scenario, this means allowing the creator of the avatar to design the appearance and movements of their robot, and trigger those movements only when intended. The potential for custom-designed social robots was demonstrated by Suguitan and Hoffman [-@suguitanBlossomHandcraftedOpenSource2019], and I wish to take this further into designing actuation and behavior. 
-
-The other important factor that I will focus on is _Corporeality_, or in its inter-subjective form _Intercorporeality_. This term was coined by phenomenologist Maurice Merleau-Ponty [-@merleau-pontyVisibleInvisibleFollowed1968] and is used to describe the tight physical interdependence between humans that is constitutive not only to social cognition but also to the nature of _Being_, the conscious experience. I hypothesize that in a  mediated encounter, more physical interaction is more authentic to the interlocutors' _logos_ - the essence of their social being, their voice [@ranciereDisagreementPoliticsPhilosophy1999;@edgarThingsSeenUnseen2012]. On the other hand, an abstract, flat, and virtual experience could leave a void that is a soil for growing a biased and fetishized figure of the stranger in the interlocutors' mind. I intend to test the viability of the soft robotics medium, with its organic and nonlinear style of movement, to enable an intercorporeal experience when compared to a traditional motorized robot or a virtual encounter.
-
-Apart from the soft materiality of the robot, design choices carry a crucial role in determining the position of the experience on the intercorporeal scale. The use and location of a display, turn-taking dynamics, modalities of language, the fluidity and dynamic range of the controls and robotic motion, the field of view of the camera, feedback signals - these are all elements that vary the user experience as a whole, shifting the perception of the interlocutors, their view of the robot, and their view of each other. Pursuing these questions under the scope of a doctoral dissertation would provide me with ample time to delve into each UX element, placing them on the intercorporeal scale, designing variations and testing them in the field.
-
-### Social psychology and the Contact Hypothesis
-Gordon Allport's _Nature of Prejudice_ from 1954 [@allportNaturePrejudice1954] lays the foundation for the _Contact Hypothesis_: A theory suggesting that an interpersonal contact between groups can reduce prejudice. Allport suggests four conditions for an organized encounter that need to be fulfilled for the contact to be effective: equal status, common goals, cooperation, and institutional support.50 years later, a meta-analysis conducted by Pettigrew and Tropp was able to validate the hypothesis across a large number of studies [-@pettigrewMetaanalyticTestIntergroup2006].
-
-Despite Pettigrew and Tropp's conclusions, applying the contact hypothesis to the Israeli-Palestinian conflict is more complex, as suggested by Maoz [-@maozDoesContactWork2011]: "The majority of existing research does not study the effectiveness of intergroup contact interventions in conditions of acute asymmetrical violent conflict". Maoz reviewed a variety of conflict resolution initiatives and categorized them into four models: the Coexistence Model, the Joint Projects Model, the Confrontational Model, and the Narrative-Story-Telling Model. While every model had its advantages and disadvantages, it was clear that the Israeli-Palestinian conflict, with its deep-rooted prejudice and persistent state of violent power relations between the colonizer and the colonized, does not always bode well with the contact hypothesis.
+# 2 Conceptual framework
+## 1.1 Intergroup contact hypothesis
+The contact hypothesis, as formulated by Gordon Allport, [-@allportNaturePrejudice1954], specifies four conditions that need to be fulfilled during positive intergroup contact: equal status, having common goals, active cooperation, and institutional support. Fifty years later, a meta-analysis across more than 500 studies in a variety of intergroup contexts [@pettigrewMetaanalyticTestIntergroup2006] has revealed that contact is an effective means to reduce prejudice. However, the meta-analysis also showed that the conditions are not strictly essential for a positive outcome, yet they are factors among others that facilitate it. Later research focused on expanding the theory to include more conditions such as forming cross-group friendships [@cookSystematicAnalysisSocially1962] and identifying affective drivers, such as empathy and (reduced) anxiety, that play a mediating role in contact interventions [@pettigrewRecentAdvancesIntergroup2011;@brownIntegrativeTheoryIntergroup2005]. An additional factor that moderates the outcome of contact is _group salience_, the degree in which the participants' group identity is evident. A high level of group salience facilitates the generalization of attitudes from the interpersonal level to the group level [@vociIntergroupContactPrejudice2003]. 
  
-Communication technology expands the aforementioned models of contact and adds new modalities of interaction while giving up the benefits of face-to-face contact. Research on online intergroup contact [@haslerOnlineIntergroupContact2013;@amichai-hamburgerStructuredUnstructuredIntergroup2015] has shown that while there are obstacles and challenges in implementations, there is a  potential for online intergroup contact to reduce prejudice and aid in conflict resolution. I have experienced this myself, in a chat roulette website that popped up during times of war between Israel and Gaza. The website allowed right-wing and left-wing Israelis to fight about politics anonymously; I was surprised at how meaningful some of the encounters were [@peledSoftRoboticIncarnation2019, p. 43]. Other encounters, however, were antagonistic and offensive by nature and could have contributed to an increase in prejudice. As shown also in Walther et al [-@waltherComputermediatedCommunicationReduction2015], the mere contact is not enough, but the content and context of the contact determine whether the result would be positive or negative.
+Most previous intergroup contact studies were conducted in face-to-face (FtF) settings. However, face-to-face contact can be challenging to implement, particularly in areas of violent conflict [@haslerOnlineIntergroupContact2013]. Organizers commonly face practical issues such as gathering diverse groups, finding a neutral, accessible location, and compensating participants for travel expenses. Therefore, recent projects have used technology (especially online communication) to facilitate intergroup encounters.
+ 
+## 2.2 Online contact
+Communication technologies expand the models of contact and add new modalities of interaction while compromising on the benefits of traditional FtF encounters. Research on online intergroup contact has shown its potential to reduce prejudice and aid in conflict resolution [@amichai-hamburgerStructuredUnstructuredIntergroup2015;@haslerOnlineIntergroupContact2013;@waltherComputermediatedCommunicationReduction2015]. However, online contact is not always constructive, and may result in a negative outcome and increased prejudice. The remote nature of the medium makes participants less accountable for their actions and less engaged in the conversation [@whiteImprovingIntergroupRelations2015;@schumannWhenComputermediatedIntergroup2017]. The lack of nonverbal cues [@burgoonNonverbalSignals1994] obstructs the path to a mutual understanding and impairs the turn-taking process, which may evoke negative feelings between the group members, such as anger and frustration [@johnsonAngerFlamingComputermediated2009].
+ 
+Virtual reality (VR) is studied as a medium that offers an immersive communication experience that increases the user’s sense of embodiment during communication [@kilteniSenseEmbodimentVirtual2012]. It was positively evaluated for use in intergroup contact, both as a space for dialog [@haslerVirtualPeacemakersMimicry2014], and as a tool that allows individuals to immerse themselves in the perspective of the other side [@hassonEnemyGazeImmersive2019;@kabiljoVirtualRealityFostering2019]. However, along with its promise, VR also raises a number of ethical and moral concerns. While the experience of _being_ in the virtual space intensifies as the technology develops, our corporeal body is left behind as we subsume an abstract representation as our new reality [@pennyVirtualBodybuilding1993]. This quintessential mind-body split may alter one’s relation to corporeality, leading to psychological deficits, such as _depersonalization_ and _derealization_ or body neglect [@spiegelEthicsVirtualReality2018]. Additionally, immersive perspective-taking risks in assuming an ‘improper distance’ [@chouliarakiImproperDistanceCritical2011;@nashVirtualRealityWitness2018] between the viewer and the outgroup member, in which one subordinates the other, incorporating their representation, rather than recognizing their irreducible alterity. 
+ 
+Prejudice can be seen as an abstraction of the human body [@ahmedStrangeEncountersEmbodied2000]; yet despite the inherent abstraction in virtual mediums and the widely recognized role the body in forming social cognition 
+[@deweyExperienceEducation1986;@merleau-pontyPhenomenologyPerception2013;@gallagherHowBodyShapes2006;
+@malafourisHowThingsShape2013], little attention has been given to robots as a tool for intergroup contact. Remotely controlled robots (telerobots) have a lot in common with online mediums and may carry similar risks when used for contact. Nevertheless, telerobots have a physical presence; we use our bodies to interact with robots just as we would with a living being. They provide corporeal depth to mediated contact, situating a midpoint between online communication and an FtF meeting.
+  
+## 2.3 Telepresence and telerobots
+Originally, the term _telepresence_ was used by Marvin Minsky and Patrick Gunkel to describe a vision of a futuristic economy in which people perform manual, physical labor from remote locations [@minskyTelepresence1980]. Although the term is nowadays used to describe a human's presence in a virtual environment [@steuerDefiningVirtualReality1992], telepresence originally refers to the experience of being in a remote environment that is _real_ and mediated by a physical sensing agent, that is, a _telerobot_. [@campanellaEdenWireWebcameras2000]. When a telerobot serves as a remote representation of a human operator, it is referred to as its _avatar_. In phenomenological terms, the experience of operating a telerobot is named _re-embodiment_ [@dolezalRemoteBodyPhenomenology2009]. Today's telerobots go beyond industrial use and are deployed in social care [@michaudTelepresenceRobotHome2007], education [@tanakaTelepresenceRobotHelps2014], and interpersonal communication [@ogawaTelenoidTelepresenceAndroid2011], utilizing the internet as the medium for tele-operation.
 
-Recently, there have been attempts to bring virtual reality into conflict resolution. Most of the research focused on using VR as an empathy machine, allowing intergroup members to immerse themselves in the perspective of the other side. Other research focused on simulated, pre-recorded contact that was optimized for making one side feeling empathy toward another [@haslerVirtualPeacemakersMimicry2014;@kabiljoVirtualRealityFostering2019;@hassonEnemyGazeImmersive2019]. Not much research was done on the effects of VR on organic intergroup contact events, such as in the popular application _VR Chat_ ^[https://vrchat.com/], a form of _Second Life_ tailored for VR. In this dissertation, however, I would focus on another form of organic, intergroup, contact: one that is based on robotic telepresence. As mentioned in the previous section, soft robotic telepresence adds an _intercorporeal_ dimension to the contact which may increase the efficacy of the encounter and help with the release of prejudice. No attempt has been done yet to bring the contact hypothesis to the field of robotic telepresence; finding out whether such an encounter would be beneficial for conflict resolution could contribute greatly to the academic and peace-activist community.
+Research in Human-Robot-Interaction (HRI) over the past two decades offers insight on a wide range of possibilities for designing social robots (robots that conduct social interaction with humans). Key factors that influence the attitude toward the robot include the level of anthropomorphism of the robot's appearance [@hancockMetaAnalysisFactorsAffecting2011;@finkAnthropomorphismHumanLikeness2012], the use of an external display on the body of the robot [@thrunFrameworkHumanRobotInteraction2004;@choiCanYouFeel2016], the use of affective touch and soft materials [@kerruishAffectiveTouchSocial2017;@stiehlDesignTherapeuticRobotic2005;@baoSoftRoboticsAcademic2018], and the use of nonverbal cues [@hiranoCommunicationCuesHumanRobot2016;@lalaSmoothTurntakingRobot2019]. In telepresence, research focused on factors affecting the sense of presence and self-extension from operators toward their robotic avatars. Key elements include the responsiveness and feedback level of the control interface [@coleImmunityPrincipleView2000;@dolezalRemoteBodyPhenomenology2009] and appearance of the robotic avatar [@leeDesigningAppearanceTelepresence2015;@groomAmMyRobot2009]. [@Fig:telepresence_robots] depicts a variety of existing telerobot designs. Designs vary from the commonly used video conferencing tablet on wheels to full-body anthropomorphic, zoomorphic, and caricature appearances.
 
-Additionally, allowing the out-group members to design their own avatar could utilize principles of expressive art therapy. The participants would get a chance to freely mold their self-image into a non-human avatar, which may have therapeutic benefits [@muriFaceArtTherapy2007;@sholtTherapeuticQualitiesClaywork2006]. Applying self-expression techniques with Palestinians in intergroup conflict could benefit from  Boal's theory of the  _Theatre of the Oppressed_ [@boalTheatreOppressed2008]. The controllers would be able to design their expressions into the robot, whether it is an offensive hand gesture or an offer for peace. Combining technological and expressive arts techniques with pedagogy and empowering the oppressed provides a transdisciplinary approach to conflict resolution in asymmetrical intergroup conflicts.
+The above factors are all relevant for establishing trust and positive relations between interlocutors and robotic avatars. In this research, however, we focus on the design and architectural elements that may be of particular importance to intergroup contact and conflict resolution. By juxtaposing theories of HRI, Computer-Mediated Communication (CMC) and theories of intergroup contact and conflict resolution, we can explore the use telepresence robots as a means to reduce prejudice between groups.
 
-## Post-humanoid, web-based, soft robotic toolkit for telepresence
+![Telepresence Robots. Left to right: Double Robotics^[https://www.doublerobotics.com/], Telenoid [@ogawaTelenoidTelepresenceAndroid2011], BOCCO ^[https://www.bocco.me/en/], stuffed-bear robot [@kuwamuraPersonalityDistortionCommunication2012].](./telepresence_robots.png){#fig:telepresence_robots}
 
+# 3 Milestones
 
-In this dissertation, I will create a modular, easy to use toolkit for the preparation of remote-controlled soft robotic avatars. The toolkit would allow participants to design their movements using flexible methods such as origami-inspired structures [@peraza-hernandezOrigamiinspiredActiveStructures2014]. The modules would then be connected to a central pneumatic system and communication controller that automatically provides conversation and actuation capabilities, including language translation and remote control via the mobile web (see [@fig:diagram]).
+As a prelude to this research, a position paper titled "The Potential of Telepresence Robots for Intergroup Contact" was submitted and accepted to the CHIRA 2020 conference on Computer-Human Interaction. The paper lists potential pitfalls and opportunities toward the first implementation of telepresence-based intergroup contact. Following that, we will conduct a four-year study and produce four publications, divided into the following milestones:
 
-![Modular Soft robotic control: Architecture diagram](diagram.jpg){#fig:diagram}
+## 3.1 The robot contact hypothesis
+In a conceptual article, we will lay the foundation for future implementations of telepresence robots designed for intergroup conflict resolution. Following a comprehensive literature review in HRI and intergroup contact theory, and induction of design principles, we will conduct a user-survey in Israel and Palestine regarding user preferences and willingness for intergroup robot-mediated encounters. 
 
+The survey would include a representative demographic sample with diverse political ideologies, estimating the potential for robot-mediated contact to reach those who carry a negative and prejudice opinion toward the outgroup. The survey would also serve us as a means to construct a user-base for the practical implementation detailed in the next milestone.
 
-To illustrate the process, a use-case scenario is presented as follows:
+## 3.2 Avatar-making workshop
+We will produce a novel design for a robot avatar-making toolkit that allows inexperienced users to fabricate their robotic avatars, design their appearances and movements,  and use them to occupy remote locations. The toolkit will include lessons learned in Master's thesis soft-robotic implementation [@peledSoftRoboticIncarnation2019], and move toward a new approach for textile-based, pneumatic-driven robots that are modular, easily customizable, and exhibit flexible motion.
 
-1. Participant A from Palestine decides they want to appear as a talking bird, colored according to the flag of Palestine.
-2. Participant A creates the body and face of the bird from soft materials such as fabrics and soft plastics and wraps the body around the controller unit.
-3. Participant A creates two bending origami actuators ^[https://www.youtube.com/watch?v=3PQT3vRf-qA] as the wings of the bird, covers them with feathers, and attaches their air vent to the main controller unit.
-4. The robot bird is placed in a public park in Israel, and participant A connects to the control interface with his mobile phone.
-5. Participant A notices through the robot's camera an Israeli couple passing by, and triggers a recording of a bird call that they prepared in advance on the interface.
-6. The couple notices the bird and approaches the robot.
-7. Participant A types in Arabic "Hello there, would you listen to my story?" and instructs the robot to speak in Hebrew.
-8. The couple answers "Yes" in Hebrew and the robot records and translates their response to Arabic before it is shown on Participant A's interface.
-9. Participant A flaps the bird's wings using the web interface, the couple approaches and touches the wings.
-10. Participant A starts telling their story.
+Textile-based soft robots are an emerging field that utilizes commercially-available fabrics for creating flexible robotic actuators [@pykaUseTextileMaterials2020]. Textile actuators are safer for the human body, exhibit a wide range of organic movements and can be produced using readily-available equipment such as a sewing machine and an impulse sealer [@cappelloExploitingTextileMechanical2018]. While such actuators are currently used primarily for medical purposes, such as wearable assistive gloves [@geDesignModelingEvaluation2020], the aforementioned properties make them ideal for creating customized robotic avatars in a workshop setting. 
 
-The majority of the technology for the central communication controller was already developed during the Master's thesis. Upcoming technical research will focus on new soft actuator designs that favor simplicity and flexibility over strength and precision. The actuators need to be easily produced in a workshop scenario with inexperienced participants and inexpensive materials. Insofar as the avatar is designed for expressiveness and social communication rather than explicit functional tasks, organic mistakes and deformations are a welcomed addition and not a mark of failure. I draw inspiration from the maker culture and the _Hebocon_ robot competition ^[https://spectrum.ieee.org/automaton/robotics/diy/hebocon-the-best-worst-robot-competition], as well from on my own experience in delivering workshops ^[https://vimeo.com/210919628]. Additional research will be dedicated to developing remote control methods that take better advantage of the soft medium and allow for more fluid control. One example could be the use of the phone's accelerometer or finger-sliding, to control the pneumatic system in real-time, producing a fluid motion.
+The practice of _Co-Design_ in mediated intergroup contact can increase the involvement of minority groups in the process, disseminate technological knowledge, and reduce the notion of a higher power from above coming to restore peace without perceiving the situation and its nuances. Moreover, Groom et al. showed that operators had a greater sense of self-extension to a robot that was assembled by them, rather than another [@groomAmMyRobot2009]. Robots were also successfully co-designed with children as the target users [@alves-oliveiraYOLORobotCreativity2017;@henkemansCodesignPalRobot2016], and co-design methods improved the general attitude of students toward robots in educational settings [@reich-stiebertInvolveUserChanging2019].
 
-# Advisors 
+In the workshop we will provide participants with a ready-made  communication controller and central pneumatic system, providing built in conversation and actuation capabilities, including language translation and remote control via the mobile web (see [@fig:storyboard]). Participants will use the provided fabrics and elastic materials to design and create their robotic avatar. Tutoring will draw inspiration from expressive art therapy [@muriFaceArtTherapy2007; @sholtTherapeuticQualitiesClaywork2006], encouraging participants to express themselves and their group identity through the avatar. They will design their expressions into the robot, whether it is an offensive hand gesture or an offer for peace.
 
-I have confirmed the availability of three advisors for my studies: 
+As a first stage, workshops would be conducted in Finland, Israel, and Palestine, and analyzed qualitatively, through pre/post-session interviews and observations made in the field. The approach of _Constructive Design Research_ [@koskinenDesignResearchPractice2011] combines lab-work with participatory practices and ethnographic field work, aiming to improve the design and tailor it to situated scenarios. The feedback from the participants and the designs created would prepare us for the final milestone of conducting the workshops in Israel and Palestine and deploying the robots in the field.
 
-1. **Prof. Teemu Leinonen:** Head of the Learning Environments research group and supervisor of my studies.
+![Workshop storyboard: 1) Make robotic body parts from textile and elastic balloons. 2) Connect parts to pre-built controller and test actuation upon inflation. 3) Design robot over the core controller. 4) Operate robot remotely ](./telerobot_storyboard.png){#fig:storyboard}
 
-2. **Dr. Mia Muurimäki:** A former Aalto Media Lab faculty and now a service designer team leader in Futurice. Mia has helped me during my Master's thesis in a multitude of ways. She directed me to relevant literature, suggested design changes and advised me on project management and schedules. Mia has been conducting participatory and co-design workshops in Futurice and I am sure she will also be able to advise me in that field.
+## 3.3 Telepresence robot contact in Israel-Palestine
+A field test for telepresence robot contact in the context of the Israeli-Palestinian conflict: Based on the developed toolkit, we will conduct workshops in Israel and Palestine and organize robot-mediated encounters and public-space appearances of robots from across the separation barrier. Results from the events would be documented and analyzed using qualitative analysis of pre and post-session interviews, field notes, and coded memos, as well as quantitative analysis of data that was automatically gathered by the robots.
 
-3. **Dr. Béatrice Hasler:** Founder of VR-CORE: Virtual Reality Lab for Conflict Research in IDC Herzliya research school in Israel. Béatrice has years of experience researching virtual intergroup contact in the Israeli-Palestinian conflict and has studied online collaboration. Beatrice graciously offered to advise and participate in this research and has introduced me to missing links in social psychology that are essential for this dissertation.
+## 3.4 Dissertation
+ The final dissertation would aggregate the previous articles and conclude them with a monograph that reflects on the creative process and organizes the findings for further development.
 
 # Time-line
-
-I propose to divide my studies into four milestones in four years. Three milestones will produce a publication, and the final product is the dissertation, aggregating and concluding the research. The milestones suggested are as follows:
-
-1. **Soft Robotic Telepresence for intergroup contact**: A literature review of social-psychology, phenomenology and critical theory evaluating the potential of soft robotic telepresence for fulfilling the contact hypothesis. The study would include a comparison to other forms of intergroup contact, and if possible a prototype and test for a simple soft robot that could test the hypothesis. _Due to the COVID-19 pandemic^[https://www.who.int/emergencies/diseases/novel-coronavirus-2019], practical tests might not be possible_
-
-2. **A modular, DIY soft robotic avatar**: I will present a pedagogical and therapeutic toolkit for creating your soft robotic avatar and evaluate it with a test group study. The expressive and therapeutic advantage of the DIY robot would be tested against a pre-made robot in an intergroup contact scenario.
-
-3. **Intergroup conflict resolution with modular soft robotic avatars**: Based on results from the previous studies, the toolkit would be put to the test in a real-world scenario in Israel-Palestine. I will be conducting workshops in Palestine and place the robots in Israel. The potential for reducing prejudice would be evaluated.
-
-4. **Dissertation**: The final dissertation would aggregate the three papers and invoke an encompassing discussion on the conclusions, suggesting alternatives and devising plans to move forward.
-
-Additionally, during the studies, I will take 60 ECTS of courses. The following graph outlines the planned schedule for the studies on a month-by-month basis. I refer to the four milestones as _Telepresence Contact, Modular Avatar, Workshops, and Dissertation_:
+The milestones are arranged on hte following timeline. In addition to publications, I will take 60 ECTS of courses. 
 
 ```{#fig:timeline .pyplot caption="Research timeline draft" links=false}
 import numpy as np
@@ -135,6 +114,7 @@ x_arr[30] = 24
 x_arr[32] = 24
 x_arr[34] = -24
 x_arr[36] = 24
+x_arr[38] = -24
 x_arr[41] = -24
 x_arr[42] = 24
 x_arr[47] = 24
@@ -146,26 +126,27 @@ plt.ylabel("Month")
 ax = plt.gca()
 ax.invert_yaxis()
 ax.annotate("Beginning of studies", xy=(-24, 0), xytext=(0,10), textcoords="offset points", fontsize='large')
-ax.annotate("Telepresence contact:\nliterature review", xy=(24, 1), xytext=(-180,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Courses:\nGeneral doctoral studies", xy=(-24, 2), xytext=(0,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Courses:\nWriting", xy=(-24, 6), xytext=(0,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Telepresence contact:\nPrototype design", xy=(24, 5), xytext=(-180,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Telepresence contact:\nProtype experiment", xy=(-24, 10), xytext=(0,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Telepresence contact:\nPublish paper", xy=(24, 12), xytext=(-180,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Modular avatar:\ndesign research", xy=(-24, 14), xytext=(0,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Contact hypothesis:\nliterature review", xy=(24, 1), xytext=(-180,-30), textcoords="offset points", fontsize='large')
+ax.annotate("User survey", xy=(-24, 1), xytext=(0,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Courses:\nResearch design", xy=(-24, 6), xytext=(0,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Contact hypothesis:\nWriting", xy=(24, 5), xytext=(-180,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Contact hypothesis:\nSurvey analysis", xy=(-24, 10), xytext=(0,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Contact hypothesis:\nPublication", xy=(24, 12), xytext=(-180,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Avatar workshop:\nrobotics research", xy=(-24, 14), xytext=(0,-30), textcoords="offset points", fontsize='large')
 ax.annotate("Courses:\nMechanical engineering", xy=(24, 15), xytext=(-180,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Modular avatar:\ntechnical experiments", xy=(-24, 18), xytext=(0,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Modular avatar:\nbegin implementation", xy=(24, 19), xytext=(-180,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Avatar workshop:\nexperimentation", xy=(-24, 18), xytext=(0,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Avatar workshop:\nimplementation", xy=(24, 19), xytext=(-180,-30), textcoords="offset points", fontsize='large')
 ax.annotate("Courses:\nArtitsic research", xy=(-24, 21), xytext=(0,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Modular avatar:\nimplementation experiment", xy=(24, 22), xytext=(-180,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Modular avatar:\npublish paper", xy=(-24, 24), xytext=(0,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Workshops:\ndesign research", xy=(24, 26), xytext=(-180,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Workshops:\nfinal implementation design +\nbudget planning", xy=(-24, 28), xytext=(0,-43), textcoords="offset points", fontsize='large')
-ax.annotate("Coordinating Palestine collboration", xy=(24, 30), xytext=(-195,-17), textcoords="offset points", fontsize='large')
+ax.annotate("Avatar workshop:\nDesign workshops", xy=(24, 22), xytext=(-180,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Avatar workshop:\nanalysis", xy=(-24, 24), xytext=(0,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Avatar workshop:\nDesign iteration", xy=(24, 26), xytext=(-180,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Avatar workshop:\nPublication", xy=(-24, 27), xytext=(0,-43), textcoords="offset points", fontsize='large')
+ax.annotate("Coordinating Palestine collaboration", xy=(24, 30), xytext=(-195,-17), textcoords="offset points", fontsize='large')
 ax.annotate("Coures:\nGeneral studies", xy=(24, 32), xytext=(-180,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Workshops:\ndocumentation planning", xy=(-24, 34), xytext=(0,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Workshops:\nimplementation rounds", xy=(24, 36), xytext=(-180,-30), textcoords="offset points", fontsize='large')
-ax.annotate("Workshops:\npublish paper+exhibition", xy=(-24, 41), xytext=(0,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Field test:\nPlanning", xy=(-24, 34), xytext=(0,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Field test:\nImplementation rounds", xy=(24, 36), xytext=(-180,-30), textcoords="offset points", fontsize='large')
+ax.annotate("Field test: Analysis", xy=(-24, 36), xytext=(0,-42), textcoords="offset points", fontsize='large')
+ax.annotate("Field test:\nPublication", xy=(-24, 41), xytext=(0,-30), textcoords="offset points", fontsize='large')
 ax.annotate("Finalizing dissertation\nmanuscript", xy=(24, 42), xytext=(-180,-30), textcoords="offset points", fontsize='large')
 ax.annotate("End of studies", xy=(24, 47), xytext=(-80, -17), textcoords="offset points", fontsize='large')
 
@@ -174,18 +155,17 @@ ax.axes.get_xaxis().set_ticks([])
 fig = plt.gcf()
 fig.set_size_inches(8, 12)
 ```
+\newpage
 
-# Bifurcations into other fields
+# Advisors 
 
-Throughout my doctoral studies, I plan to initiate two main bifurcations in the fields of AI and Bio-Art. Those would be side-projects in which I will inspect the potential to incorporate new elements into my research.
+I have confirmed the availability of three advisors for my studies: 
 
-## AI
-Over the past year, I have been involved as a co-creator in the _Marrow_ project with Shirin Anlen^[https://shirin.works/Marrow-dev-phase-Machine-learning-immersive-theater-WIP]. The project speculates about the possibility of mental illness occurring in AIs and uses storytelling and theatrical methods to discuss its research findings. While the skills I have acquired during working on _Marrow_ could be useful in augmenting robotic mediation by adding supporting layers to intergroup contact, the main inspiration I draw from this project is a critical perspective on AI. Machine learning systems are increasingly prevalent in society, acting as a _steering media_, increasing rationalization and reification in interpersonal relations. AI should be used cautiously and critically, with high awareness of the learning process behind the machine.
+1. **Prof. Teemu Leinonen:** Head of the Learning Environments research group and supervisor of my studies.
 
-## Bio-Art
-I have always been interested in and involved in Bio-Art initiatives. My main curiosity revolves around the combination of biological elements and machine logic, both practically and conceptually. A project that I never got around to implement involved the extraction of human DNA and transplanting it into plants ^[http://avner.js.org/#jewish-roots]. In the context of robotic telepresence, I am interested in the possibilities of encoding parts of our DNA into avatars. Deriving from that is also the need for community-based knowledge in human genome sequencing [@jainNanoporeSequencingAssembly2018]. I hope to pursue this side project as I progress in my dissertation.
+2. **Dr. Béatrice Hasler:** Founder of VR-CORE: Virtual Reality Lab for Conflict Research in IDC Herzliya research school in Israel. Béatrice has years of experience researching virtual intergroup contact in the Israeli-Palestinian conflict and has studied online collaboration. Beatrice graciously offered to advise and participate in this research and has introduced me to missing links in social psychology that are essential for this dissertation.
 
-# Teaching
-Teaching is very important and meaningful to me. I was already teaching during my Master's, designing and lecturing the first Media Lab course on Contemporary Web Development^[https://mycourses.aalto.fi/course/view.php?id=20797]. I would love to have the opportunity to teach more during my doctoral studies. Other than web development, x options for teaching include 1) Soft Robotics workshop, 2) Studies of prejudice, 3) Workshop for self-hosting your cloud, 4) Python and Machine Learning, and 5) DNA Sequencing workshop.
+3. **Dr. Mia Muurimäki:** A former Aalto Media Lab faculty and now a service designer team leader in Futurice. Mia has helped me during my Master's thesis in a multitude of ways. She directed me to relevant literature, suggested design changes and advised me on project management and schedules. Mia has been conducting participatory and co-design workshops in Futurice and I am sure she will also be able to advise me in that field.
+
 
 # References
