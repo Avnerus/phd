@@ -11,7 +11,8 @@ classoption:
  - twoside
  - a4paper
 biblio-style: apalike
-bibliography: aalto.bib      
+bibliography: aalto.bib   
+link-citations: true   
 header-includes: |
   \usepackage{epsfig}
   \usepackage{calc}
