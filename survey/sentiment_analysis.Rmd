@@ -1,0 +1,41 @@
+---
+title: "Sentiment analysis"
+author: "Avner Peled"
+date: "5/16/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r , include=FALSE}
+library(dplyr)
+library(magrittr)
+library(knitr)
+library(tidytext)
+library(textdata)
+library(ggplot2)
+load("/home/avnerus/Code/R/survey/tests.RData")
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown analysis
+
+Sentiments for the (translated) question:
+_Imagine you would have the opportunity to interact with a robot that is operated by a person in another location. 
+How would that compare to meeting a person face-to-face?_
+
+```{r}
+sentiments <- Telerobot_sorted %>% 
+  select("v","Q_TELEROBOT_VS_F2F_TRANS") %>%
+  unnest_tokens(word, "Q_TELEROBOT_VS_F2F_TRANS") %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(v, sentiment) %>%
+  group_by(v)  %>%
+  mutate(freq = n / sum(n))
+
+ggplot(sentiments,aes(x=sentiment, y=freq, color=v)) + 
+  geom_bar(stat="identity") + 
+  facet_wrap(~ v) 
+
+```
+  

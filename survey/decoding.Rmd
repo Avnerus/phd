@@ -1,0 +1,27 @@
+---
+title: "decoding"
+author: "Avner Peled"
+date: "5/18/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Decoding SPSS data
+
+```{r}
+is.haven <- function(x) "haven_labelled" %in% class(x)
+with_labels <- Filter(is.haven, Telerobot_sorted) %>% names()
+```
+
+
+```{r}
+Telerobot_decoded = Telerobot_sorted %>%
+  mutate_at( vars(with_labels), as_factor)
+
+Telerobot_decoded
+```
+
+

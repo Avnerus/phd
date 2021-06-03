@@ -1,0 +1,56 @@
+---
+title: "Coding analysis"
+author: "Avner Peled"
+date: "5/16/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r , include=FALSE}
+library(dplyr)
+library(magrittr)
+library(knitr)
+library(tidytext)
+library(textdata)
+library(ggplot2)
+library(wordcloud)
+#load("/home/avnerus/Code/R/survey/tests.RData")
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question
+Imagine you could operate your telerobot anywhere in the world.
+What places would you want to visit with your robot avatar and what kind of activities would you have it perform?
+
+## Word cloud
+```{r}
+Telerobot_sorted %>% 
+  select("Q_TELEROBOT_VS_F2F_TRANS") %>%
+  filter(!grepl("(do[es]*n['’]t)|(person)|(robot)|(meeting)", Telerobot_sorted$Q_TELEROBOT_VS_F2F_TRANS)) %>%
+  unnest_tokens(word, "Q_TELEROBOT_VS_F2F_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, scale = c(5.8,.4), colors=brewer.pal(8, "Dark2")))
+```
+## Word cloud 2
+```{r}
+Telerobot_sorted %>% 
+  select("Q_TELEROBOT_IMAGINE_TRANS") %>%
+  filter(!grepl("don['’]t", Telerobot_sorted$Q_TELEROBOT_IMAGINE_TRANS)) %>%
+  unnest_tokens(word, "Q_TELEROBOT_IMAGINE_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, scale = c(15,.7), colors=brewer.pal(8, "Dark2")))
+```
+
+## Word cloud 3
+```{r}
+Telerobot_sorted %>% 
+  select("Q_SHOW_DETAIL_TRANS") %>%
+  filter(!grepl("don['’]t", Telerobot_sorted$Q_SHOW_DETAIL_TRANS)) %>%
+  unnest_tokens(word, "Q_SHOW_DETAIL_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, scale = c(25,1), colors=brewer.pal(8, "Dark2")))
+```
