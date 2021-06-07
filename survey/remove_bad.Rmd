@@ -1,0 +1,16 @@
+---
+title: "remove_bad"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+_Not sure about this..._
+```{r}
+ Telerobot_sorted %>% 
+  filter(ResponseId == "R_e4YyVbfZ1SHpWQ9")
+```

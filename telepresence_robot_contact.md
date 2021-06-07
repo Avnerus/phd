@@ -6,7 +6,7 @@ documentclass: article
 biblio-style: apalike
 bibliography: aalto.bib  
 abstract: Abstract goes here Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here  Abstract goes here      
-header-includes: |
+header-includes:        |
 ...
 ---
  

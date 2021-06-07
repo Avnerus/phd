@@ -6,6 +6,8 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+library(xlsx)
+library(haven)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -20,8 +22,11 @@ with_labels <- Filter(is.haven, Telerobot_sorted) %>% names()
 ```{r}
 Telerobot_decoded = Telerobot_sorted %>%
   mutate_at( vars(with_labels), as_factor)
+```
 
-Telerobot_decoded
+Export to xlsx
+```{r}
+write.xlsx(Telerobot_decoded, "Telerobot_decoded.xlsx")
 ```
 
 
