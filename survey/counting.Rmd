@@ -1,0 +1,65 @@
+---
+title: "Counts"
+author: "Avner Peled"
+date: "6/6/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r , include=FALSE}
+library(dplyr)
+library(haven)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Basic counts
+
+How many acccessed the survey from each side?
+
+```{r}
+ Telerobot_sorted %>% count(v)
+```
+
+Male/female?
+```{r}
+ Telerobot_decoded %>% count(Q_DEMOGRAPHICS_2) 
+```
+
+How many Finished the survey from each side?
+
+
+```{r}
+ Telerobot_sorted %>% count(v, Finished)
+```
+  How many on each side expressed willingness to meet the outgroup through a telerobot?
+  According to the survey flow, Q_TELEROBOT_APP_G (robot apperance) is asked only if meeting the outgroup using a telerobot is higher than "Probably not"
+  
+```{r}
+Telerobot_sorted %>% 
+  mutate(OUTGROUP_TELEROBOTS = !is.na(Q_TELEROBOT_APP_G)) %>%
+  count(v, OUTGROUP_TELEROBOTS) %>%
+  group_by(v) %>%
+  mutate(freq = n / sum(n)) %>%
+  ggplot(aes(x=OUTGROUP_TELEROBOTS, y=freq, color=v)) + 
+  geom_bar(stat="identity") + 
+ # coord_polar("y", start=0) +
+  facet_wrap(~ v) 
+``` 
+  Participated in an organized encounter?
+  
+```{r}
+ Telerobot_sorted %>% count(v, Q_DEMOGRAPHICS_2_5)
+```
+
+Filter those out
+```{r}
+ Telerobot_no_conatct <- Telerobot_sorted %>% 
+  filter(as_factor(Q_DEMOGRAPHICS_2_5) != "Yes" | is.na(Q_DEMOGRAPHICS_2_5))
+
+ Telerobot_had_conatct <- Telerobot_sorted %>% 
+  filter(as_factor(Q_DEMOGRAPHICS_2_5) == "Yes")
+```
+
+
+
