@@ -1,0 +1,45 @@
+---
+title: "t-tests"
+author: "Avner Peled"
+date: "7/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(ggpubr)
+library(dplyr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Demographic difference?
+
+## Add age column
+```{r}
+Telerobot_ages <- Telerobot_sorted %>%
+                    mutate(Q_AGE = 2021 - (2010 - Q_DEMOGRAPHICS_1)) %>%
+                    relocate(Q_AGE, .after=Q_DEMOGRAPHICS_1)
+
+```
+
+## Compare mean age
+
+```{r}
+ggboxplot(Telerobot_ages, x = "v", y = "Q_AGE",
+          color = "v",
+          add = "jitter") +
+    stat_compare_means(label.y = 75) +
+    stat_summary(fun.data = function(x) data.frame(y=10, label = paste("Mean=",mean(x))), geom="text")
+````
+
+# Robot attitude
+
+
+```{r}
+p <- ggboxplot(Telerobot_nars %>%
+          filter(Q_DEMOGRAPHICS_2 <= 2) %>% 
+          mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)),
+          x = "Q_GENDER", y = "Q_ROBOT_NARS",
+          color = "Q_GENDER")
+facet(p, facet.by = "v")
+````
