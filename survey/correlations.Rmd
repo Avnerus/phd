@@ -9,6 +9,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+# Biserial correlation between one question (Robot would have my religion) and value of the feeling thermometer for the outgroup
+
 ```{r}
 select <- dplyr::select
 cor_df <- Telerobot_sorted %>% 
@@ -19,3 +22,4 @@ cor_df <- Telerobot_sorted %>%
 print(biserial.cor(cor_df$Q_GROUP_SLIDER_1, cor_df$Q_TELEROBOT_IDENT_5))
 plot(cor_df)
 ````
+
