@@ -12,6 +12,6 @@ library("pander")
 ```{r}
 Telerobot_ages %>%
   drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-  anova_test(Q_TELEROBOT_WOULD_U_1 ~ v * Q_AGE_GROUP) 
+  anova_test(Q_TELEROBOT_WOULD_U_1git m ~ v * Q_AGE_GROUP) 
 
 ```
