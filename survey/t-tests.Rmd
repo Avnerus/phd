@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 library(ggpubr)
 library(dplyr)
+library(haven)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -16,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Add age column
 ```{r}
-Telerobot_ages <- Telerobot_sorted %>%
+Telerobot_ages <- Telerobot_nars %>%
                     mutate(Q_AGE = 2021 - (2010 - Q_DEMOGRAPHICS_1)) %>%
                     relocate(Q_AGE, .after=Q_DEMOGRAPHICS_1)
 
@@ -32,8 +33,7 @@ ggboxplot(Telerobot_ages, x = "v", y = "Q_AGE",
     stat_summary(fun.data = function(x) data.frame(y=10, label = paste("Mean=",mean(x))), geom="text")
 ````
 
-# Robot attitude
-
+## Robot attitude
 
 ```{r}
 p <- ggboxplot(Telerobot_nars %>%
@@ -41,5 +41,38 @@ p <- ggboxplot(Telerobot_nars %>%
           mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)),
           x = "Q_GENDER", y = "Q_ROBOT_NARS",
           color = "Q_GENDER")
+facet(p, facet.by = "v")
+````
+## Tech confidence
+```{r}
+p <- ggboxplot(Telerobot_nars %>%
+          filter(Q_DEMOGRAPHICS_2 <= 2) %>% 
+          mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)),
+          x = "Q_GENDER", y = "Q_TECH_CONFIDENCE",
+          color = "Q_GENDER")
+facet(p, facet.by = "v")
+````
+## Correlation of tech confidence to NARS
+```{r}
+p <- ggscatter(Telerobot_nars %>%
+          filter(Q_DEMOGRAPHICS_2 <= 2) %>% 
+          mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)), x = "Q_TECH_CONFIDENCE", y = "Q_ROBOT_NARS", color="v",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = 3, label.y = 30)
+facet(p, facet.by = "v")
+````
+## Correlation of age to NARS
+```{r}
+p <- ggscatter(Telerobot_ages, x = "Q_AGE", y = "Q_ROBOT_NARS", color="v",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = 3, label.y = 30)
 facet(p, facet.by = "v")
 ````

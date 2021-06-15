@@ -15,18 +15,18 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 is.haven <- function(x) "haven_labelled" %in% class(x)
-with_labels <- Filter(is.haven, Telerobot_sorted) %>% names()
+with_labels <- Filter(is.haven, Telerobot_ages) %>% names()
 ```
 
 
 ```{r}
-Telerobot_decoded = Telerobot_sorted %>%
+Telerobot_decoded = Telerobot_ages %>%
   mutate_at( vars(with_labels), as_factor)
 ```
 
 Export to xlsx
 ```{r}
-write.xlsx(Telerobot_decoded, "Telerobot_decoded.xlsx")
+write.xlsx(Telerobot_decoded, "Telerobot_decoded_ages_nars.xlsx")
 ```
 
 

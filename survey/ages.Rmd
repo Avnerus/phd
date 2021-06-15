@@ -1,0 +1,30 @@
+---
+title: "ages"
+author: "Avner Peled"
+date: "12/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(ggpubr)
+library(dplyr)
+library(haven)
+library(tidyr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Add age informaton
+```{r}
+Telerobot_ages <- Telerobot_nars %>%
+                    drop_na(Q_DEMOGRAPHICS_1) %>%
+                    mutate(Q_AGE = 2021 - (2010 - Q_DEMOGRAPHICS_1)) %>%
+                    mutate(Q_AGE_GROUP = case_when(
+                      Q_AGE >= 46 ~ 4,
+                      Q_AGE >= 36 ~ 3,
+                      Q_AGE >= 26 ~ 2,
+                      Q_AGE >= 0 ~ 1
+                      
+                    )) %>%
+                    relocate(Q_AGE, .after=Q_DEMOGRAPHICS_1) %>%
+                    relocate(Q_AGE_GROUP, .after=Q_AGE) 
+```

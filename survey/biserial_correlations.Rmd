@@ -1,0 +1,41 @@
+---
+title: "biserialk_correlations"
+author: "Avner Peled"
+date: "5/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(tidyr)
+```
+
+
+# Biserial correlation between one question (Robot would have my religion) and value of the feeling thermometer for the outgroup
+
+```{r}
+select <- dplyr::select
+cor_df <- Telerobot_sorted %>% 
+  select("Q_GROUP_SLIDER_1","Q_TELEROBOT_IDENT_5") %>%
+  drop_na("Q_GROUP_SLIDER_1") %>%
+  mutate_at(c("Q_TELEROBOT_IDENT_5"), funs(ifelse(is.na(.), 0, .)))
+
+print(biserial.cor(cor_df$Q_GROUP_SLIDER_1, cor_df$Q_TELEROBOT_IDENT_5))
+plot(cor_df)
+````
+# Biserial correlation between age and would meet or not a Palestinian through a telerobot
+
+```{r}
+select <- dplyr::select
+cor_df <- Telerobot_sorted %>% 
+  drop_na("Q_GROUP_SLIDER_1") %>%
+  mutate(OUTGROUP_TELEROBOTS = !is.na(Q_TELEROBOT_APP_G)) %>%
+  mutate(Q_AGE = 2021 - (2010 - Q_DEMOGRAPHICS_1)) %>%
+  select("Q_AGE", "OUTGROUP_TELEROBOTS") 
+
+print(biserial.cor(cor_df$Q_AGE, cor_df$OUTGROUP_TELEROBOTS))
+plot(cor_df)
+````
+Younger age is more likely to meet with telerobots.
+
