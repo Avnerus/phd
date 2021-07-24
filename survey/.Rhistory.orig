@@ -1,3 +1,243 @@
+<<<<<<< HEAD
+=======
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+,
+.id = "gender"
+)
+map_df(genders, ~
+Telerobot_sorted %>%
+dplyr::select(dplyr::matches(.scale)) %>%
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+,
+.id = "gender"
+)
+map_df(genders, ~ {
+Telerobot_sorted %>%
+dplyr::select(dplyr::matches(scale)) %>%
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+,
+map_df(genders, ~
+Telerobot_sorted %>%
+dplyr::select(dplyr::matches(scale)) %>%
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+,
+.id = "gender"
+)
+map_df(genders, ~
+Telerobot_sorted %>%
+dplyr::select(dplyr::matches(.scale)) %>%
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+,
+.id = "gender"
+)
+map_df(genders, ~ {
+Telerobot_sorted %>%
+dplyr::select(dplyr::matches(scale)) %>%
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+},
+.id = "gender"
+)
+map_df(genders, ~
+Telerobot_sorted %>%
+dplyr::select(dplyr::matches(.y)) %>%
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+,
+.y=.x
+)
+map_df(regs, ~
+map_df(genders, ~
+Telerobot_sorted %>%
+dplyr::select(dplyr::matches(.y)) %>%
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+,
+.y=.x
+)
+,
+.id = "scale"
+)
+map_df(regs, ~
+map_df(genders, ~
+Telerobot_sorted %>%
+dplyr::select(dplyr::matches(.y)) %>%
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+,
+.y=.x, .id="gender"
+)
+,
+.id = "scale"
+)
+map_df(regs, ~
+Telerobot_sorted %>%
+dplyr::select(dplyr::matches(.x)) %>%
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+,
+.id = "scale"
+)
+test <- Telerobot_sorted %>%
+dplyr::select(dplyr::matches(""^Q_ROBOT_STATEMENTS_[1-6]$"")) %>%
+dplyr::select(dplyr::matches("^Q_ROBOT_STATEMENTS_[1-6]$"")) %>%
+dplyr::select(dplyr::matches("^Q_ROBOT_STATEMENTS_[1-6]$")
+test <- Telerobot_sorted %>%
+dplyr::select(dplyr::matches("^Q_ROBOT_STATEMENTS_[1-6]$"))
+test <-
+map_df(genders, ~
+Telerobot_sorted %>%
+dplyr::select(dplyr::matches("^Q_ROBOT_STATEMENTS_[1-6]$"))
+,
+.id="gender"
+)
+test <-
+map_df(genders, ~
+Telerobot_sorted %>%
+filter(Q_DEMOGRAPHICS_2 == .x) %>%
+dplyr::select(dplyr::matches("^Q_ROBOT_STATEMENTS_[1-6]$"))
+,
+.id="gender"
+)
+View(test)
+View(test)
+genders <- c(1) %>% set_names(c("Female"))
+test <-
+map_df(genders, ~
+Telerobot_sorted %>%
+filter(Q_DEMOGRAPHICS_2 == .x) %>%
+dplyr::select(dplyr::matches("^Q_ROBOT_STATEMENTS_[1-6]$"))
+,
+.id="gender"
+)
+Telerobot_sorted %>% count(Q_DEMOGRAPHICS_2)
+Telerobot_sorted %>% count(Q_DEMOGRAPHICS_2) %>% type.convert(as.is = FALSE)
+Telerobot_sorted %>% count(Q_DEMOGRAPHICS_2) %>% type.convert(as.is = TRUE)
+Telerobot_sorted %>% count(Q_DEMOGRAPHICS_2) %>% type.convert(as.is = TRUE)
+Telerobot_decoded %>% count(Q_DEMOGRAPHICS_2)
+genders <- c(1) %>% set_names(c("Male"))
+test <-
+map_df(genders, ~
+Telerobot_sorted %>%
+filter(Q_DEMOGRAPHICS_2 == .x) %>%
+dplyr::select(dplyr::matches("^Q_ROBOT_STATEMENTS_[1-6]$"))
+,
+.id="gender"
+)
+genders <- c(2) %>% set_names(c("Male"))
+genders <- c(2) %>% set_names(c("Male"))
+test <-
+map_df(genders, ~
+Telerobot_sorted %>%
+filter(Q_DEMOGRAPHICS_2 == .x) %>%
+dplyr::select(dplyr::matches("^Q_ROBOT_STATEMENTS_[1-6]$"))
+,
+.id="gender"
+)
+genders <- c(1) %>% set_names(c("Male"))
+test <-
+map_df(genders, ~
+Telerobot_sorted %>%
+filter(Q_DEMOGRAPHICS_2 == .x) %>%
+dplyr::select(dplyr::matches("^Q_ROBOT_STATEMENTS_[1-6]$"))
+,
+.id="gender"
+)
+map_df(regs, ~
+map_df(genders, ~
+Telerobot_sorted %>%
+>>>>>>> dc90f0ea134fecc9149a8b7b9579c9a15e922577
+filter(Q_DEMOGRAPHICS_2 == .x) %>%
+dplyr::select(dplyr::matches(.y)) %>%
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+,
+.y=.x, .id="gender"
+)
+,
+.id = "scale"
+)
+genders <- c(1, 2) %>% set_names(c("Female", "Male" ))
+map_df(regs, ~
+map_df(genders, ~
+Telerobot_sorted %>%
+filter(Q_DEMOGRAPHICS_2 == .x) %>%
+dplyr::select(dplyr::matches(.y)) %>%
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+,
+.y=.x, .id="gender"
+)
+,
+.id = "scale"
+)
+groups <- c("PS", "IL") %>% set_names(c("PS", "IL" ))
+map_df(regs, ~
+map_df(genders, ~
+Telerobot_sorted %>%
+filter(v == .x) %>%
+dplyr::select(dplyr::matches(.y)) %>%
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+,
+.y=.x, .id="group"
+)
+,
+.id = "scale"
+)
+groups <- c("PS", "IL") %>% set_names(c("PS", "IL" ))
+map_df(regs, ~
+map_df(groups, ~
+Telerobot_sorted %>%
+filter(v == .x) %>%
+dplyr::select(dplyr::matches(.y)) %>%
+type.convert(as.is = TRUE) %>%
+psych::alpha() %>% .$total
+,
+.y=.x, .id="group"
+)
+,
+.id = "scale"
+)
+library(RQDA)
+Telerobot_nars <- Telerobot_sorted %>%
+mutate(Q_ROBOT_S1 = Q_ROBOT_STATEMENTS_1 + Q_ROBOT_STATEMENTS_2 + Q_ROBOT_STATEMENTS_3 + Q_ROBOT_STATEMENTS_4 + Q_ROBOT_STATEMENTS_5 + Q_ROBOT_STATEMENTS_6) %>%
+mutate(Q_ROBOT_S3 = Q_ROBOT_STATEMENTS_7 + Q_ROBOT_STATEMENTS_8 + Q_ROBOT_STATEMENTS_9 + Q_ROBOT_STATEMENTS_10 + Q_ROBOT_STATEMENTS_11) %>%
+mutate(Q_ROBOT_NARS = Q_ROBOT_S1 - Q_ROBOT_S3) %>%
+relocate(Q_ROBOT_S1, .after = Q_ROBOT_STATEMENTS_11) %>%
+relocate(Q_ROBOT_S3, .after = Q_ROBOT_S1) %>%
+relocate(Q_ROBOT_NARS, .after = Q_ROBOT_S3)
+library(broom)
+install.pacakges("broom")
+install.pacakge("broom")
+install.packages("broom")
+cor
+install.packages(ggpubr)
+install.packages("ggpubr")
+library(ggpubr)
+knitr::opts_chunk$set(echo = TRUE)
+View(Telerobot_decoded)
+View(Telerobot_sorted)
+View(Telerobot_decoded)
+library(ggpubr)
+library(dplyr)
+knitr::opts_chunk$set(echo = TRUE)
+Telerobot_ages <- Telerobot_sorted %>%
+mutate(Q_AGE = 2021 - (2010 - Q_DEMOGRAPHICS_1))
+View(Telerobot_ages)
+Telerobot_ages <- Telerobot_sorted %>%
+mutate(Q_AGE = 2021 - (2010 - Q_DEMOGRAPHICS_1)) %>%
+relocate(Q_AGE, .after=Q_DEMOGRAPHICS_1)
+View(Telerobot_ages)
+compare_means(Q_AGE ~ v, data = Telerobot_ages)
+compare_means(Q_AGE ~ v, data = Telerobot_ages, method = "t.test")
+# Change method
+p + stat_compare_means(method = "t.test")
 p <- ggboxplot(Telerobot_ages, x = "v", y = "Q_AGE",
 color = "v",
 add = "jitter")
@@ -273,6 +513,7 @@ color = "v",
 add = "jitter") +
 stat_compare_means(label.y = 75) +
 stat_summary(fun.data = function(x) data.frame(y=10, label = paste("Mean=",mean(x))), geom="text")
+<<<<<<< HEAD
 library(ggpubr)
 library(dplyr)
 knitr::opts_chunk$set(echo = TRUE)
@@ -424,89 +665,5 @@ with_labels <- Filter(is.haven, Telerobot_ages) %>% names()
 Telerobot_decoded = Telerobot_ages %>%
 mutate_at( vars(with_labels), as_factor)
 write.xlsx(Telerobot_decoded, "Telerobot_decoded_ages_nars.xlsx")
-aov
-knitr::opts_chunk$set(echo = TRUE)
-library("rstatix")
-library("pander")
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-aov(Q_TELEROBOT_WOULD_U_1 ~ v + Q_AGE_GROUP, data = .)
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-aov(Q_TELEROBOT_WOULD_U_1 ~ v + Q_AGE_GROUP, data = .)
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-anova_test(Q_TELEROBOT_WOULD_U_1 ~ v * Q_AGE_GROUP)
-library(ggpubr)
-library(dplyr)
-library(haven)
-library(tidyr)
-knitr::opts_chunk$set(echo = TRUE)
-Telerobot_ages <- Telerobot_nars %>%
-drop_na(Q_DEMOGRAPHICS_1) %>%
-mutate(Q_AGE = 2021 - (2010 - Q_DEMOGRAPHICS_1)) %>%
-mutate(Q_AGE_GROUP = case_when(
-Q_AGE >= 46 ~ 4,
-Q_AGE >= 36 ~ 3,
-Q_AGE >= 26 ~ 2,
-Q_AGE >= 0 ~ 1
-)) %>%
-relocate(Q_AGE, .after=Q_DEMOGRAPHICS_1) %>%
-relocate(Q_AGE_GROUP, .after=Q_AGE)
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-anova_test(Q_TELEROBOT_WOULD_U_1 ~ v * Q_AGE_GROUP)
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-aov(Q_TELEROBOT_WOULD_U_1 ~ v + Q_AGE_GROUP, data = .)
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-aov(Q_TELEROBOT_WOULD_U_1 ~ v + Q_AGE_GROUP, data = .) %>%
-Anova(type="III")
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-anova_test(Q_TELEROBOT_WOULD_U_1 ~ v * Q_AGE_GROUP, type=3)
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-anova_test(Q_TELEROBOT_WOULD_U_1 ~ v * Q_AGE_GROUP)
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-anova_test(Q_TELEROBOT_WOULD_U_1 ~ Q_AGE_GROUP)
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-anova_test(Q_TELEROBOT_WOULD_U_1 ~ v * Q_AGE_GROUP)
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-anova_test(Q_TELEROBOT_WOULD_U_1 ~ Q_AGE_GROUP * v)
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-anova_test(Q_TELEROBOT_WOULD_U_1 ~ Q_AGE_GROUP * Q_TECH_CONFIDENCE)
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-anova_test(Q_TELEROBOT_WOULD_U_1 ~ Q_AGE_GROUP * NARS)
-Telerobot_ages %>%
-drop_na("Q_TELEROBOT_WOULD_U_1") %>%
-anova_test(Q_TELEROBOT_WOULD_U_1 ~ Q_AGE_GROUP * Q_ROBOT_NARS)
-knitr::opts_chunk$set(echo = TRUE)
-library(dplyr)
-library(tidyr)
-library(corrr)
-library(ggcorrplot)
-library(ggstatsplot)
-corr_df <- Telerobot_ages %>%
-drop_na("Q_GROUP_INTEREST_1") %>%
-dplyr::select(
-"Q_ROBOT_NARS",
-"Q_AGE_GROUP",
-"Q_TECH_CONFIDENCE",
-"Q_GROUP_INTEREST_1",
-"Q_GROUP_INTEREST_2",
-"Q_GROUP_INTEREST_3",
-"Q_GROUP_INTEREST_4"
-)
-ggcorrplot(corr_df %>% cor,
-hc.order = TRUE,
-type = "lower",
-p.mat = corr_df %>% cor_pmat)
+=======
+>>>>>>> dc90f0ea134fecc9149a8b7b9579c9a15e922577
