@@ -1,12 +1,15 @@
 ---
 title: "ancova"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library("rstatix")
 library("pander")
+load("/home/avnerus/Nextcloud/PhD/Survey/R/test3.RData")
 ```
 
 ```{r}

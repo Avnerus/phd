@@ -2,31 +2,27 @@
 title: "t-tests"
 author: "Avner Peled"
 date: "7/6/2021"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 library(ggpubr)
 library(dplyr)
-<<<<<<< HEAD
 library(haven)
-=======
->>>>>>> dc90f0ea134fecc9149a8b7b9579c9a15e922577
 knitr::opts_chunk$set(echo = TRUE)
+load("/home/avnerus/Nextcloud/PhD/Survey/R/test3.RData")
 ```
 
 
 # Demographic difference?
 
 ## Add age column
-```{r}
-<<<<<<< HEAD
-Telerobot_ages <- Telerobot_nars %>%
-=======
-Telerobot_ages <- Telerobot_sorted %>%
->>>>>>> dc90f0ea134fecc9149a8b7b9579c9a15e922577
-                    mutate(Q_AGE = 2021 - (2010 - Q_DEMOGRAPHICS_1)) %>%
-                    relocate(Q_AGE, .after=Q_DEMOGRAPHICS_1)
+# ```{r}
+# Telerobot_ages <- Telerobot_nars %>%
+#                     mutate(Q_AGE = 2021 - (2010 - Q_DEMOGRAPHICS_1)) %>%
+#                     relocate(Q_AGE, .after=Q_DEMOGRAPHICS_1)
 
 ```
 
@@ -40,12 +36,7 @@ ggboxplot(Telerobot_ages, x = "v", y = "Q_AGE",
     stat_summary(fun.data = function(x) data.frame(y=10, label = paste("Mean=",mean(x))), geom="text")
 ````
 
-<<<<<<< HEAD
 ## Robot attitude
-=======
-# Robot attitude
-
->>>>>>> dc90f0ea134fecc9149a8b7b9579c9a15e922577
 
 ```{r}
 p <- ggboxplot(Telerobot_nars %>%
@@ -55,7 +46,6 @@ p <- ggboxplot(Telerobot_nars %>%
           color = "Q_GENDER")
 facet(p, facet.by = "v")
 ````
-<<<<<<< HEAD
 ## Tech confidence
 ```{r}
 p <- ggboxplot(Telerobot_nars %>%
@@ -89,5 +79,3 @@ p <- ggscatter(Telerobot_ages, x = "Q_AGE", y = "Q_ROBOT_NARS", color="v",
   stat_cor(method = "pearson", label.x = 3, label.y = 30)
 facet(p, facet.by = "v")
 ````
-=======
->>>>>>> dc90f0ea134fecc9149a8b7b9579c9a15e922577

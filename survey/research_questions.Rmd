@@ -1,0 +1,129 @@
+---
+title: "Research Questions"
+author: "Avner Peled"
+date: "9/27/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggpubr)
+library(tidyr)
+library(reshape2)
+```
+```{r}
+COLUMN_DICTIONARY <-
+  c(
+    Telerobot = "Q_GROUP_INTEREST_1",
+    Telepuppet = "Q_GROUP_INTEREST_2",
+    F2F = "Q_GROUP_INTEREST_3",
+    Video = "Q_GROUP_INTEREST_4"
+)
+```
+
+
+# Data outline
+
+The following data is available for the survey participants.
+
+## Demographics
+
+ - **Age**: Continuous (1 year intervals, can be treated as continuous)
+ - **Gender**: Nominal (Female/Male/Other).
+ - **Tech confidence**: Ordinal (1-5).
+ - **Spoken languages**: Nominal (checkboxes)
+ - **Prior experience** - Dichotomous Y/N questions:
+   1. Own a smartphone.
+   2. Own a computer.
+   3. Interacted with robots.
+   4. Used glove puppets.
+   5. Participated in intergroup encounters.
+   6. Intergroup friends.
+
+
+## General robot attitude
+
+- **NARS Scale**: Continuous (lower is more positive attitude).
+- **Feeling thermometer**: Continuous (higher is more positive).
+- **Willingness to interact** - Ordinal 1-5s:
+  1. _Approach_ a robot in a public space.
+  2. _Own_ a robot used for interaction.
+  3. _Operate_ a robot in a public space.
+- **Imagine interaction**: Open text.
+
+- **Interested to design a robot**: Dichotomous Y/N.
+
+## Robot design preference
+
+  - **What appearance** - Nominal: Human/animal or plant/machine/abstract/other
+  - **How would it reflect me?** Dichotomous Y/N questions:
+   1. Same nationality.
+   2. Same age.
+   3. Same gender.
+   4. Same voice.
+   5. Same religion.
+   6. Additional objects.
+   7. Not reveal anything.
+   8. Be someone else.
+   
+ - **Features** - Ordinal 1-5s:
+    1. Translate speech.
+    2. Travel in space.
+    3. Make hand gestures.
+    4. Can tell when it is touched.
+    5. Can show emotions.
+    6. Can play content from the internet.
+    7. Can show personal photos.
+    8. Can play games.
+    
+  - **Other features** : Open text.
+    
+ - **Visiblity**: Nominal
+   1. See and not be seee.
+   2. See and be seen.
+   3. Not see and not be seen.
+   
+## Robot puppet theater attitude
+  - **Interested to perform**: Ordinal 1-5.
+  - **What kind** : Open text.
+  
+## Attitude toward outgroup
+
+- **Feeling thermometer**: Continuous (higher is more positive).
+- - **Willingness to interact** - Ordinal 1-5s:
+  1. _Operate_ a robot.
+  2. _Perform_ a puppet.
+  3. Face to face.
+  4. Meet online.
+  
+## Robot preference when meeting outgroup
+
+ - Duplicate of _Robot design preference_
+ 
+
+# Research questions
+
+## General attitude toward robots
+
+## General attitude toward outgroup
+
+## Interest in contact
+
+### Q: How willing are the groups to meat each other with the different scenarios?
+```{r}
+ melt(Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v') %>% drop_na() %>%     dplyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "INTEREST") %>% group_by(INTEREST) %>%
+  get_summary_stats(value)
+```
+
+```{r}
+  ggsummarystats(
+  melt(Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v') %>% drop_na() %>%     dplyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "INTEREST"),
+  x = "INTEREST", y = "value",
+  ggfunc = ggboxplot, palette="npg", add="mean", color="INTEREST",
+  summaries = c("n", "median", "iqr", "mean"),
+  digits = 3,
+  table.font.size = 5,
+  facet.by = "v"
+)
+```

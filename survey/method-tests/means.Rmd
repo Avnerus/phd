@@ -1,0 +1,19 @@
+---
+title: "means"
+author: "Avner Peled"
+date: "9/28/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Aggregate table
+```{r}
+aggregate(
+  value ~ INTEREST,
+  data = melt(Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v') %>% drop_na() %>%     dplyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "INTEREST"),
+  mean
+)
+```

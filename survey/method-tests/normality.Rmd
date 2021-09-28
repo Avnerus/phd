@@ -1,0 +1,22 @@
+---
+title: "normality"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Required libraries
+```{r}
+library("ggpubr")
+```
+
+# Age distribution
+```{r}
+ggdensity(Telerobot_ages$Q_AGE, fill = "lightgray")
+```
+# NARS
+```{r}
+ggdensity(Telerobot_ages$Q_ROBOT_NARS, fill = "lightgray")
+```
