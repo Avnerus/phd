@@ -37,7 +37,15 @@ COLUMN_DICTIONARY <-
     Q_TELEROBOT_IDENT_G_6 = "Same religion",
     Q_TELEROBOT_IDENT_G_9 = "Bring additional objects",
     Q_TELEROBOT_IDENT_G_10 = "Would not reveal myself",
-    Q_TELEROBOT_IDENT_G_11 = "Be someone else"
+    Q_TELEROBOT_IDENT_G_11 = "Be someone else",
+    IDENT_1_DIFF = "Same nationality",
+    IDENT_2_DIFF = "Same age",
+    IDENT_3_DIFF = "Same gender",
+    IDENT_4_DIFF = "Same voice",
+    IDENT_5_DIFF = "Same religion",
+    IDENT_6_DIFF = "Bring additional objects",
+    IDENT_7_DIFF = "Would not reveal myself",
+    IDENT_8_DIFF = "Be someone else"
 )
 ```
 
@@ -194,7 +202,7 @@ facet_wrap(~ v,
 df <- melt(
   Telerobot_ages %>% select(matches("Q_TELEROBOT_IDENT_"), 'ResponseId','v') %>%    
   filter(if_any(starts_with("Q_TELEROBOT_IDENT_G"), ~ . == 1)) %>%
-  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_")),replace_na, 0)# %>%
+  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_")),replace_na, 0)
  , id=c('ResponseId','v'),variable.name = "IDENT"
 ) %>%
   group_by(v,IDENT) %>%
@@ -212,7 +220,38 @@ df <- melt(
  )
 
 ```
+### Means of individual difference between normal and outgruop
+```{r, fig.width=8,fig.asp=0.5}
+df <- melt(
+  Telerobot_ages %>%  
+  filter(if_any(starts_with("Q_TELEROBOT_IDENT_G"), ~ . == 1)) %>%
+  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_")),replace_na, 0) %>%
+  mutate(
+    IDENT_1_DIFF = Q_TELEROBOT_IDENT_G_1 - Q_TELEROBOT_IDENT_1,
+    IDENT_2_DIFF = Q_TELEROBOT_IDENT_G_2 - Q_TELEROBOT_IDENT_2,
+    IDENT_3_DIFF = Q_TELEROBOT_IDENT_G_3 - Q_TELEROBOT_IDENT_3,
+    IDENT_4_DIFF = Q_TELEROBOT_IDENT_G_4 - Q_TELEROBOT_IDENT_4,
+    IDENT_5_DIFF = Q_TELEROBOT_IDENT_G_6 - Q_TELEROBOT_IDENT_5,
+    IDENT_6_DIFF = Q_TELEROBOT_IDENT_G_9 - Q_TELEROBOT_IDENT_6,
+    IDENT_7_DIFF = Q_TELEROBOT_IDENT_G_10 - Q_TELEROBOT_IDENT_7,
+    IDENT_8_DIFF = Q_TELEROBOT_IDENT_G_11 - Q_TELEROBOT_IDENT_8
+  ) %>% 
+  select(matches("_DIFF"), 'ResponseId','v')  %>% plyr::rename(COLUMN_DICTIONARY,warn_missing = FALSE)
+ , id=c('ResponseId','v'),variable.name = "IDENT_DIFF"
+) %>%
+group_by(v,IDENT_DIFF) %>%
+summarise(across(c("value"), list(mean = ~mean(.x), n = ~ n())))
 
+ggplot(df, aes(x=reorder(IDENT_DIFF, -value_mean),y=value_mean,color=IDENT_DIFF)) + 
+ylab("Mean individual difference between outgroup and normal scenario") +
+xlab("Robot identity") +
+geom_bar(stat="identity") +
+coord_flip() + 
+facet_wrap(~ v, 
+  labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
+)
+
+```
 
 ### Q: How did participants rate the robot's features? 
 
