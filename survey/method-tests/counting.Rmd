@@ -18,33 +18,33 @@ knitr::opts_chunk$set(echo = TRUE)
 How many acccessed the survey from each side?
 
 ```{r}
- Telerobot_sorted %>% count(v)
+ Telerobot_ages %>% count(v)
 ```
 
 Male/female?
 ```{r}
- Telerobot_decoded %>% count(Q_DEMOGRAPHICS_2) 
+ Telerobot_ages %>% count(Q_DEMOGRAPHICS_2) 
 ```
 
 How many Finished the survey from each side?
 
 
 ```{r}
- Telerobot_sorted %>% count(v, Finished)
+ Telerobot_ages %>% count(v, Finished)
 ```
   How many on each side expressed willingness to meet the outgroup through a telerobot?
   According to the survey flow, Q_TELEROBOT_APP_G (robot apperance) is asked only if meeting the outgroup using a telerobot is higher than "Probably not"
   
 ```{r}
-Telerobot_sorted %>% 
+Telerobot_ages %>% 
   mutate(OUTGROUP_TELEROBOTS = !is.na(Q_TELEROBOT_APP_G)) %>%
   count(v, OUTGROUP_TELEROBOTS) %>%
   group_by(v) %>%
   mutate(freq = n / sum(n)) %>%
-  ggplot(aes(x=OUTGROUP_TELEROBOTS, y=freq, color=v)) + 
+  ggplot(aes(x=OUTGROUP_TELEROBOTS, y=n, color=v)) + 
   geom_bar(stat="identity") + 
  # coord_polar("y", start=0) +
-  facet_wrap(~ v) 
+  facet_wrap(~ v) +   geom_text(aes(label = n, vjust = 1))
 ``` 
   Participated in an organized encounter?
   

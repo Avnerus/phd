@@ -11,14 +11,33 @@ library(dplyr)
 library(ggpubr)
 library(tidyr)
 library(reshape2)
+library(grid)
+library(purrr)
 ```
 ```{r}
 COLUMN_DICTIONARY <-
   c(
-    Telerobot = "Q_GROUP_INTEREST_1",
-    Telepuppet = "Q_GROUP_INTEREST_2",
-    F2F = "Q_GROUP_INTEREST_3",
-    Video = "Q_GROUP_INTEREST_4"
+    Q_GROUP_INTEREST_1 = "Telerobot",
+    Q_GROUP_INTEREST_2 = "Telepuppet",
+    Q_GROUP_INTEREST_3 = "F2F",
+    Q_GROUP_INTEREST_4 = "Video",
+    Q_SHOW_INTEREST = "Puppet show",
+    Q_TELEROBOT_IDENT_1 = "Same nationality",
+    Q_TELEROBOT_IDENT_2 = "Same age",
+    Q_TELEROBOT_IDENT_3 = "Same gender",
+    Q_TELEROBOT_IDENT_4 = "Same voice",
+    Q_TELEROBOT_IDENT_5 = "Same religion",
+    Q_TELEROBOT_IDENT_6 = "Bring additional objects",
+    Q_TELEROBOT_IDENT_7 = "Would not reveal myself",
+    Q_TELEROBOT_IDENT_8 = "Be someone else",
+    Q_TELEROBOT_IDENT_G_1 = "Same nationality",
+    Q_TELEROBOT_IDENT_G_2 = "Same age",
+    Q_TELEROBOT_IDENT_G_3 = "Same gender",
+    Q_TELEROBOT_IDENT_G_4 = "Same voice",
+    Q_TELEROBOT_IDENT_G_6 = "Same religion",
+    Q_TELEROBOT_IDENT_G_9 = "Bring additional objects",
+    Q_TELEROBOT_IDENT_G_10 = "Would not reveal myself",
+    Q_TELEROBOT_IDENT_G_11 = "Be someone else"
 )
 ```
 
@@ -104,26 +123,119 @@ The following data is available for the survey participants.
 
 # Research questions
 
+## Respondents demographics
+
 ## General attitude toward robots
+
+### Q: How are the robot feeling thermometers distributed?
+```{r}
+ggdensity(Telerobot_ages %>% select(Q_ROBOTS_SLIDER_4,v),x = "Q_ROBOTS_SLIDER_4", fill = "lightblue",facet.by = "v")
+```
+## And NARS?
+```{r}
+ggdensity(Telerobot_ages %>% select(Q_ROBOT_NARS,v) %>% mutate(Q_ROBOT_NARS_INV = Q_ROBOT_NARS * -1) ,x = "Q_ROBOT_NARS_INV", fill = "lightgreen",facet.by = "v")
+```
+
+## Telerobot preference
+
+### Q: How did participants prefer the robot identity? 
+From those that selected anything.
+```{r, fig.width=10}
+df <- melt(
+  Telerobot_ages %>% select(matches("^Q_TELEROBOT_IDENT_\\d$"), 'ResponseId','v') %>%    
+  filter(if_any(starts_with("Q_TELEROBOT_IDENT"), ~ . == 1)) %>%
+  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT")),replace_na, 0) %>%
+  plyr::rename(COLUMN_DICTIONARY)
+ , id=c('ResponseId','v'),variable.name = "IDENT"
+) %>%
+  group_by(v,IDENT) %>%
+  summarise(across(c("value"), list(freq = ~sum(.x)/n() * 100, n = ~ n())))
+
+  ggplot(df, aes(x=reorder(IDENT, -value_freq),y=value_freq,color=IDENT)) + 
+  ylab("Percentage") +
+  xlab("Robot identity") +
+  geom_bar(stat="identity") +
+  coord_flip() + 
+  facet_wrap(~ v, labeller = as_labeller(~map(.x,function(group) paste0(group, " (n = ",(df %>% filter(v == group))$value_n[1] ,")"))))
+ 
+```
+### And when meeting the outgroup?
+```{r, fig.width=10}
+df <- melt(
+  Telerobot_ages %>% select(matches("Q_TELEROBOT_IDENT_G"), 'ResponseId','v') %>%    
+  filter(if_any(starts_with("Q_TELEROBOT_IDENT_G"), ~ . == 1)) %>%
+  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_G")),replace_na, 0) %>%
+  plyr::rename(COLUMN_DICTIONARY)
+ , id=c('ResponseId','v'),variable.name = "IDENT"
+) %>%
+  group_by(v,IDENT) %>%
+  summarise(across(c("value"), list(freq = ~sum(.x)/n() * 100, n = ~ n())))
+
+ggplot(df, aes(x=reorder(IDENT, -value_freq),y=value_freq,color=IDENT)) +
+ylab("Percentage") +
+xlab("Robot identity") +
+geom_bar(stat="identity") +
+coord_flip() +
+facet_wrap(~ v, labeller = as_labeller(~map(.x,function(group) paste0(group, " (n = ",(df %>% filter(v == group))$value_n[1] ,")"))))
+
+```
+
+
+
+### Q: How did participants rate the robot's features? 
+
 
 ## General attitude toward outgroup
 
 ## Interest in contact
 
-### Q: How willing are the groups to meat each other with the different scenarios?
+### Q: How the outgruop feeling thermometers distributed?
 ```{r}
- melt(Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v') %>% drop_na() %>%     dplyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "INTEREST") %>% group_by(INTEREST) %>%
-  get_summary_stats(value)
+ggdensity(Telerobot_ages %>% select(Q_GROUP_SLIDER_1,v),x = "Q_GROUP_SLIDER_1", fill = "lightgray",facet.by = "v")
 ```
+### Q: How willing are the groups to meat each other with the different scenarios?
 
-```{r}
+```{r, fig.width=10,fig.asp=0.5}
   ggsummarystats(
-  melt(Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v') %>% drop_na() %>%     dplyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "INTEREST"),
+  melt(Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v') %>% drop_na() %>%     plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "INTEREST"),
   x = "INTEREST", y = "value",
-  ggfunc = ggboxplot, palette="npg", add="mean", color="INTEREST",
-  summaries = c("n", "median", "iqr", "mean"),
+  ggfunc = ggboxplot, palette="npg", add="jitter", color="INTEREST",
+  summaries = c("n", "median", "mean"),
   digits = 3,
-  table.font.size = 5,
-  facet.by = "v"
+  table.font.size = 3,
+  facet.by = "v",
 )
 ```
+
+
+## Potential of telepuppets
+
+### Q: What is the level of interest in performing a puppet show? How do these compare with other interests
+```{r, fig.width=10,fig.asp=0.5}
+  ggsummarystats(
+  melt(Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'Q_SHOW_INTEREST', 'ResponseId','v') %>% drop_na() %>%     plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "INTEREST"),
+  x = "INTEREST", y = "value",
+  ggfunc = ggboxplot, palette="npg", add="jitter", color="INTEREST",
+  summaries = c("n", "median", "mean"),
+  digits = 3,
+  table.font.size = 3,
+  facet.by = "v",
+)
+```
+
+Generally there was
+Since only 27 Palestinians made it to this stage, it might be best to investigate individual stories.
+
+### Q: How were answers to the puppet show relative to average interest to meeet?
+
+
+```{r}
+Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v', 'Q_SHOW_INTEREST') %>% drop_na() %>%     
+mutate(Q_GROUP_INTEREST_AVG = rowMeans(select(.,starts_with("Q_GROUP_INTEREST")), na.rm = TRUE)) %>%
+mutate(DIFF = Q_SHOW_INTEREST - Q_GROUP_INTEREST_AVG) %>%
+  group_by(v) %>%
+  get_summary_stats(DIFF)
+```
+There was generally less interest in the puppet show
+
+

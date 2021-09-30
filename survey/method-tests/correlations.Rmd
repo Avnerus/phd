@@ -118,3 +118,17 @@ Telerobot_ages %>%
   mutate_at(corr_vars, as.numeric) %>%
   grouped_ggcorrmat(cor.vars = corr_vars, cor.vars.names = names, grouping.var = "v")
 ```
+
+
+```{r,fig.width=8,fig.asp=0.5}
+ggscatter(
+  Telerobot_ages %>%
+  select(starts_with("Q_GROUP_INTEREST"),Q_SHOW_INTEREST,Q_GROUP_SLIDER_1,v) %>% drop_na() %>%
+  mutate(Q_GROUP_INTEREST_AVG = rowMeans(select(.,starts_with("Q_GROUP_INTEREST")), na.rm = TRUE)),
+  x = "Q_GROUP_INTEREST_AVG",
+  y = "Q_SHOW_INTEREST",
+  add = "reg.line", conf.int = TRUE,
+  cor.coef = TRUE, cor.method = "pearson",
+  facet.by = "v"
+) 
+```

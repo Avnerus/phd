@@ -17,3 +17,10 @@ aggregate(
   mean
 )
 ```
+
+## Summary stats
+```{r}
+ melt(Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v') %>% drop_na() %>%     dplyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "INTEREST") %>% group_by(INTEREST) %>%
+  get_summary_stats(value)
+```
+```
