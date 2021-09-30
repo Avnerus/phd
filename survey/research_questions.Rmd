@@ -42,6 +42,11 @@ COLUMN_DICTIONARY <-
 ```
 
 
+```{r}
+paste0(COLUMN_DICTIONARY["Q_TELEROBOT_IDENT_G_10"])
+
+```
+
 # Data outline
 
 The following data is available for the survey participants.
@@ -156,7 +161,9 @@ df <- melt(
   xlab("Robot identity") +
   geom_bar(stat="identity") +
   coord_flip() + 
-  facet_wrap(~ v, labeller = as_labeller(~map(.x,function(group) paste0(group, " (n = ",(df %>% filter(v == group))$value_n[1] ,")"))))
+  facet_wrap(~ v, 
+    labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
+  )
  
 ```
 ### And when meeting the outgroup?
@@ -176,10 +183,35 @@ ylab("Percentage") +
 xlab("Robot identity") +
 geom_bar(stat="identity") +
 coord_flip() +
-facet_wrap(~ v, labeller = as_labeller(~map(.x,function(group) paste0(group, " (n = ",(df %>% filter(v == group))$value_n[1] ,")"))))
+facet_wrap(~ v, 
+    labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
+)
 
 ```
+### Comparision of means between meeting and normal
 
+```{r, fig.width=10}
+df <- melt(
+  Telerobot_ages %>% select(matches("Q_TELEROBOT_IDENT_"), 'ResponseId','v') %>%    
+  filter(if_any(starts_with("Q_TELEROBOT_IDENT_G"), ~ . == 1)) %>%
+  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_")),replace_na, 0)# %>%
+ , id=c('ResponseId','v'),variable.name = "IDENT"
+) %>%
+  group_by(v,IDENT) %>%
+  summarise(across(c("value"), list(freq = ~sum(.x)/n() * 100, n = ~ n()))) %>%
+  mutate(type = if_else(grepl("Q_TELEROBOT_IDENT_G", IDENT),"Outgroup","Normal")) %>%
+  mutate(across(IDENT, ~ unlist(map(.x,~ COLUMN_DICTIONARY[toString(.x)]))))
+
+ ggplot(df, aes(x=reorder(IDENT, -value_freq),y=value_freq,fill=type)) +
+ ylab("Percentage") +
+ xlab("Robot identity") +
+ geom_bar(position="dodge", stat="identity") +
+ coord_flip() +
+ facet_wrap(~ v,
+     labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
+ )
+
+```
 
 
 ### Q: How did participants rate the robot's features? 
