@@ -45,7 +45,34 @@ COLUMN_DICTIONARY <-
     IDENT_5_DIFF = "Same religion",
     IDENT_6_DIFF = "Bring additional objects",
     IDENT_7_DIFF = "Would not reveal myself",
-    IDENT_8_DIFF = "Be someone else"
+    IDENT_8_DIFF = "Be someone else",
+    Q_TELEROBOT_FEAT_1 = "Translate speech",
+    Q_TELEROBOT_FEAT_2 = "Travel around",
+    Q_TELEROBOT_FEAT_3 = "Hand gestures",
+    Q_TELEROBOT_FEAT_4 = "Touch feedback",
+    Q_TELEROBOT_FEAT_5 = "Show emotions",
+    Q_TELEROBOT_FEAT_6 = "Play online content",
+    Q_TELEROBOT_FEAT_7 = "Show personal content",
+    Q_TELEROBOT_FEAT_8 = "Play games",
+    Q_TELEROBOT_FEAT_9 = "Suggest topics",
+    Q_TELEROBOT_FEAT_G_1 = "Translate speech",
+    Q_TELEROBOT_FEAT_G_2 = "Travel around",
+    Q_TELEROBOT_FEAT_G_3 = "Hand gestures",
+    Q_TELEROBOT_FEAT_G_4 = "Touch feedback",
+    Q_TELEROBOT_FEAT_G_5 = "Show emotions",
+    Q_TELEROBOT_FEAT_G_6 = "Play online content",
+    Q_TELEROBOT_FEAT_G_7 = "Show personal content",
+    Q_TELEROBOT_FEAT_G_8 = "Play games",
+    Q_TELEROBOT_FEAT_G_9 = "Suggest topics",
+    FEAT_1_DIFF = "Translate speech",
+    FEAT_2_DIFF = "Travel around",
+    FEAT_3_DIFF = "Hand gestures",
+    FEAT_4_DIFF = "Touch feedback",
+    FEAT_5_DIFF = "Show emotions",
+    FEAT_6_DIFF = "Play online content",
+    FEAT_7_DIFF = "Show personal content",
+    FEAT_8_DIFF = "Play games",
+    FEAT_9_DIFF = "Suggest topics"
 )
 ```
 
@@ -151,9 +178,30 @@ ggdensity(Telerobot_ages %>% select(Q_ROBOT_NARS,v) %>% mutate(Q_ROBOT_NARS_INV 
 
 ## Telerobot preference
 
+### Robot appearance style
+```{r, fig.width=10,fig.asp=0.5}
+df <-
+  Telerobot_ages %>% select("Q_TELEROBOT_APP", 'ResponseId','v') %>%    
+  drop_na() %>%
+  mutate(Appearance=as.factor(Q_TELEROBOT_APP)) %>%
+  group_by(v,Appearance) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n))
+
+ggplot(df, aes(x="", y="freq",fill=Appearance)) +
+ylab("Percentage") +
+xlab("Robot appearance") +
+geom_bar(stat="identity") +
+coord_polar("y", start=0) +
+facet_wrap(~ v)
+ #   labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
+ # )
+
+```
+
 ### Q: How did participants prefer the robot identity? 
 From those that selected anything.
-```{r, fig.width=10}
+```{r, fig.width=10,fig.asp=0.5}
 df <- melt(
   Telerobot_ages %>% select(matches("^Q_TELEROBOT_IDENT_\\d$"), 'ResponseId','v') %>%    
   filter(if_any(starts_with("Q_TELEROBOT_IDENT"), ~ . == 1)) %>%
@@ -164,7 +212,7 @@ df <- melt(
   group_by(v,IDENT) %>%
   summarise(across(c("value"), list(freq = ~sum(.x)/n() * 100, n = ~ n())))
 
-  ggplot(df, aes(x=reorder(IDENT, -value_freq),y=value_freq,color=IDENT)) + 
+  ggplot(df, aes(x=reorder(IDENT, -value_freq),y=value_freq,fill=IDENT)) + 
   ylab("Percentage") +
   xlab("Robot identity") +
   geom_bar(stat="identity") +
@@ -218,10 +266,9 @@ df <- melt(
  facet_wrap(~ v,
      labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
  )
-
 ```
 ### Means of individual difference between normal and outgruop
-```{r, fig.width=8,fig.asp=0.5}
+```{r, fig.width=10,fig.asp=0.5}
 df <- melt(
   Telerobot_ages %>%  
   filter(if_any(starts_with("Q_TELEROBOT_IDENT_G"), ~ . == 1)) %>%
@@ -242,7 +289,7 @@ df <- melt(
 group_by(v,IDENT_DIFF) %>%
 summarise(across(c("value"), list(mean = ~mean(.x), n = ~ n())))
 
-ggplot(df, aes(x=reorder(IDENT_DIFF, -value_mean),y=value_mean,color=IDENT_DIFF)) + 
+ggplot(df, aes(x=reorder(IDENT_DIFF, -value_mean),y=value_mean,fill=IDENT_DIFF)) + 
 ylab("Mean individual difference between outgroup and normal scenario") +
 xlab("Robot identity") +
 geom_bar(stat="identity") +
@@ -253,8 +300,102 @@ facet_wrap(~ v,
 
 ```
 
-### Q: How did participants rate the robot's features? 
+### Q: How did participants rate the robot's feature importance? 
+```{r, fig.width=10,fig.asp=0.5}
+df <- melt(
+  Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_\\d$"), 'ResponseId','v') %>%    
+  drop_na() %>%
+  plyr::rename(COLUMN_DICTIONARY,warn_missing = FALSE)
+ , id=c('ResponseId','v'),variable.name = "FEAT"
+) %>%
+  group_by(v,FEAT) %>%
+  summarise(across(c("value"), list(mean = ~mean(.x), n = ~ n())))
 
+  ggplot(df, aes(x=reorder(FEAT, -value_mean),y=value_mean,fill=FEAT)) + 
+  ylab("Mean rank") +
+  xlab("Robot feature") +
+  geom_bar(stat="identity") +
+  coord_flip() + 
+  facet_wrap(~ v, 
+    labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
+  )
+ 
+```
+
+## Comparison between normnal and outgroup meeting
+```{r, fig.width=10}
+df <- melt(
+  Telerobot_ages %>% select(matches("Q_TELEROBOT_FEAT_"), 'ResponseId','v') %>%    
+  drop_na()
+ , id=c('ResponseId','v'),variable.name = "FEAT"
+) %>%
+  group_by(v,FEAT) %>%
+  summarise(across(c("value"), list(mean = ~mean(.x), n = ~ n()))) %>%
+  mutate(type = if_else(grepl("Q_TELEROBOT_FEAT_G", FEAT),"Outgroup","Normal")) %>%
+  mutate(across(FEAT, ~ unlist(map(.x,~ COLUMN_DICTIONARY[toString(.x)]))))
+
+ ggplot(df, aes(x=reorder(FEAT, -value_mean),y=value_mean,fill=type)) +
+ ylab("Mean") +
+ xlab("Robot feature") +
+ geom_bar(position="dodge", stat="identity") +
+ coord_flip() +
+ facet_wrap(~ v,
+     labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
+ )
+```
+### And individual change
+```{r, fig.width=10,fig.asp=0.5}
+df <- melt(
+  Telerobot_ages %>% select(matches("Q_TELEROBOT_FEAT_"), 'ResponseId','v') %>%    
+  drop_na() %>%
+  mutate(
+    FEAT_1_DIFF = Q_TELEROBOT_FEAT_G_1 - Q_TELEROBOT_FEAT_1,
+    FEAT_2_DIFF = Q_TELEROBOT_FEAT_G_2 - Q_TELEROBOT_FEAT_2,
+    FEAT_3_DIFF = Q_TELEROBOT_FEAT_G_3 - Q_TELEROBOT_FEAT_3,
+    FEAT_4_DIFF = Q_TELEROBOT_FEAT_G_4 - Q_TELEROBOT_FEAT_4,
+    FEAT_5_DIFF = Q_TELEROBOT_FEAT_G_5 - Q_TELEROBOT_FEAT_5,
+    FEAT_6_DIFF = Q_TELEROBOT_FEAT_G_6 - Q_TELEROBOT_FEAT_6,
+    FEAT_7_DIFF = Q_TELEROBOT_FEAT_G_7 - Q_TELEROBOT_FEAT_7,
+    FEAT_8_DIFF = Q_TELEROBOT_FEAT_G_8 - Q_TELEROBOT_FEAT_8,
+    FEAT_9_DIFF = Q_TELEROBOT_FEAT_G_9 - Q_TELEROBOT_FEAT_9
+  ) %>% 
+  select(matches("_DIFF"), 'ResponseId','v')  %>% plyr::rename(COLUMN_DICTIONARY,warn_missing = FALSE)
+ , id=c('ResponseId','v'),variable.name = "FEAT_DIFF"
+) %>%
+group_by(v,FEAT_DIFF) %>%
+summarise(across(c("value"), list(mean = ~mean(.x), n = ~ n())))
+
+ggplot(df, aes(x=reorder(FEAT_DIFF, -value_mean),y=value_mean,fill=FEAT_DIFF)) + 
+ylab("Mean individual difference between outgroup and normal scenario") +
+xlab("Robot features") +
+geom_bar(stat="identity") +
+coord_flip() + 
+facet_wrap(~ v, 
+  labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
+)
+```
+
+### Visibility preferences
+```{r, fig.width=10,fig.asp=0.5}
+df <- melt(
+  Telerobot_ages %>% select(matches("^Q_TELEROBOT_IDENT_\\d$"), 'ResponseId','v') %>%    
+  filter(if_any(starts_with("Q_TELEROBOT_IDENT"), ~ . == 1)) %>%
+  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT")),replace_na, 0) %>%
+  plyr::rename(COLUMN_DICTIONARY)
+ , id=c('ResponseId','v'),variable.name = "IDENT"
+) %>%
+  group_by(v,IDENT) %>%
+  summarise(across(c("value"), list(freq = ~sum(.x)/n() * 100, n = ~ n())))
+
+  ggplot(df, aes(x=reorder(IDENT, -value_freq),y=value_freq,fill=IDENT)) + 
+  ylab("Percentage") +
+  xlab("Robot identity") +
+  geom_bar(stat="identity") +
+  coord_flip() + 
+  facet_wrap(~ v, 
+    labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
+  )
+```  
 
 ## General attitude toward outgroup
 
