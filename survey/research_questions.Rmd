@@ -13,6 +13,8 @@ library(tidyr)
 library(reshape2)
 library(grid)
 library(purrr)
+library(haven)
+library(rstatix)
 ```
 ```{r}
 COLUMN_DICTIONARY <-
@@ -164,6 +166,13 @@ The following data is available for the survey participants.
 # Research questions
 
 ## Respondents demographics
+### Q: Was there an age difference?
+```{r}
+Telerobot_ages %>% 
+#dplyr::filter(Finished == 1) %>%
+dplyr::filter(!is.na(Q_ROBOT_STATEMENTS_1)) %>%
+anova_test(Q_AGE ~ v)
+```
 
 ## General attitude toward robots
 
@@ -183,19 +192,50 @@ ggdensity(Telerobot_ages %>% select(Q_ROBOT_NARS,v) %>% mutate(Q_ROBOT_NARS_INV 
 df <-
   Telerobot_ages %>% select("Q_TELEROBOT_APP", 'ResponseId','v') %>%    
   drop_na() %>%
-  mutate(Appearance=as.factor(Q_TELEROBOT_APP)) %>%
+  mutate(Appearance=as_factor(Q_TELEROBOT_APP)) %>%
   group_by(v,Appearance) %>%
   summarise(n = n()) %>%
-  mutate(freq = n / sum(n))
+  mutate(freq = n / sum(n), total_n = sum(n))
 
-ggplot(df, aes(x="", y="freq",fill=Appearance)) +
+ggplot(df, aes(x="", y=freq,fill=Appearance)) +
 ylab("Percentage") +
 xlab("Robot appearance") +
 geom_bar(stat="identity") +
 coord_polar("y", start=0) +
-facet_wrap(~ v)
- #   labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
- # )
+facet_wrap(~ v,
+    labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$total_n[1] ,")")))
+)
+```
+### In outgroup scenario
+```{r, fig.width=10,fig.asp=0.5}
+df <-
+  Telerobot_ages %>% select("Q_TELEROBOT_APP_G", 'ResponseId','v') %>%    
+  drop_na() %>%
+  mutate(Appearance=as_factor(Q_TELEROBOT_APP_G)) %>%
+  group_by(v,Appearance) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n), total_n = sum(n))
+
+ggplot(df, aes(x="", y=freq,fill=Appearance)) +
+ylab("Percentage") +
+xlab("Robot appearance") +
+geom_bar(stat="identity") +
+coord_polar("y", start=0) +
+facet_wrap(~ v,
+    labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$total_n[1] ,")")))
+)
+```
+
+
+
+
+### Q: Do Palestinians want significantly more a machine appearance than Israelis?
+```{r}
+Telerobot_ages %>% 
+select("Q_TELEROBOT_APP", 'ResponseId','v','Q_DEMOGRAPHICS_2', 'Q_AGE') %>%
+drop_na() %>%
+mutate(APP_MACHINE = (as_factor(Q_TELEROBOT_APP) == 'A machine.')) %>%
+anova_test(APP_MACHINE ~ v * Q_AGE)
 
 ```
 

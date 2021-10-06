@@ -10,11 +10,18 @@ knitr::opts_chunk$set(echo = TRUE)
 # Required libraries
 ```{r}
 library("ggpubr")
+library("rstatix")
 ```
 
 # Age distribution
 ```{r}
-ggdensity(Telerobot_ages$Q_AGE, fill = "lightgray")
+Telerobot_ages %>% ggdensity("Q_AGE", fill = "lightgray", facet.by = 'v')
+```
+```{r}
+Telerobot_ages %>% 
+#dplyr::filter(Finished == 1) %>%
+dplyr::filter(!is.na(Q_ROBOT_STATEMENTS_1)) %>%
+anova_test(Q_AGE ~ v)
 ```
 # NARS
 ```{r}
