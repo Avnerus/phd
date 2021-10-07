@@ -197,37 +197,68 @@ df <-
   summarise(n = n()) %>%
   mutate(freq = n / sum(n), total_n = sum(n))
 
-ggplot(df, aes(x="", y=freq,fill=Appearance)) +
-ylab("Percentage") +
-xlab("Robot appearance") +
-geom_bar(stat="identity") +
-coord_polar("y", start=0) +
-facet_wrap(~ v,
-    labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$total_n[1] ,")")))
-)
+ ggbarplot(
+   df, 
+   y = "freq",
+   fill = "Appearance",
+   facet.by = "v",
+   panel.labs = list(v = c(
+     paste0("IL (n = ",(df %>% filter(v == 'IL'))$total_n[1] ,")"),
+     paste0("PS (n = ",(df %>% filter(v == 'PS'))$total_n[1] ,")")
+   )),
+   palette = get_palette("npg", 5)
+) + coord_polar("y", start=0) + 
+     theme(
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+      )
+
 ```
 ### In outgroup scenario
-```{r, fig.width=10,fig.asp=0.5}
+```{r, fig.width=10,fig.height=5}
 df <-
   Telerobot_ages %>% select("Q_TELEROBOT_APP_G", 'ResponseId','v') %>%    
   drop_na() %>%
   mutate(Appearance=as_factor(Q_TELEROBOT_APP_G)) %>%
   group_by(v,Appearance) %>%
   summarise(n = n()) %>%
-  mutate(freq = n / sum(n), total_n = sum(n))
+  mutate(freq = round(n / sum(n), digits = 2) * 100, total_n = sum(n),
+  lab.ypos=cumsum(freq) - 0.5*freq)
 
-ggplot(df, aes(x="", y=freq,fill=Appearance)) +
-ylab("Percentage") +
-xlab("Robot appearance") +
-geom_bar(stat="identity") +
-coord_polar("y", start=0) +
-facet_wrap(~ v,
-    labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$total_n[1] ,")")))
-)
+ ggbarplot(
+   df, 
+   y = "freq",
+   fill = "Appearance",
+   facet.by = "v",
+   panel.labs = list(v = c(
+     paste0("IL (n = ",(df %>% filter(v == 'IL'))$total_n[1] ,")"),
+     paste0("PS (n = ",(df %>% filter(v == 'PS'))$total_n[1] ,")")
+   )),
+   palette = get_palette("npg", 5)
+) + coord_polar("y", start=0) + 
+        theme(
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+      )
+
+# ggplot(df, aes(x="", y=freq,fill=Appearance)) +
+# ylab("Percentage") +
+# xlab("Robot appearance") +
+# geom_bar(stat="identity") +
+# #coord_polar("y", start=0) +
+# geom_text(aes(label = paste0(round(freq * 100),'%')), color = "white") +
+# facet_wrap(~ v,
+#     labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$total_n[1] ,")")))
+# )
 ```
-
-
-
 
 ### Q: Do Palestinians want significantly more a machine appearance than Israelis?
 ```{r}
