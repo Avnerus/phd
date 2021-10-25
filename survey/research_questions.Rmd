@@ -245,14 +245,24 @@ df <-
 ```
 
 ### Q: Do Palestinians want significantly more a machine appearance than Israelis?
+
+Need to do:CHI-Square
+Can check AGE covariance with binary logistics
+https://statsandr.com/blog/chi-square-test-of-independence-in-r/
+
 ```{r}
 Telerobot_ages %>% 
-select("Q_TELEROBOT_APP", 'ResponseId','v','Q_DEMOGRAPHICS_2', 'Q_AGE') %>%
+select("Q_TELEROBOT_APP_G", 'ResponseId','v','Q_DEMOGRAPHICS_2', 'Q_AGE') %>%
 drop_na() %>%
-mutate(APP_MACHINE = (as_factor(Q_TELEROBOT_APP) == 'A machine.')) %>%
-anova_test(APP_MACHINE ~ v * Q_AGE)
-
+mutate(APP_MACHINE = ifelse(as_factor(Q_TELEROBOT_APP_G) == 'A machine.', "Machine", "Not machine")) %>%
+group_by(v, APP_MACHINE) %>%
+summarize(n = n()) %>%
+spread(APP_MACHINE,n) %>%
+ungroup %>%
+dplyr::select(-v) %>%
+chisq.test()
 ```
+### A: Chi-Sq is significant only in the outgroup scenario
 
 ### Comparision of frequendcies between outgruop meeting and normal
 
