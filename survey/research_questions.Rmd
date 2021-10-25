@@ -78,12 +78,6 @@ COLUMN_DICTIONARY <-
 )
 ```
 
-
-```{r}
-paste0(COLUMN_DICTIONARY["Q_TELEROBOT_IDENT_G_10"])
-
-```
-
 # Data outline
 
 The following data is available for the survey participants.
@@ -248,16 +242,6 @@ df <-
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
       )
-
-# ggplot(df, aes(x="", y=freq,fill=Appearance)) +
-# ylab("Percentage") +
-# xlab("Robot appearance") +
-# geom_bar(stat="identity") +
-# #coord_polar("y", start=0) +
-# geom_text(aes(label = paste0(round(freq * 100),'%')), color = "white") +
-# facet_wrap(~ v,
-#     labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$total_n[1] ,")")))
-# )
 ```
 
 ### Q: Do Palestinians want significantly more a machine appearance than Israelis?
@@ -269,6 +253,33 @@ mutate(APP_MACHINE = (as_factor(Q_TELEROBOT_APP) == 'A machine.')) %>%
 anova_test(APP_MACHINE ~ v * Q_AGE)
 
 ```
+
+### Comparision of frequendcies between outgruop meeting and normal
+
+```{r, fig.width=10}
+
+df <-
+  melt(
+      Telerobot_ages %>% 
+      mutate(Normal=as_factor(Q_TELEROBOT_APP),Outgroup=as_factor(Q_TELEROBOT_APP_G)) %>%
+      select("Normal", "Outgroup", 'ResponseId','v') %>%    
+      drop_na(),
+      id=c('ResponseId','v'),variable.name = "Appearance"
+  ) %>%
+  group_by(v,Appearance,value) %>%
+  summarise(n = n()) %>%
+  mutate(freq = round(n / sum(n), digits = 2) * 100, total_n = sum(n))
+
+ ggplot(df, aes(x=reorder(value, freq),y=freq,fill=Appearance)) +
+ ylab("Frequency") +
+ xlab("Robot appearance") +
+ geom_bar(position="dodge", stat="identity") +
+ coord_flip() +
+ facet_wrap(~ v,
+     labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$total_n[1] ,")")))
+ )
+```
+
 
 ### Q: How did participants prefer the robot identity? 
 From those that selected anything.
@@ -305,7 +316,7 @@ df <- melt(
   group_by(v,IDENT) %>%
   summarise(across(c("value"), list(freq = ~sum(.x)/n() * 100, n = ~ n())))
 
-ggplot(df, aes(x=reorder(IDENT, -value_freq),y=value_freq,color=IDENT)) +
+ggplot(df, aes(x=reorder(IDENT, -value_freq),y=value_freq,fill=IDENT)) +
 ylab("Percentage") +
 xlab("Robot identity") +
 geom_bar(stat="identity") +
