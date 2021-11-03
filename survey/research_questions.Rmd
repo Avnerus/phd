@@ -252,7 +252,7 @@ https://statsandr.com/blog/chi-square-test-of-independence-in-r/
 
 ```{r}
 Telerobot_ages %>% 
-select("Q_TELEROBOT_APP_G", 'ResponseId','v','Q_DEMOGRAPHICS_2', 'Q_AGE') %>%
+select("Q_TELEROBOT_APP_G", 'ResponseId','v') %>%
 drop_na() %>%
 mutate(APP_MACHINE = ifelse(as_factor(Q_TELEROBOT_APP_G) == 'A machine.', "Machine", "Not machine")) %>%
 group_by(v, APP_MACHINE) %>%
@@ -263,6 +263,16 @@ dplyr::select(-v) %>%
 chisq.test()
 ```
 ### A: Chi-Sq is significant only in the outgroup scenario
+```{r}
+Telerobot_ages %>% 
+mutate(v = as_factor(v)) %>%
+select("Q_TELEROBOT_APP_G", 'ResponseId','v','Q_AGE', 'Q_DEMOGRAPHICS_2') %>%
+drop_na() %>%
+glm(v ~ Q_AGE + Q_DEMOGRAPHICS_2, ., family=binomial) %>% 
+summary
+```
+### Q: Are those people's nationality predicted by age or gender?
+
 
 ### Comparision of frequendcies between outgruop meeting and normal
 
@@ -289,8 +299,6 @@ df <-
      labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$total_n[1] ,")")))
  )
 ```
-
-
 ### Q: How did participants prefer the robot identity? 
 From those that selected anything.
 ```{r, fig.width=10,fig.asp=0.5}
@@ -469,25 +477,92 @@ facet_wrap(~ v,
 
 ### Visibility preferences
 ```{r, fig.width=10,fig.asp=0.5}
-df <- melt(
-  Telerobot_ages %>% select(matches("^Q_TELEROBOT_IDENT_\\d$"), 'ResponseId','v') %>%    
-  filter(if_any(starts_with("Q_TELEROBOT_IDENT"), ~ . == 1)) %>%
-  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT")),replace_na, 0) %>%
-  plyr::rename(COLUMN_DICTIONARY)
- , id=c('ResponseId','v'),variable.name = "IDENT"
-) %>%
-  group_by(v,IDENT) %>%
-  summarise(across(c("value"), list(freq = ~sum(.x)/n() * 100, n = ~ n())))
+df <-
+  Telerobot_ages %>% select("Q_TELEROBOT_DISP", 'ResponseId','v') %>%    
+  drop_na() %>%
+  mutate(Visibility=as_factor(Q_TELEROBOT_DISP)) %>%
+  group_by(v,Visibility) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n), total_n = sum(n))
 
-  ggplot(df, aes(x=reorder(IDENT, -value_freq),y=value_freq,fill=IDENT)) + 
-  ylab("Percentage") +
-  xlab("Robot identity") +
-  geom_bar(stat="identity") +
-  coord_flip() + 
-  facet_wrap(~ v, 
-    labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
-  )
+df
+
+ ggbarplot(
+   df, 
+   y = "freq",
+   fill = "Visibility",
+   facet.by = "v",
+   panel.labs = list(v = c(
+     paste0("IL (n = ",(df %>% filter(v == 'IL'))$total_n[1] ,")"),
+     paste0("PS (n = ",(df %>% filter(v == 'PS'))$total_n[1] ,")")
+   )),
+   palette = get_palette("npg", 5)
+) + coord_polar("y", start=0) + 
+     theme(
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+      )
 ```  
+
+### In outgroup scenario
+```{r, fig.width=10,fig.asp=0.5}
+df <-
+  Telerobot_ages %>% select("Q_TELEROBOT_DISP_G", 'ResponseId','v') %>%    
+  drop_na() %>%
+  mutate(Visibility=as_factor(Q_TELEROBOT_DISP_G)) %>%
+  group_by(v,Visibility) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n), total_n = sum(n))
+
+ ggbarplot(
+   df, 
+   y = "freq",
+   fill = "Visibility",
+   facet.by = "v",
+   panel.labs = list(v = c(
+     paste0("IL (n = ",(df %>% filter(v == 'IL'))$total_n[1] ,")"),
+     paste0("PS (n = ",(df %>% filter(v == 'PS'))$total_n[1] ,")")
+   )),
+   palette = get_palette("npg", 5)
+) + coord_polar("y", start=0) + 
+     theme(
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+      )
+```  
+### Comparion betwen same population
+```{r, fig.width=10}
+df <- melt(
+  Telerobot_ages %>% select(matches("Q_TELEROBOT_DISP"), 'ResponseId','v') %>%    
+  mutate(Q_TELEROBOT_DISP_G=as_factor(Q_TELEROBOT_DISP_G)) %>%
+  mutate(Q_TELEROBOT_DISP=as_factor(Q_TELEROBOT_DISP)) %>%
+  drop_na()
+ , id=c('ResponseId','v'),variable.name = "Visibility"
+) %>%
+  group_by(v,Visibility,value) %>%
+  summarise(n = n(), freq = sum(n)) %>%
+  mutate(freq = n / sum(n), total_n = sum(n)) %>%
+  mutate(type = if_else(grepl("Q_TELEROBOT_DISP_G", Visibility),"Outgroup","Normal"))
+
+df
+
+ ggplot(df, aes(x=reorder(value, -freq),y=freq,fill=type)) +
+ ylab("Frequency") +
+ xlab("Visibility") +
+ geom_bar(position="dodge", stat="identity") +
+ coord_flip() +
+ facet_wrap(~ v,
+     labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$total_n[1] ,")")))
+ )
+```
 
 ## General attitude toward outgroup
 
