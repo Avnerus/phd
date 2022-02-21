@@ -195,16 +195,45 @@ count(v)
 ### Q: Was there an age difference?
 ```{r}
 Telerobot_ages %>% 
-dplyr::filter(Finished == 1) %>%
-#dplyr::filter(!is.na(Q_ROBOT_STATEMENTS_1)) %>%
-anova_test(Q_AGE ~ v)
+#dplyr::filter(Finished == 1) %>%
+dplyr::filter(!is.na(Q_ROBOT_STATEMENTS_1)) %>%
+anova_test(Q_AGE ~ v,detailed = TRUE)
+
+Telerobot_ages %>% 
+#dplyr::filter(Finished == 1) %>%
+dplyr::filter(!is.na(Q_ROBOT_STATEMENTS_1)) %>%
+t_test(Q_AGE ~ v)
 ```
+
+### Q: What was the distribution of tech confidence?
+```{r}
+Telerobot_ages %>%
+select(v,Q_TECH_CONFIDENCE) %>%
+drop_na() %>%
+group_by(v) %>%
+summarize(mean_tech_conf = mean(Q_TECH_CONFIDENCE), sd_tech_conf = sd(Q_TECH_CONFIDENCE))
+
+
+ggdensity(
+  Telerobot_ages %>%
+  transmute(Q_TECH_CONFIDENCE = as.numeric(Q_TECH_CONFIDENCE),v) %>%
+  drop_na() 
+  ,x = "Q_TECH_CONFIDENCE", fill = "lightblue",facet.by = "v"
+)
+
+Telerobot_ages %>% 
+select(v,Q_TECH_CONFIDENCE, Q_DEMOGRAPHICS_2, Q_AGE) %>%
+drop_na() %>%
+anova_test(Q_TECH_CONFIDENCE ~ v + Q_AGE + Q_DEMOGRAPHICS_2, detailed=TRUE )
+```
+
 
 ## General attitude toward robots
 
 ### Q: How are the robot feeling thermometers distributed?
 ```{r}
 ggdensity(Telerobot_ages %>% select(Q_ROBOTS_SLIDER_4,v),x = "Q_ROBOTS_SLIDER_4", fill = "lightblue",facet.by = "v")
+
 ```
 ## And NARS?
 ```{r}
