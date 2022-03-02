@@ -230,15 +230,65 @@ anova_test(Q_TECH_CONFIDENCE ~ v + Q_AGE + Q_DEMOGRAPHICS_2, detailed=TRUE )
 
 ## General attitude toward robots
 
-### Q: How are the robot feeling thermometers distributed?
+### Q: How are the robot feeling thermometers?
 ```{r}
 ggdensity(Telerobot_ages %>% select(Q_ROBOTS_SLIDER_4,v),x = "Q_ROBOTS_SLIDER_4", fill = "lightblue",facet.by = "v")
 
+
+df <- Telerobot_ages %>% 
+select(Q_ROBOTS_SLIDER_4,v,Q_AGE, Q_DEMOGRAPHICS_2, Q_TECH_CONFIDENCE) %>% 
+filter(Q_DEMOGRAPHICS_2 <= 2) %>%
+mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
+drop_na()
+
+  
+anova_test(df, Q_ROBOTS_SLIDER_4 ~ v * Q_AGE * Q_DEMOGRAPHICS_2,detailed = TRUE)
+
+
+ggbarplot(
+   df, 
+   x = "Q_GENDER",
+   y = "Q_ROBOTS_SLIDER_4",
+   add="mean",
+  fill = "Q_GENDER",
+   facet.by = "v",
+  palette = get_palette("npg", 3)
+)
+
 ```
-## And NARS?
+### And NARS?
 ```{r}
 ggdensity(Telerobot_ages %>% select(Q_ROBOT_NARS,v) %>% mutate(Q_ROBOT_NARS_INV = Q_ROBOT_NARS * -1) ,x = "Q_ROBOT_NARS_INV", fill = "lightgreen",facet.by = "v")
+
+df <- Telerobot_ages %>% 
+select(Q_ROBOT_NARS,v,Q_AGE, Q_DEMOGRAPHICS_2, Q_TECH_CONFIDENCE) %>% 
+filter(Q_DEMOGRAPHICS_2 <= 2) %>%
+mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
+drop_na()
+
+anova_test(df, Q_ROBOT_NARS ~ v * Q_AGE + Q_DEMOGRAPHICS_2, covariate = Q_TECH_CONFIDENCE, detailed = TRUE, effect.size = "pes")
+
+ggbarplot(
+   df, 
+   x = "Q_GENDER",
+   y = "Q_ROBOT_NARS",
+   add="mean",
+  fill = "Q_GENDER",
+   facet.by = "v",
+  palette = get_palette("npg", 3)
+)
 ```
+## What's the correlation between NARS and the feeling thermometer?
+```{r}
+ggscatter(Telerobot_ages, x = "Q_ROBOT_NARS", y = "Q_ROBOTS_SLIDER_4",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = 15, label.y = 60)
+```
+
 
 ## Telerobot preference
 
@@ -324,6 +374,8 @@ dplyr::select(-v) %>%
 chisq.test()
 ```
 ### A: Chi-Sq is significant only in the outgroup scenario
+### Q: Are those people's nationality predicted by age or gender?
+
 ```{r}
 Telerobot_ages %>% 
 mutate(v = as_factor(v)) %>%
@@ -332,8 +384,6 @@ drop_na() %>%
 glm(v ~ Q_AGE + Q_DEMOGRAPHICS_2, ., family=binomial) %>% 
 summary
 ```
-### Q: Are those people's nationality predicted by age or gender?
-
 
 ### Comparision of frequendcies between outgruop meeting and normal
 
