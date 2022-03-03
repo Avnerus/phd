@@ -226,7 +226,21 @@ select(v,Q_TECH_CONFIDENCE, Q_DEMOGRAPHICS_2, Q_AGE) %>%
 drop_na() %>%
 anova_test(Q_TECH_CONFIDENCE ~ v + Q_AGE + Q_DEMOGRAPHICS_2, detailed=TRUE )
 ```
+### Q: What was the distribution of experience question
+```{r}
+df <- Telerobot_ages %>%
+select(v,starts_with("Q_DEMOGRAPHICS_2_")) %>%
+drop_na() %>%
+mutate(across(starts_with("Q_DEMOGRAPHICS_2_"), ~(.x %% 2))) %>%
+group_by(v) %>%
+summarise(across(starts_with("Q_DEMOGRAPHICS_2_"), list(freq=~sum(.x) / n() * 100,yes=~sum(.x), no = ~n()-sum(.x))))
 
+df
+
+df %>%
+dplyr::select(Q_DEMOGRAPHICS_2_3_yes,Q_DEMOGRAPHICS_2_3_no) %>%
+chisq.test()
+```
 
 ## General attitude toward robots
 
@@ -242,7 +256,7 @@ mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
 drop_na()
 
   
-anova_test(df, Q_ROBOTS_SLIDER_4 ~ v * Q_AGE * Q_DEMOGRAPHICS_2,detailed = TRUE)
+anova_test(df, Q_ROBOTS_SLIDER_4 ~ v * Q_AGE * Q_DEMOGRAPHICS_2,detailed = TRUE,effect.size = "pes")
 
 
 ggbarplot(
@@ -258,15 +272,17 @@ ggbarplot(
 ```
 ### And NARS?
 ```{r}
-ggdensity(Telerobot_ages %>% select(Q_ROBOT_NARS,v) %>% mutate(Q_ROBOT_NARS_INV = Q_ROBOT_NARS * -1) ,x = "Q_ROBOT_NARS_INV", fill = "lightgreen",facet.by = "v")
+ggdensity(Telerobot_ages %>% 
+  select(Q_ROBOT_NARS, v) %>% 
+    mutate(Q_ROBOT_NARS_INV = Q_ROBOT_NARS * -1) ,x = "Q_ROBOT_NARS_INV", fill = "lightgreen",facet.by = "v")
 
 df <- Telerobot_ages %>% 
-select(Q_ROBOT_NARS,v,Q_AGE, Q_DEMOGRAPHICS_2, Q_TECH_CONFIDENCE) %>% 
+select(Q_ROBOT_NARS,v,Q_AGE, Q_DEMOGRAPHICS_2, Q_TECH_CONFIDENCE,Q_ROBOTS_SLIDER_4) %>% 
 filter(Q_DEMOGRAPHICS_2 <= 2) %>%
 mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
 drop_na()
 
-anova_test(df, Q_ROBOT_NARS ~ v * Q_AGE + Q_DEMOGRAPHICS_2, covariate = Q_TECH_CONFIDENCE, detailed = TRUE, effect.size = "pes")
+anova_test(df, Q_ROBOT_NARS ~ v * Q_AGE * Q_DEMOGRAPHICS_2, covariate = Q_TECH_CONFIDENCE, detailed = TRUE, effect.size = "pes")
 
 ggbarplot(
    df, 
@@ -277,8 +293,60 @@ ggbarplot(
    facet.by = "v",
   palette = get_palette("npg", 3)
 )
+
+
+# Significance of different between men and women
+rbind(
+df %>%
+filter(v == "IL") %>% 
+t_test(Q_ROBOT_NARS ~ Q_GENDER),
+df %>%
+filter(v == "IL") %>% 
+t_test(Q_ROBOTS_SLIDER_4 ~ Q_GENDER)
+);
+
+
+rbind(
+  df %>%
+filter(v == "PS") %>%
+t_test(Q_ROBOT_NARS ~ Q_GENDER),
+df %>%
+filter(v == "PS") %>%
+t_test(Q_ROBOTS_SLIDER_4 ~ Q_GENDER)
+)
+
+rbind(
+  df %>%
+filter(Q_GENDER == "Male") %>%
+t_test(Q_ROBOT_NARS ~ v),
+df %>%
+filter(Q_GENDER == "Male") %>%
+t_test(Q_ROBOTS_SLIDER_4 ~ v)
+)
+
 ```
-## What's the correlation between NARS and the feeling thermometer?
+### NARS and tech confidence?
+```{r}
+
+df <- Telerobot_ages %>%
+#filter(v == 'PS') %>%
+select(v,Q_ROBOT_NARS, Q_TECH_CONFIDENCE,Q_ROBOTS_SLIDER_4, starts_with("Q_DEMOGRAPHICS_2_")) %>%
+drop_na() %>%
+mutate(across(starts_with("Q_DEMOGRAPHICS_2_"), ~(.x %% 2))) 
+
+  
+ggscatter(df, x = "Q_DEMOGRAPHICS_2_2", y = "Q_ROBOT_NARS",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -10, label.y = 20)
+
+
+summary(lm(Q_ROBOT_NARS ~ Q_DEMOGRAPHICS_2_2, data = df))
+```
+### What's the correlation between NARS and the feeling thermometer?
 ```{r}
 ggscatter(Telerobot_ages, x = "Q_ROBOT_NARS", y = "Q_ROBOTS_SLIDER_4",
           add = "reg.line",                                 # Add regression line
@@ -289,6 +357,52 @@ ggscatter(Telerobot_ages, x = "Q_ROBOT_NARS", y = "Q_ROBOTS_SLIDER_4",
   stat_cor(method = "pearson", label.x = 15, label.y = 60)
 ```
 
+
+### General attitude toward the outgroup
+```{r}
+ggdensity(Telerobot_ages %>% 
+  select(Q_GROUP_SLIDER_1, v)
+  ,x = "Q_GROUP_SLIDER_1", fill = "lightgreen",facet.by = "v")
+
+df <- Telerobot_ages %>% 
+select(Q_GROUP_SLIDER_1,v,Q_AGE, Q_DEMOGRAPHICS_2) %>% 
+filter(Q_DEMOGRAPHICS_2 <= 2) %>%
+mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
+drop_na()
+
+anova_test(df, Q_GROUP_SLIDER_1 ~ v * Q_AGE * Q_DEMOGRAPHICS_2, detailed = TRUE, effect.size = "pes")
+
+ggscatter(df, x = "Q_AGE", y = "Q_GROUP_SLIDER_1",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = 15, label.y = 60)
+
+ggbarplot(
+   df, 
+   x = "Q_GENDER",
+   y = "Q_GROUP_SLIDER_1",
+   add="mean",
+  fill = "Q_GENDER",
+   facet.by = "v",
+  palette = get_palette("npg", 3)
+)
+
+
+# Significance of different between men and women
+
+rbind(
+df %>%
+filter(v == "IL") %>% 
+t_test(Q_GROUP_SLIDER_1 ~ Q_GENDER),
+df %>%
+filter(v == "PS") %>%
+t_test(Q_GROUP_SLIDER_1 ~ Q_GENDER)
+)
+```
 
 ## Telerobot preference
 
