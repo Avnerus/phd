@@ -370,6 +370,11 @@ filter(Q_DEMOGRAPHICS_2 <= 2) %>%
 mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
 drop_na()
 
+df %>% 
+group_by(v) %>%
+summarise(across(c("Q_GROUP_SLIDER_1"), list(mean=mean,sd=sd,total=~n())))
+
+
 anova_test(df, Q_GROUP_SLIDER_1 ~ v * Q_AGE * Q_DEMOGRAPHICS_2, detailed = TRUE, effect.size = "pes")
 
 ggscatter(df, x = "Q_AGE", y = "Q_GROUP_SLIDER_1",
@@ -403,6 +408,26 @@ filter(v == "PS") %>%
 t_test(Q_GROUP_SLIDER_1 ~ Q_GENDER)
 )
 ```
+## Willingness to interact with a robot
+
+### Q: What were the frequencies in each scenario?
+```{r}
+df <- Telerobot_ages %>%
+filter(Q_DEMOGRAPHICS_2 <= 2) %>%
+mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
+select(v,starts_with("Q_TELEROBOT_WOULD_U"), Q_GENDER, Q_AGE) %>%
+drop_na()
+
+df %>%
+group_by(v, Q_GENDER) %>%
+summarise(across(starts_with("Q_TELEROBOT_WOULD_U"), list(mean=mean)))
+
+c("Q_TELEROBOT_WOULD_U_1","Q_TELEROBOT_WOULD_U_2","Q_TELEROBOT_WOULD_U_3") %>%
+map(~ anova_test(as.formula(paste0(.x," ~ v + Q_GENDER + Q_AGE")), data=df))
+
+
+```
+
 
 ## Telerobot preference
 

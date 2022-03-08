@@ -14,9 +14,10 @@ library(magrittr)
 library(knitr)
 library(tidytext)
 library(textdata)
+library(wordcloud)
 library(ggplot2)
-load("/home/avnerus/Code/R/survey/tests.RData")
-knitr::opts_chunk$set(echo = TRUE)
+#load("/home/avnerus/Code/R/survey/tests.RData")
+#knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## R Markdown analysis
@@ -53,6 +54,30 @@ Telerobot_sorted %>%
   anti_join(stop_words) %>%
   count(word) %>%
   with(wordcloud(word, n, max.words = 100, scale = c(5.8,.4), colors=brewer.pal(8, "Dark2")))
+
+df <- Telerobot_sorted %>% 
+  dplyr::filter(v == "IL")
+
+  df %>%
+  select("Q_TELEROBOT_VS_F2F_TRANS") %>%
+  filter(!grepl("(do[es]*n['’]t)|(person)|(robot)|(meeting)", df$Q_TELEROBOT_VS_F2F_TRANS)) %>%
+  unnest_tokens(word, "Q_TELEROBOT_VS_F2F_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, scale = c(5.8,.4), colors=brewer.pal(8, "Dark2")))
+
+df <- Telerobot_sorted %>% 
+  dplyr::filter(v == "PS")
+
+  df %>%
+  select("Q_TELEROBOT_VS_F2F_TRANS") %>%
+  filter(!grepl("(do[es]*n['’]t)|(person)|(robot)|(meeting)", df$Q_TELEROBOT_VS_F2F_TRANS)) %>%
+  unnest_tokens(word, "Q_TELEROBOT_VS_F2F_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, scale = c(5.8,.4), colors=brewer.pal(8, "Dark2")))
+
+
 ```
 ## Word cloud 2
 ```{r}
