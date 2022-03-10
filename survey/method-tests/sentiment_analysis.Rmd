@@ -46,20 +46,13 @@ Imagine you could operate your telerobot anywhere in the world.
 What places would you want to visit with your robot avatar and what kind of activities would you have it perform?
 
 ## Word cloud
-```{r}
-Telerobot_sorted %>% 
-  select("Q_TELEROBOT_VS_F2F_TRANS") %>%
-  filter(!grepl("(do[es]*n['’]t)|(person)|(robot)|(meeting)", Telerobot_sorted$Q_TELEROBOT_VS_F2F_TRANS)) %>%
-  unnest_tokens(word, "Q_TELEROBOT_VS_F2F_TRANS") %>%
-  anti_join(stop_words) %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100, scale = c(5.8,.4), colors=brewer.pal(8, "Dark2")))
+```{r, fig.width=12,fig.asp=0.5}
 
 df <- Telerobot_sorted %>% 
-  dplyr::filter(v == "IL")
+  select("Q_TELEROBOT_VS_F2F_TRANS") %>%
+  drop_na() 
 
   df %>%
-  select("Q_TELEROBOT_VS_F2F_TRANS") %>%
   filter(!grepl("(do[es]*n['’]t)|(person)|(robot)|(meeting)", df$Q_TELEROBOT_VS_F2F_TRANS)) %>%
   unnest_tokens(word, "Q_TELEROBOT_VS_F2F_TRANS") %>%
   anti_join(stop_words) %>%
@@ -67,16 +60,32 @@ df <- Telerobot_sorted %>%
   with(wordcloud(word, n, max.words = 100, scale = c(5.8,.4), colors=brewer.pal(8, "Dark2")))
 
 df <- Telerobot_sorted %>% 
-  dplyr::filter(v == "PS")
+  dplyr::filter(v == "IL") %>%
+  select("Q_TELEROBOT_VS_F2F_TRANS") %>%
+  drop_na() 
 
   df %>%
-  select("Q_TELEROBOT_VS_F2F_TRANS") %>%
   filter(!grepl("(do[es]*n['’]t)|(person)|(robot)|(meeting)", df$Q_TELEROBOT_VS_F2F_TRANS)) %>%
   unnest_tokens(word, "Q_TELEROBOT_VS_F2F_TRANS") %>%
   anti_join(stop_words) %>%
   count(word) %>%
-  with(wordcloud(word, n, max.words = 100, scale = c(5.8,.4), colors=brewer.pal(8, "Dark2")))
+  with(wordcloud(word, n, max.words = 100, scale = c(6.8,.4), colors=brewer.pal(8, "Dark2")))
+  #arrange(desc(n))
 
+
+df <- Telerobot_sorted %>% 
+  dplyr::filter(v == "PS") %>%
+  select("Q_TELEROBOT_VS_F2F_TRANS") %>%
+  drop_na()
+
+
+  df %>%
+  filter(!grepl("(do[es]*n['’]t)|(person)|(robot)|(meeting)", df$Q_TELEROBOT_VS_F2F_TRANS)) %>%
+  unnest_tokens(word, "Q_TELEROBOT_VS_F2F_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100, scale = c(4,.5), colors=brewer.pal(8, "Dark2")))
+ #arrange(desc(n))
 
 ```
 ## Word cloud 2
