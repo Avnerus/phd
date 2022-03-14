@@ -492,8 +492,24 @@ ggscatter(df, x = "Q_ROBOT_NARS", y = "Q_TELEROBOT_WOULD_U_3",
 
 ```
 
-
 ## Telerobot preference
+
+
+### Q: Would Israerlies use a robot for shopping significantly more than Palestinians?
+```{r}
+Telerobot_sorted %>% 
+select("Q_TELEROBOT_IMAGINE_TRANS",'v') %>%
+drop_na() %>%
+mutate(ROBOT_SHOPPING = ifelse(grepl(".*shop.*", Q_TELEROBOT_IMAGINE_TRANS,ignore.case = TRUE), "Yes", "No")) %>%
+group_by(v, ROBOT_SHOPPING) %>%
+summarize(n = n()) %>%
+spread(ROBOT_SHOPPING ,n) %>%
+ungroup %>%
+dplyr::select(-v) %>%
+chisq.test()
+
+
+```
 
 ### Robot appearance style
 ```{r, fig.width=10,fig.asp=0.5}
@@ -898,7 +914,86 @@ ggdensity(Telerobot_ages %>% select(Q_GROUP_SLIDER_1,v),x = "Q_GROUP_SLIDER_1", 
   table.font.size = 3,
   facet.by = "v",
 )
+
+df <- Telerobot_ages %>%
+filter(Q_DEMOGRAPHICS_2 <= 2) %>%
+mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
+#filter(Q_GENDER == 'Female') %>%
+#filter(v == 'PS') %>%
+select(v,starts_with("Q_GROUP_INTEREST"), Q_GENDER, Q_AGE, Q_TECH_CONFIDENCE, Q_ROBOT_NARS) %>%
+drop_na()
+
+c("Q_GROUP_INTEREST_1","Q_GROUP_INTEREST_2","Q_GROUP_INTEREST_3","Q_GROUP_INTEREST_4") %>%
+#map(~ data.frame(append(anova_test(as.formula(paste0(.x," ~ v * Q_GENDER * Q_AGE")), data=df),c(test=.x))))
+map(~ anova_test(as.formula(paste0(.x," ~  Q_AGE")), data=df,effect.size = "pes"),c(test=.x))
+
+
+df %>%
+group_by(v) %>%
+summarise(across(starts_with("Q_GROUP_INTEREST"), list(mean=mean)))
+
+
+ggscatter(df, x = "Q_AGE", y = "Q_GROUP_INTEREST_1",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+ggscatter(df, x = "Q_AGE", y = "Q_GROUP_INTEREST_2",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+
+ggscatter(df, x = "Q_AGE", y = "Q_GROUP_INTEREST_3",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+ggscatter(df, x = "Q_AGE", y = "Q_GROUP_INTEREST_4",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+
 ```
+``
+
+
+### Did palestinians significantly prefer roboic over non robotic?
+```{r}
+df <- Telerobot_sorted %>% 
+filter(v == 'PS') %>%
+select(starts_with("Q_GROUP_INTEREST"),'v') %>%
+drop_na() %>%
+mutate(ROBOT_INTEREST=Q_GROUP_INTEREST_1 + Q_GROUP_INTEREST_2, NON_ROBOT_INTEREST=Q_GROUP_INTEREST_3 + Q_GROUP_INTEREST_4) 
+
+wilcox.test(df$ROBOT_INTEREST, df$NON_ROBOT_INTEREST, paired=TRUE) 
+  
+
+
+# spread(ROBOT_SHOPPING ,n) %>%
+# ungroup %>%
+# dplyr::select(-v) %>%
+# chisq.test()
+
+```
+
 
 
 ## Potential of telepuppets

@@ -32,6 +32,11 @@ How many Finished the survey from each side?
 ```{r}
  Telerobot_ages %>% count(v, Finished)
 ```
+
+```{r}
+ Telerobot_ages %>% select(v,Q_TELEROBOT_IMAGINE) %>% drop_na() %>% count(v)
+```
+
   How many on each side expressed willingness to meet the outgroup through a telerobot?
   According to the survey flow, Q_TELEROBOT_APP_G (robot apperance) is asked only if meeting the outgroup using a telerobot is higher than "Probably not"
   
