@@ -34,7 +34,7 @@ How many Finished the survey from each side?
 ```
 
 ```{r}
- Telerobot_ages %>% select(v,Q_TELEROBOT_IMAGINE) %>% drop_na() %>% count(v)
+ Telerobot_ages %>% select(v,Q_TELEROBOT_IMAGINE_TRANS) %>% drop_na() %>% count(v)
 ```
 
   How many on each side expressed willingness to meet the outgroup through a telerobot?
