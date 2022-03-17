@@ -519,7 +519,12 @@ df <-
   mutate(Appearance=as_factor(Q_TELEROBOT_APP)) %>%
   group_by(v,Appearance) %>%
   summarise(n = n()) %>%
-  mutate(freq = round(n / sum(n), digits = 2) * 100, total_n = sum(n))
+  mutate(freq = n / sum(n) * 100, total_n = sum(n))
+
+df
+
+Telerobot_ages %>% select("Q_TELEROBOT_APP", "Q_TELEROBOT_APP_5_TEXT", 'ResponseId','v') %>%
+  filter(as_factor(Q_TELEROBOT_APP) == "Other:")
 
  ggbarplot(
    df, 
@@ -556,7 +561,7 @@ df <-
   mutate(Appearance=as_factor(Q_TELEROBOT_APP_G)) %>%
   group_by(v,Appearance) %>%
   summarise(n = n()) %>%
-  mutate(freq = round(n / sum(n), digits = 2) * 100, total_n = sum(n),
+  mutate(freq = (n / sum(n)) * 100, total_n = sum(n),
   lab.ypos=cumsum(freq) - 0.5*freq)
 
 
@@ -590,23 +595,54 @@ df
 
 ```
 
-### Q: Do Palestinians want significantly more a machine appearance than Israelis?
+
+### Q: Do Palestinians want significantly more a nonhuman appearance than Israelis?
+```{r}
+   Telerobot_ages %>% select("Q_TELEROBOT_APP", 'v') %>%    
+  drop_na() %>%
+  mutate(Human = ifelse(as_factor(Q_TELEROBOT_APP) == "A human.", 1, 0), Nonhuman = ifelse(as_factor((Q_TELEROBOT_APP)) == "A human.", 0, 1))  %>%
+  group_by(v) %>%
+  summarise(across(c('Human', 'Nonhuman'), list(sum = sum))) %>%
+  select(-v) %>%
+  chisq.test()
+```
+
+
+### Q: Do Palestinians want significantly more a machine/human appearance than Israelis?
 
 Need to do:CHI-Square
 Can check AGE covariance with binary logistics
 https://statsandr.com/blog/chi-square-test-of-independence-in-r/
 
 ```{r}
-Telerobot_ages %>% 
+df <- Telerobot_ages %>% 
 select("Q_TELEROBOT_APP_G", 'ResponseId','v') %>%
 drop_na() %>%
 mutate(APP_MACHINE = ifelse(as_factor(Q_TELEROBOT_APP_G) == 'A machine.', "Machine", "Not machine")) %>%
 group_by(v, APP_MACHINE) %>%
 summarize(n = n()) %>%
 spread(APP_MACHINE,n) %>%
-ungroup %>%Lin 
-dplyr::select(-v) %>%
-chisq.test()
+ungroup %>%
+dplyr::select(-v) 
+
+df
+
+df %>% chisq.test()
+
+df <- Telerobot_ages %>% 
+select("Q_TELEROBOT_APP_G", 'ResponseId','v') %>%
+drop_na() %>%
+mutate(APP_HUMAN = ifelse(as_factor(Q_TELEROBOT_APP_G) == 'A human.', "Human", "Not human")) %>%
+group_by(v, APP_HUMAN) %>%
+summarize(n = n()) %>%
+spread(APP_HUMAN,n) %>%
+ungroup %>%
+dplyr::select(-v) 
+
+df
+
+df %>% chisq.test()
+
 ```
 ### A: Chi-Sq is significant only in the outgroup scenario
 ### Q: Are those people's nationality predicted by age or gender?
@@ -635,6 +671,8 @@ df <-
   group_by(v,Appearance,value) %>%
   summarise(n = n()) %>%
   mutate(freq = round(n / sum(n), digits = 2) * 100, total_n = sum(n))
+
+df
 
  ggplot(df, aes(x=reorder(value, freq),y=freq,fill=Appearance)) +
  ylab("Frequency") +
@@ -688,25 +726,58 @@ melt_df <-
 ### Q: How did participants prefer the robot identity? 
 From those that selected anything.
 ```{r, fig.width=10,fig.asp=0.5}
-df <- melt(
+
+base_df <- 
   Telerobot_ages %>% select(matches("^Q_TELEROBOT_IDENT_\\d$"), 'ResponseId','v') %>%    
   filter(if_any(starts_with("Q_TELEROBOT_IDENT"), ~ . == 1)) %>%
-  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT")),replace_na, 0) %>%
+  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT")),replace_na, 0)
+  
+df <- melt(
+  base_df %>%
   plyr::rename(COLUMN_DICTIONARY)
  , id=c('ResponseId','v'),variable.name = "IDENT"
 ) %>%
   group_by(v,IDENT) %>%
   summarise(across(c("value"), list(freq = ~sum(.x)/n() * 100, n = ~ n())))
 
-  ggplot(df, aes(x=reorder(IDENT, -value_freq),y=value_freq,fill=IDENT)) + 
+df
+
+  ggplot(df, aes(x=reorder(IDENT, -value_freq),y=value_freq,fill=IDENT)) +
   ylab("Percentage") +
   xlab("Robot identity") +
   geom_bar(stat="identity") +
-  coord_flip() + 
-  facet_wrap(~ v, 
+  coord_flip() +
+  facet_wrap(~ v,
     labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
   )
- 
+
+  
+ident_cols <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_IDENT_\\d$")) %>% colnames
+
+chi_res <- NULL
+
+for (ident_col in ident_cols) {
+  
+  res <- base_df %>% 
+  mutate(SELECCTED = ifelse(!! sym(ident_col) == 1, "Yes", "No")) %>%
+  group_by(v, SELECCTED) %>%
+  summarize(n = n()) %>%
+  spread(SELECCTED,n) %>%
+  ungroup %>%
+  dplyr::select(-v) %>%
+  chisq.test()
+  
+  res_tibble <- tidy(res)
+  res_tibble["Field"] <- COLUMN_DICTIONARY[ident_col]
+  
+  if (is.null(chi_res)) {
+    chi_res <- res_tibble
+  } else {
+    chi_res <-bind_rows(chi_res,res_tibble)
+  }
+}
+
+chi_res
 ```
 ### And when meeting the outgroup?
 ```{r, fig.width=10}
