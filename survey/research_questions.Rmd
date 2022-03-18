@@ -74,7 +74,16 @@ COLUMN_DICTIONARY <-
     FEAT_6_DIFF = "Play online content",
     FEAT_7_DIFF = "Show personal content",
     FEAT_8_DIFF = "Play games",
-    FEAT_9_DIFF = "Suggest topics"
+    FEAT_9_DIFF = "Suggest topics",
+    Q_TELEROBOT_FEAT_1_M = "Translate speech",
+    Q_TELEROBOT_FEAT_2_M = "Travel around",
+    Q_TELEROBOT_FEAT_3_M = "Hand gestures",
+    Q_TELEROBOT_FEAT_4_M = "Touch feedback",
+    Q_TELEROBOT_FEAT_5_M = "Show emotions",
+    Q_TELEROBOT_FEAT_6_M = "Play online content",
+    Q_TELEROBOT_FEAT_7_M = "Show personal content",
+    Q_TELEROBOT_FEAT_8_M = "Play games",
+    Q_TELEROBOT_FEAT_9_M = "Suggest topics"
 )
 ```
 
@@ -729,7 +738,7 @@ From those that selected anything.
 
 base_df <- 
   Telerobot_ages %>% select(matches("^Q_TELEROBOT_IDENT_\\d$"), 'ResponseId','v') %>%    
-  filter(if_any(starts_with("Q_TELEROBOT_IDENT"), ~ . == 1)) %>%
+  filter(if_any(matches("^Q_TELEROBOT_IDENT_\\d$"), ~ . == 1)) %>%
   mutate_at(vars(starts_with("Q_TELEROBOT_IDENT")),replace_na, 0)
   
 df <- melt(
@@ -840,6 +849,7 @@ chi_res
 df <- melt(
   Telerobot_ages %>% select(matches("Q_TELEROBOT_IDENT_"), 'ResponseId','v') %>%    
   filter(if_any(starts_with("Q_TELEROBOT_IDENT_G"), ~ . == 1)) %>%
+  filter(if_any(matches("^Q_TELEROBOT_IDENT_\\d$"), ~ . == 1)) %>%
   mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_")),replace_na, 0)
  , id=c('ResponseId','v'),variable.name = "IDENT"
 ) %>%
@@ -847,6 +857,8 @@ df <- melt(
   summarise(across(c("value"), list(freq = ~sum(.x)/n() * 100, n = ~ n()))) %>%
   mutate(type = if_else(grepl("Q_TELEROBOT_IDENT_G", IDENT),"Outgroup","Normal")) %>%
   mutate(across(IDENT, ~ unlist(map(.x,~ COLUMN_DICTIONARY[toString(.x)]))))
+
+df
 
  ggplot(df, aes(x=reorder(IDENT, -value_freq),y=value_freq,fill=type)) +
  ylab("Percentage") +
@@ -858,21 +870,25 @@ df <- melt(
  )
 ```
 
-### Did Israelis prefer to have the same nationality in the outgroup scenario?
+### Did Israelis/Palestinians prefer to have the same nationality/other in the outgroup scenario?
 ```{r}
 base_df <- Telerobot_ages %>% select(matches("Q_TELEROBOT_IDENT_"), 'ResponseId','v') %>%    
   filter(if_any(starts_with("Q_TELEROBOT_IDENT_G"), ~ . == 1)) %>%
+  filter(if_any(matches("^Q_TELEROBOT_IDENT_\\d$"), ~ . == 1)) %>%
   mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_")),replace_na, 0)
 
 df <- melt(
   base_df %>%
   filter (v == "PS") %>%
-  select("Q_TELEROBOT_IDENT_5", "Q_TELEROBOT_IDENT_G_6","ResponseId")  # Religion
+  #select("Q_TELEROBOT_IDENT_1", "Q_TELEROBOT_IDENT_G_1","ResponseId")  # Nationality
+  #select("Q_TELEROBOT_IDENT_5", "Q_TELEROBOT_IDENT_G_6","ResponseId")  # Religion
   #select("Q_TELEROBOT_IDENT_2", "Q_TELEROBOT_IDENT_G_2","ResponseId")  # age
   #select("Q_TELEROBOT_IDENT_3", "Q_TELEROBOT_IDENT_G_3","ResponseId")  # gender
   #select("Q_TELEROBOT_IDENT_4", "Q_TELEROBOT_IDENT_G_4","ResponseId")  # voice
-  #select("Q_TELEROBOT_IDENT_8", "Q_TELEROBOT_IDENT_G_11","ResponseId")  # be someone else
+  select("Q_TELEROBOT_IDENT_8", "Q_TELEROBOT_IDENT_G_11","ResponseId")  # be someone else
   #select("Q_TELEROBOT_IDENT_7", "Q_TELEROBOT_IDENT_G_10","ResponseId")  # not reveal myself
+  #select("Q_TELEROBOT_IDENT_6", "Q_TELEROBOT_IDENT_G_9","ResponseId")  # bring objects
+
 
  , id=c('ResponseId'),variable.name = "IDENT"
 ) %>%
@@ -924,14 +940,19 @@ facet_wrap(~ v,
 
 ### Q: How did participants rate the robot's feature importance? 
 ```{r, fig.width=10,fig.asp=0.5}
+
+base_df <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_\\d$"), 'ResponseId','v') %>%    
+  drop_na() 
+  
 df <- melt(
-  Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_\\d$"), 'ResponseId','v') %>%    
-  drop_na() %>%
+  base_df %>%
   plyr::rename(COLUMN_DICTIONARY,warn_missing = FALSE)
  , id=c('ResponseId','v'),variable.name = "FEAT"
 ) %>%
   group_by(v,FEAT) %>%
   summarise(across(c("value"), list(mean = ~mean(.x), n = ~ n())))
+
+df %>% arrange(FEAT)
 
   ggplot(df, aes(x=reorder(FEAT, -value_mean),y=value_mean,fill=FEAT)) + 
   ylab("Mean rank") +
@@ -941,8 +962,82 @@ df <- melt(
   facet_wrap(~ v, 
     labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
   )
+  
+  
+feat_cols <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_\\d$")) %>% colnames
+anova_res <- NULL
+
+
+for (feat_col in feat_cols) {
+
+  res <- anova_test(base_df, as.formula(paste0(feat_col,"~ v")), detailed = TRUE)
+  res["FEAT"] = COLUMN_DICTIONARY[feat_col]
+  res_tibble <- as_tibble(res)
+
+  if (is.null(anova_res)) {
+    anova_res <- res_tibble
+  } else {
+    anova_res <-bind_rows(anova_res,res_tibble)
+  }
+}
+
+anova_res
  
 ```
+### What if I take for each participant the value in relation to mean value given?
+```{r, fig.width=10,fig.asp=0.5}
+
+base_df <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_\\d$"), 'ResponseId','v') %>%    
+  drop_na() 
+
+feat_cols <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_\\d$")) %>% colnames
+
+mean_df <- base_df %>%
+rowwise() %>% mutate(m = mean(c_across(Q_TELEROBOT_FEAT_1:Q_TELEROBOT_FEAT_9)))
+
+for (feat_col in feat_cols) {
+  mean_df[paste0(feat_col,"_M")] = mean_df[feat_col] - mean_df["m"]
+}
+
+base_df_m <- mean_df %>% select(matches("^Q_TELEROBOT_FEAT_\\d_M$"), 'ResponseId','v')
+
+df <- melt(
+  base_df_m %>%
+  plyr::rename(COLUMN_DICTIONARY,warn_missing = FALSE)
+ , id=c('ResponseId','v'),variable.name = "FEAT"
+) %>%
+  group_by(v,FEAT) %>%
+  summarise(across(c("value"), list(mean = ~mean(.x), n = ~ n())))
+
+df %>% arrange(FEAT)
+
+  ggplot(df, aes(x=reorder(FEAT, -value_mean),y=value_mean,fill=FEAT)) + 
+  ylab("Mean rank relative to each participant's mean score") +
+  xlab("Robot feature") +
+  geom_bar(stat="identity") +
+  coord_flip() + 
+  facet_wrap(~ v, 
+    labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
+  )
+  
+  for (feat_col in feat_cols) {
+
+  res <- anova_test(base_df_m, as.formula(paste0(feat_col,"_M ~ v")), detailed = TRUE)
+  res["FEAT"] = COLUMN_DICTIONARY[feat_col]
+  res_tibble <- as_tibble(res)
+
+  if (is.null(anova_res)) {
+    anova_res <- res_tibble
+  } else {
+    anova_res <-bind_rows(anova_res,res_tibble)
+  }
+}
+
+anova_res
+ 
+
+```
+
 
 ## Comparison between normnal and outgroup meeting
 ```{r, fig.width=10}
