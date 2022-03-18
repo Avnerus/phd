@@ -781,15 +781,21 @@ chi_res
 ```
 ### And when meeting the outgroup?
 ```{r, fig.width=10}
-df <- melt(
+base_df <-
   Telerobot_ages %>% select(matches("Q_TELEROBOT_IDENT_G"), 'ResponseId','v') %>%    
   filter(if_any(starts_with("Q_TELEROBOT_IDENT_G"), ~ . == 1)) %>%
-  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_G")),replace_na, 0) %>%
+  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_G")),replace_na, 0)
+  
+
+df <- melt(
+  base_df %>%
   plyr::rename(COLUMN_DICTIONARY)
  , id=c('ResponseId','v'),variable.name = "IDENT"
 ) %>%
   group_by(v,IDENT) %>%
   summarise(across(c("value"), list(freq = ~sum(.x)/n() * 100, n = ~ n())))
+
+df
 
 ggplot(df, aes(x=reorder(IDENT, -value_freq),y=value_freq,fill=IDENT)) +
 ylab("Percentage") +
@@ -799,6 +805,33 @@ coord_flip() +
 facet_wrap(~ v, 
     labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
 )
+
+ident_g_cols <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_IDENT_G")) %>% colnames
+
+chi_res <- NULL
+
+for (ident_col in ident_g_cols) {
+  
+  res <- base_df %>% 
+  mutate(SELECCTED = ifelse(!! sym(ident_col) == 1, "Yes", "No")) %>%
+  group_by(v, SELECCTED) %>%
+  summarize(n = n()) %>%
+  spread(SELECCTED,n) %>%
+  ungroup %>%
+  dplyr::select(-v) %>%
+  chisq.test()
+  
+  res_tibble <- tidy(res)
+  res_tibble["Field"] <- COLUMN_DICTIONARY[ident_col]
+  
+  if (is.null(chi_res)) {
+    chi_res <- res_tibble
+  } else {
+    chi_res <-bind_rows(chi_res,res_tibble)
+  }
+}
+
+chi_res
 
 ```
 ### Comparision of means between meeting and normal
@@ -824,6 +857,36 @@ df <- melt(
      labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
  )
 ```
+
+### Did Israelis prefer to have the same nationality in the outgroup scenario?
+```{r}
+base_df <- Telerobot_ages %>% select(matches("Q_TELEROBOT_IDENT_"), 'ResponseId','v') %>%    
+  filter(if_any(starts_with("Q_TELEROBOT_IDENT_G"), ~ . == 1)) %>%
+  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_")),replace_na, 0)
+
+df <- melt(
+  base_df %>%
+  filter (v == "PS") %>%
+  select("Q_TELEROBOT_IDENT_5", "Q_TELEROBOT_IDENT_G_6","ResponseId")  # Religion
+  #select("Q_TELEROBOT_IDENT_2", "Q_TELEROBOT_IDENT_G_2","ResponseId")  # age
+  #select("Q_TELEROBOT_IDENT_3", "Q_TELEROBOT_IDENT_G_3","ResponseId")  # gender
+  #select("Q_TELEROBOT_IDENT_4", "Q_TELEROBOT_IDENT_G_4","ResponseId")  # voice
+  #select("Q_TELEROBOT_IDENT_8", "Q_TELEROBOT_IDENT_G_11","ResponseId")  # be someone else
+  #select("Q_TELEROBOT_IDENT_7", "Q_TELEROBOT_IDENT_G_10","ResponseId")  # not reveal myself
+
+ , id=c('ResponseId'),variable.name = "IDENT"
+) %>%
+  group_by(IDENT) %>%
+  summarise(across(c("value"), list(yes = ~sum(.x), no = ~ n() - sum(.x)))) 
+
+df
+
+df %>% select(-IDENT) %>% chisq.test
+
+
+```
+
+
 ### Means of individual difference between normal and outgruop
 ```{r, fig.width=10,fig.asp=0.5}
 df <- melt(
@@ -845,6 +908,8 @@ df <- melt(
 ) %>%
 group_by(v,IDENT_DIFF) %>%
 summarise(across(c("value"), list(mean = ~mean(.x), n = ~ n())))
+
+df
 
 ggplot(df, aes(x=reorder(IDENT_DIFF, -value_mean),y=value_mean,fill=IDENT_DIFF)) + 
 ylab("Mean individual difference between outgroup and normal scenario") +
