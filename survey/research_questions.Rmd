@@ -1020,9 +1020,11 @@ df %>% arrange(FEAT)
     labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
   )
   
+  anova_res <- NULL
+  
   for (feat_col in feat_cols) {
 
-  res <- anova_test(base_df_m, as.formula(paste0(feat_col,"_M ~ v")), detailed = TRUE)
+  res <- anova_test(base_df_m, as.formula(paste0(feat_col,"_M ~ v")), detailed = TRUE, effect.size = "pes")
   res["FEAT"] = COLUMN_DICTIONARY[feat_col]
   res_tibble <- as_tibble(res)
 
@@ -1062,8 +1064,9 @@ df <- melt(
 ```
 ### And individual change
 ```{r, fig.width=10,fig.asp=0.5}
-df <- melt(
-  Telerobot_ages %>% select(matches("Q_TELEROBOT_FEAT_"), 'ResponseId','v') %>%    
+
+base_df <-
+   Telerobot_ages %>% select(matches("Q_TELEROBOT_FEAT_"), 'ResponseId','v') %>%    
   drop_na() %>%
   mutate(
     FEAT_1_DIFF = Q_TELEROBOT_FEAT_G_1 - Q_TELEROBOT_FEAT_1,
@@ -1075,12 +1078,34 @@ df <- melt(
     FEAT_7_DIFF = Q_TELEROBOT_FEAT_G_7 - Q_TELEROBOT_FEAT_7,
     FEAT_8_DIFF = Q_TELEROBOT_FEAT_G_8 - Q_TELEROBOT_FEAT_8,
     FEAT_9_DIFF = Q_TELEROBOT_FEAT_G_9 - Q_TELEROBOT_FEAT_9
-  ) %>% 
+  )
+  
+df <- melt(
+  base_df %>% 
   select(matches("_DIFF"), 'ResponseId','v')  %>% plyr::rename(COLUMN_DICTIONARY,warn_missing = FALSE)
  , id=c('ResponseId','v'),variable.name = "FEAT_DIFF"
 ) %>%
 group_by(v,FEAT_DIFF) %>%
 summarise(across(c("value"), list(mean = ~mean(.x), n = ~ n())))
+
+df %>% arrange(FEAT_DIFF)
+
+anova_res <- NULL
+  
+for (i in 1:9) {
+
+  res <- anova_test(base_df, as.formula(paste0("FEAT_",i, "_DIFF ~ v")), detailed = TRUE, effect.size = "pes")
+  res["FEAT"] = COLUMN_DICTIONARY[paste0("Q_TELEROBOT_FEAT_",i)]
+  res_tibble <- as_tibble(res)
+
+  if (is.null(anova_res)) {
+    anova_res <- res_tibble
+  } else {
+    anova_res <-bind_rows(anova_res,res_tibble)
+  }
+}
+
+anova_res
 
 ggplot(df, aes(x=reorder(FEAT_DIFF, -value_mean),y=value_mean,fill=FEAT_DIFF)) + 
 ylab("Mean individual difference between outgroup and normal scenario") +
@@ -1091,7 +1116,36 @@ facet_wrap(~ v,
   labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
 )
 ```
+### Significant overall change?
+````{r}
+base_df <- Telerobot_ages %>% select(matches("Q_TELEROBOT_FEAT_"), 'ResponseId','v') %>%    
+  drop_na()
 
+cox_res <- NULL
+
+for (group in c("IL","PS")) {
+  df <- base_df %>% filter(v == group)
+  for (i in 1:9) {
+    col <- paste0("Q_TELEROBOT_FEAT_", i)
+    col_g <- paste0("Q_TELEROBOT_FEAT_G_", i)
+    
+    res <- wilcox.test(df[[col]], df[[col_g]], paired=TRUE) 
+    res_tibble <- tidy(res)
+    res_tibble["Feature"] <- COLUMN_DICTIONARY[col]
+    res_tibble["Group"] <- group
+    
+    if (is.null(cox_res)) {
+      cox_res <- res_tibble
+    } else {
+      cox_res <-bind_rows(cox_res,res_tibble)
+    }
+  }
+}
+
+cox_res
+
+
+```
 ### Visibility preferences
 ```{r, fig.width=10,fig.asp=0.5}
 df <-
