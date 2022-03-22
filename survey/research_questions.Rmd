@@ -1273,9 +1273,9 @@ base_df <-  Telerobot_ages %>% select(matches("Q_TELEROBOT_DISP"), 'ResponseId',
   drop_na()
 
 df <- melt(
-  base_df %>%
-  mutate(Q_TELEROBOT_DISP_G=as_factor(Q_TELEROBOT_DISP_G)) %>%
-  mutate(Q_TELEROBOT_DISP=as_factor(Q_TELEROBOT_DISP)) 
+  base_df# %>%
+  #mutate(Q_TELEROBOT_DISP_G=as_factor(Q_TELEROBOT_DISP_G)) %>%
+  #mutate(Q_TELEROBOT_DISP=as_factor(Q_TELEROBOT_DISP)) 
 
  , id=c('ResponseId','v'),variable.name = "Visibility"
 ) %>%
@@ -1304,14 +1304,14 @@ mutate(DISP_1 = if_else(Q_TELEROBOT_DISP == 1, 1, 0),
        DISP_G_3 = if_else(Q_TELEROBOT_DISP_G == 3, 1, 0)
 )
 
-df <- cox_df %>% filter(v == "PS")
+df <- cox_df %>% filter(v == "IL")
 df
 wilcox.test(df$DISP_1, df$DISP_G_1, paired=TRUE) 
 wilcox.test(df$DISP_2, df$DISP_G_2, paired=TRUE) 
 wilcox.test(df$DISP_3, df$DISP_G_3, paired=TRUE) 
 
 melt(
-  df %>% select("ResponseId", "DISP_3", "DISP_G_3") 
+  df %>% select("ResponseId", "DISP_2", "DISP_G_2") 
 , id=c('ResponseId'),variable.name = "Visibility"
 ) %>% group_by(Visibility) %>% summarise(yes = sum(value),no=n() - sum(value)) %>% select (-Visibility) %>% chisq.test()
   #summarise(value, list(yes = sum,no = ~n()-sum(.x)))

@@ -133,3 +133,105 @@ Telerobot_sorted %>%
   count(word) %>%
   with(wordcloud(word, n, max.words = 100, scale = c(25,1), colors=brewer.pal(8, "Dark2")))
 ```
+
+### Features word cloud
+```{r, fig.width=12,fig.asp=0.5}
+words_res <- NULL;
+
+for (group in c("IL", "PS")) {
+  df <- Telerobot_ages %>% 
+  dplyr::filter(v == group) %>%
+  select("Q_TELEROBOT_OTHER_TRANS") %>%
+  drop_na()
+
+  word_df <-  
+   df %>%
+  unnest_tokens(word, "Q_TELEROBOT_OTHER_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  filter(!grepl("(.*n['’]t)|(robot)|(ability)", .$word)) 
+  
+  word_df %>% with(wordcloud(word, n, max.words = 50, scale = c(3.5,.5), colors=brewer.pal(8, "Dark2")))
+
+  
+  all_words <- word_df %>% mutate(freq = sprintf("%0.2f%%",n / sum(n) * 100)) %>% arrange(desc(n))
+  all_words["v"] = group
+  if (is.null(words_res)) {
+    words_res <- all_words
+  } else {
+    words_res <-bind_rows(words_res,all_words)
+  }
+}
+
+words_res %>% arrange(v,desc(freq))
+
+```
+
+### Features outgroup cloud
+```{r, fig.width=12,fig.asp=0.5}
+words_res <- NULL;
+
+for (group in c("IL", "PS")) {
+  df <- Telerobot_ages %>% 
+  dplyr::filter(v == group) %>%
+  select("Q_TELEROBOT_OTHER_G_TRANS") %>%
+  drop_na()
+
+  word_df <-  
+   df %>%
+  unnest_tokens(word, "Q_TELEROBOT_OTHER_G_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  filter(!grepl("(.*n['’]t)|(robot)|(ability)", .$word)) 
+  
+ # word_df %>% with(wordcloud(word, n, max.words = 50, scale = c(3.5,.5), colors=brewer.pal(8, "Dark2")))
+
+  all_words <- word_df %>% mutate(freq = sprintf("%0.2f%%",n / sum(n) * 100)) %>% arrange(desc(n))
+  all_words["v"] = group
+  if (is.null(words_res)) {
+    words_res <- all_words
+  } else {
+    words_res <-bind_rows(words_res,all_words)
+  }
+}
+
+words_res %>% arrange(v,desc(freq))
+```
+### Trying wordcloud2
+```{r}
+  df <- Telerobot_ages %>% 
+  dplyr::filter(v == "IL") %>%
+  select("Q_TELEROBOT_OTHER_G_TRANS") %>%
+  drop_na()
+
+
+  
+  word_df <- df %>%
+  unnest_tokens(word, "Q_TELEROBOT_OTHER_G_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word,sort=TRUE,name = "freq") %>%
+  filter(!grepl("(.*n['’]t)|(robot)|(ability)|(people)|(meeting)", .$word))
+  
+  word_df
+  word_df %>% wordcloud2(size = 0.5 )
+  
+  df <- Telerobot_ages %>% 
+  dplyr::filter(v == "PS") %>%
+  select("Q_TELEROBOT_OTHER_G_TRANS") %>%
+  drop_na()
+
+
+  
+  word_df <- df %>%
+  unnest_tokens(word, "Q_TELEROBOT_OTHER_G_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word,sort=TRUE,name = "freq") %>%
+  filter(!grepl("(.*n['’]t)|(robot)|(ability)|(people)|(meeting)", .$word))
+  
+  word_df
+  word_df %>% wordcloud2(size = 0.2 )
+  
+  
+```
+
+
