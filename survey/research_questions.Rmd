@@ -23,7 +23,11 @@ COLUMN_DICTIONARY <-
     Q_GROUP_INTEREST_2 = "Telepuppet",
     Q_GROUP_INTEREST_3 = "F2F",
     Q_GROUP_INTEREST_4 = "Video",
-    Q_SHOW_INTEREST = "Puppet show",
+    Q_SHOW_INTEREST = "Puppet show (outgroup)",
+    Q_TELEROBOT_WOULD_U_1 = "Approach",
+    Q_TELEROBOT_WOULD_U_2 = "at home",
+    Q_TELEROBOT_WOULD_U_3 = "Operate",
+    Q_PUPPET_INTEREST = "Telepuppet",
     Q_TELEROBOT_IDENT_1 = "Same nationality",
     Q_TELEROBOT_IDENT_2 = "Same age",
     Q_TELEROBOT_IDENT_3 = "Same gender",
@@ -1434,7 +1438,7 @@ pbs_res
 ```{r}
 base_df <-
   Telerobot_ages %>% select(matches("^Q_TELEROBOT_IDENT_\\d$"), 'ResponseId','v', "Q_GROUP_INTEREST_1") %>%    
-  filter(v == "IL") %>%
+  filter(v == "PS") %>%
   filter(if_any(matches("^Q_TELEROBOT_IDENT_\\d$"), ~ . == 1)) %>%
   mutate_at(vars(starts_with("Q_TELEROBOT_IDENT")),replace_na, 0) %>%
   drop_na()
@@ -1461,6 +1465,8 @@ for (ident_col in ident_cols) {
 }
 
 pbs_res
+
+base_df
 
 ggscatter(base_df, x = "Q_TELEROBOT_IDENT_1", y = "Q_GROUP_INTEREST_1",
           add = "reg.line",                                 # Add regression line
@@ -1544,9 +1550,28 @@ Telerobot_ages %>%
 
 
 ### Q: What is the level of interest in performing a puppet show? How do these compare with other interests
-```{r, fig.width=10,fig.asp=0.5}
+```{r, fig.width=13,fig.asp=0.5}
+
+df <- Telerobot_ages %>% select(starts_with("Q_TELEROBOT_WOULD_U_"), 'Q_PUPPET_INTEREST', 'ResponseId','v') %>% drop_na()
+
+df %>% summarise(across(c(starts_with("Q_TELEROBOT_WOULD_U_"),"Q_PUPPET_INTEREST"), list(mean=mean,sd=sd)))
+
   ggsummarystats(
-  melt(Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'Q_SHOW_INTEREST', 'ResponseId','v') %>% drop_na() %>%     plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "INTEREST"),
+  melt(df %>%     plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "INTEREST"),
+  x = "INTEREST", y = "value",
+  ggfunc = ggboxplot, palette="npg", add="jitter", color="INTEREST",
+  summaries = c("n", "median", "mean"),
+  digits = 3,
+  table.font.size = 3,
+  facet.by = "v",
+)
+
+df <- Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'Q_SHOW_INTEREST', 'ResponseId','v') %>% drop_na()
+
+df %>% summarise(across(c(starts_with("Q_GROUP_INTEREST"),"Q_SHOW_INTEREST"), list(mean=mean,sd=sd)))
+
+  ggsummarystats(
+  melt(df %>%     plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "INTEREST"),
   x = "INTEREST", y = "value",
   ggfunc = ggboxplot, palette="npg", add="jitter", color="INTEREST",
   summaries = c("n", "median", "mean"),
