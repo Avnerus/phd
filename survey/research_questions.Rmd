@@ -1400,6 +1400,83 @@ ggscatter(df, x = "Q_AGE", y = "Q_GROUP_INTEREST_4",
 ```
 ``
 
+### Correlation between one appearance choice and interest of meeting via telerobot
+```{r}
+appr <- attributes(Telerobot_ages$Q_TELEROBOT_APP)$labels;
+
+base_df <-  Telerobot_ages %>% 
+       select(ResponseId, v,Q_TELEROBOT_APP, Q_GROUP_INTEREST_1) %>%
+       drop_na() 
+
+
+pbs_res <- NULL
+
+for (name in names(appr)) {
+  res <-
+      base_df %>% mutate(SELECTED = ifelse(as_factor(Q_TELEROBOT_APP) == name, 1, 0)) %>%
+      correlation::cor_test("SELECTED", "Q_GROUP_INTEREST_1");
+
+  res_tibble <- as_tibble(res)
+  res_tibble["Field"] <- name
+  
+ if (is.null(pbs_res)) {
+   pbs_res <- res_tibble
+  } else {
+   pbs_res <-bind_rows(pbs_res,res_tibble)
+  }
+}
+
+pbs_res
+
+```
+### correlation between one identity question and interest of meeting via telerobot
+
+```{r}
+base_df <-
+  Telerobot_ages %>% select(matches("^Q_TELEROBOT_IDENT_\\d$"), 'ResponseId','v', "Q_GROUP_INTEREST_1") %>%    
+  filter(v == "IL") %>%
+  filter(if_any(matches("^Q_TELEROBOT_IDENT_\\d$"), ~ . == 1)) %>%
+  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT")),replace_na, 0) %>%
+  drop_na()
+  
+#print(biserial.cor(cor_df$Q_GROUP_SLIDER_1, cor_df$Q_TELEROBOT_IDENT_5))
+#plot(cor_df)
+
+ident_cols <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_IDENT_\\d$")) %>% colnames
+
+pbs_res <- NULL
+
+for (ident_col in ident_cols) {
+  
+  res <- base_df %>% correlation::cor_test(ident_col, "Q_GROUP_INTEREST_1");
+  
+  res_tibble <- as_tibble(res)
+  res_tibble["Field"] <- COLUMN_DICTIONARY[ident_col]
+   
+  if (is.null(pbs_res)) {
+   pbs_res <- res_tibble
+  } else {
+   pbs_res <-bind_rows(pbs_res,res_tibble)
+  }
+}
+
+pbs_res
+
+ggscatter(base_df, x = "Q_TELEROBOT_IDENT_1", y = "Q_GROUP_INTEREST_1",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -10, label.y = 20)
+
+
+
+#cor.test(cor_df$Q_GROUP_SLIDER_1, cor_df$Q_TELEROBOT_IDENT_5)
+
+```
+
+
 
 ### Did palestinians significantly prefer roboic over non robotic?
 ```{r}

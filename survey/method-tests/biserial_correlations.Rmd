@@ -11,7 +11,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(tidyr)
-load("/home/avnerus/Nextcloud/PhD/Survey/R/test3.RData")
+library(ltm)
+#load("/home/avnerus/Nextcloud/PhD/Survey/R/test3.RData")
 ```
 
 
@@ -24,8 +25,12 @@ cor_df <- Telerobot_sorted %>%
   drop_na("Q_GROUP_SLIDER_1") %>%
   mutate_at(c("Q_TELEROBOT_IDENT_5"), funs(ifelse(is.na(.), 0, .)))
 
-print(biserial.cor(cor_df$Q_GROUP_SLIDER_1, cor_df$Q_TELEROBOT_IDENT_5))
-plot(cor_df)
+#print(biserial.cor(cor_df$Q_GROUP_SLIDER_1, cor_df$Q_TELEROBOT_IDENT_5))
+#plot(cor_df)
+
+
+cor.test(cor_df$Q_GROUP_SLIDER_1, cor_df$Q_TELEROBOT_IDENT_5)
+
 ````
 # Biserial correlation between age and would meet or not a Palestinian through a telerobot
 
