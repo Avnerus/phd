@@ -268,5 +268,52 @@ words_res %>% arrange(v,desc(freq))
 
   
 ```
+# Puppets
+```{r}
+  df <- Telerobot_ages %>% 
+ # dplyr::filter(v == "IL") %>%
+  select("Q_PUPPET_IMAGINE_TRANS") %>%
+  drop_na()
 
+
+  word_df <- df %>%
+  unnest_tokens(word, "Q_PUPPET_IMAGINE_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word,sort=TRUE,name = "freq") %>%
+  filter(!grepl("(.*n['’]t)|(robot)|(puppet)|(perform.*)|(front)|(people)", .$word))
+  
+  word_df
+  word_df %>% wordcloud2(size = 0.6 )
+  
+   df <- Telerobot_ages %>% 
+ dplyr::filter(v == "IL") %>%
+  select("Q_PUPPET_IMAGINE_TRANS") %>%
+  drop_na()
+
+
+  word_df <- df %>%
+  unnest_tokens(word, "Q_PUPPET_IMAGINE_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word,sort=TRUE,name = "freq") %>%
+  filter(!grepl("(.*n['’]t)|(robot)|(puppet)|(perform.*)|(front)|(people)", .$word))
+  
+  word_df
+  word_df %>% wordcloud2(size = 0.6 )
+  
+     df <- Telerobot_ages %>% 
+ dplyr::filter(v == "PS") %>%
+  select("Q_PUPPET_IMAGINE_TRANS") %>%
+  drop_na()
+
+
+  word_df <- df %>%
+  unnest_tokens(word, "Q_PUPPET_IMAGINE_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word,sort=TRUE,name = "freq") %>%
+  filter(!grepl("(.*n['’]t)|(robot)|(puppet)|(perform.*)|(front)|(people)", .$word))
+  
+  word_df
+  word_df %>% wordcloud2(size = 0.6 )
+  
+```
 
