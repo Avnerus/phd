@@ -66,5 +66,17 @@ Filter those out
   filter(as_factor(Q_DEMOGRAPHICS_2_5) == "Yes")
 ```
 
+```{r}
+res <- Telerobot_ages %>%
+  select(v, Q_GROUP_INTEREST_3, Q_GROUP_INTEREST_4) %>%
+  drop_na() %>%
+#  filter(Q_GROUP_INTEREST_3 != Q_GROUP_INTEREST_4) %>%
+  group_by(v) %>%
+  summarise(across(c("Q_GROUP_INTEREST_3", "Q_GROUP_INTEREST_4"),list(sum=sum,mean=mean,sd=sd)))
+ # count,m 
+#  filter(
+
+```
+
 
 
