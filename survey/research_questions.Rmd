@@ -87,7 +87,12 @@ COLUMN_DICTIONARY <-
     Q_TELEROBOT_FEAT_6_M = "Play online content",
     Q_TELEROBOT_FEAT_7_M = "Show personal content",
     Q_TELEROBOT_FEAT_8_M = "Play games",
-    Q_TELEROBOT_FEAT_9_M = "Suggest topics"
+    Q_TELEROBOT_FEAT_9_M = "Suggest topics",
+    Q_SHOW_GENRE_1 = "Political satire",
+    Q_SHOW_GENRE_2 = "Children's theater",
+    Q_SHOW_GENRE_3 = "Adult drama",
+    Q_SHOW_GENRE_4 = "Situational comedy",
+    Q_SHOW_GENRE_5 = "Other"
 )
 ```
 
@@ -1557,10 +1562,10 @@ wilcox.test(df$PUPPET_INTEREST, df$NON_PUPPET_INTEREST, paired=TRUE)
   df <- Telerobot_ages %>% 
 #  filter(Q_DEMOGRAPHICS_2 <= 2) %>%
   mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
-  select('Q_PUPPET_INTEREST', 'ResponseId','v', "Q_AGE", "Q_DEMOGRAPHICS_2","Q_ROBOT_NARS","Q_TELEROBOT_WOULD_U_3") %>% 
+  select('Q_PUPPET_INTEREST', 'ResponseId','v', "Q_AGE", "Q_DEMOGRAPHICS_2","Q_ROBOT_NARS","Q_TELEROBOT_WOULD_U_3","Q_DEMOGRAPHICS_2_4") %>% 
   drop_na() 
 
-  as_tibble(df %>% anova_test(Q_PUPPET_INTEREST ~ v * Q_ROBOT_NARS,detailed = TRUE,effect.size = "pes"))
+  as_tibble(df %>% anova_test(Q_PUPPET_INTEREST ~ v * Q_DEMOGRAPHICS_2_4,detailed = TRUE,effect.size = "pes"))
   
   ggscatter(df, x = "Q_ROBOT_NARS", y = "Q_PUPPET_INTEREST",
           add = "reg.line",                                 # Add regression line
@@ -1575,6 +1580,16 @@ wilcox.test(df$PUPPET_INTEREST, df$NON_PUPPET_INTEREST, paired=TRUE)
           add = "reg.line",                                 # Add regression line
           conf.int = TRUE,                                  # Add confidence interval
           facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -10, label.y = 20)
+      
+        
+      ggscatter(df, x = "Q_DEMOGRAPHICS_2_4", y = "Q_PUPPET_INTEREST",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+       #   facet.by = "v",
           add.params = list(color = "blue",
                             fill = "lightgray")
           )+
@@ -1601,17 +1616,22 @@ df %>% summarise(across(c(starts_with("Q_TELEROBOT_WOULD_U_"),"Q_PUPPET_INTEREST
   #facet.by = "v",
 )
 
-df <- Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'Q_SHOW_INTEREST', 'Q_AGE', 'Q_DEMOGRAPHICS_2', 'ResponseId','v') %>% drop_na()
+df <- Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'Q_SHOW_INTEREST', 'Q_AGE', 'Q_DEMOGRAPHICS_2', 'ResponseId','v','Q_DEMOGRAPHICS_2_4','Q_ROBOT_NARS') %>% drop_na()
 
 df %>% summarise(across(c(starts_with("Q_GROUP_INTEREST"),"Q_SHOW_INTEREST"), list(mean=mean,sd=sd)))
 
 df %>% group_by(v) %>% summarise(across(c(starts_with("Q_GROUP_INTEREST"),"Q_SHOW_INTEREST"), list(mean=mean,sd=sd)))
 
-as_tibble(df %>% anova_test(Q_SHOW_INTEREST ~ v ,detailed = TRUE,effect.size = "pes"))
+bind_rows(
+  as_tibble(df %>% anova_test(Q_SHOW_INTEREST ~ v ,detailed = TRUE,effect.size = "pes")),
+  as_tibble(df %>% anova_test(Q_SHOW_INTEREST ~ v * Q_AGE ,detailed = TRUE,effect.size = "pes")),
+  as_tibble(df %>% anova_test(Q_SHOW_INTEREST ~ v * Q_DEMOGRAPHICS_2 ,detailed = TRUE,effect.size = "pes")),
+  as_tibble(df %>% anova_test(Q_SHOW_INTEREST ~ v * Q_ROBOT_NARS ,detailed = TRUE,effect.size = "pes")),
+  as_tibble(df %>% anova_test(Q_SHOW_INTEREST ~ v * Q_ROBOT_NARS ,detailed = TRUE,effect.size = "pes"))
+)
 
-
-  ggsummarystats(
-  melt(df %>%     plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "INTEREST"),
+ggsummarystats(
+  melt(df %>% select(starts_with("Q_GROUP_INTEREST"),'ResponseId','v',"Q_SHOW_INTEREST") %>% plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "INTEREST"),
   x = "INTEREST", y = "value",
   ggfunc = ggboxplot, palette="npg", add="jitter", color="INTEREST",
   summaries = c("n", "median", "mean"),
@@ -1633,6 +1653,44 @@ mutate(Q_GROUP_INTEREST_AVG = rowMeans(select(.,starts_with("Q_GROUP_INTEREST"))
 mutate(DIFF = Q_SHOW_INTEREST - Q_GROUP_INTEREST_AVG) %>%
   group_by(v) %>%
   get_summary_stats(DIFF)
+
+
+df <- Telerobot_sorted %>% 
+filter(v == 'PS') %>%
+select(starts_with("Q_GROUP_INTEREST"),'v','Q_SHOW_INTEREST') %>%
+drop_na()
+#mutate(PUPPET_INTEREST=(Q_GROUP_INTEREST_2), NON_PUPPET_INTEREST=(Q_GROUP_INTEREST_1))
+
+wilcox.test(df$Q_GROUP_INTEREST_2, df$Q_SHOW_INTEREST, paired=TRUE) 
+
+```
+### Show generes
+```{r}
+base_df <-
+  Telerobot_ages %>% select(starts_with("Q_SHOW_GENRE"), 'ResponseId','v') %>% select(-Q_SHOW_GENRE_5_TEXT,-Q_SHOW_GENRE_5_TEXT_TRANS) %>%    
+  filter(if_any(starts_with("Q_SHOW_GENRE"), ~ . == 1)) %>%
+  mutate_at(vars(starts_with("Q_SHOW_GENRE")),replace_na, 0)
+
+df <- melt(
+  base_df 
+ , id=c('ResponseId','v'),variable.name = "Genre") %>%
+   mutate(across(Genre, ~ unlist(map(.x,~ COLUMN_DICTIONARY[toString(.x)])))) %>%
+   group_by(v,Genre) %>%
+   summarise(across(c("value"), list(sum = ~sum(.x), n = ~ n())))
+ 
+df %>% arrange(desc(value_sum))
+
+  ggplot(df, aes(x=reorder(Genre, -value_sum),y=value_sum,fill=Genre)) +
+  ylab("Percentage") +
+  xlab("Genre") +
+  geom_bar(stat="identity") +
+  coord_flip() +
+  facet_wrap(~ v,
+    labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
+  )
+
+
+
 ```
 There was generally less interest in the puppet show
 
