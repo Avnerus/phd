@@ -1688,10 +1688,8 @@ df %>% arrange(desc(value_sum))
   facet_wrap(~ v,
     labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
   )
-
-
-
 ```
+
 There was generally less interest in the puppet show
 
 
