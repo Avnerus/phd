@@ -231,7 +231,6 @@ words_res %>% arrange(v,desc(freq))
   word_df
   word_df %>% wordcloud2(size = 0.2 )
   
-  
 ```
 ### Wordcloud2: hopes and concerns
 ```{r}

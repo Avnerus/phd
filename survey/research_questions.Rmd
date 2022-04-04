@@ -251,7 +251,27 @@ select(v,starts_with("Q_DEMOGRAPHICS_2_")) %>%
 drop_na() %>%
 mutate(across(starts_with("Q_DEMOGRAPHICS_2_"), ~(.x %% 2))) %>%
 group_by(v) %>%
-summarise(across(starts_with("Q_DEMOGRAPHICS_2_"), list(freq=~sum(.x) / n() * 100,yes=~sum(.x), no = ~n()-sum(.x))))
+summarise(across(starts_w### Q: What was the distribution of tech confidence?
+
+Telerobot_ages %>%
+select(v,Q_TECH_CONFIDENCE) %>%
+drop_na() %>%
+group_by(v) %>%
+summarize(mean_tech_conf = mean(Q_TECH_CONFIDENCE), sd_tech_conf = sd(Q_TECH_CONFIDENCE))
+
+
+ggdensity(
+  Telerobot_ages %>%
+  transmute(Q_TECH_CONFIDENCE = as.numeric(Q_TECH_CONFIDENCE),v) %>%
+  drop_na() 
+  ,x = "Q_TECH_CONFIDENCE", fill = "lightblue",facet.by = "v"
+)
+
+Telerobot_ages %>% 
+select(v,Q_TECH_CONFIDENCE, Q_DEMOGRAPHICS_2, Q_AGE) %>%
+drop_na() %>%
+anova_test(Q_TECH_CONFIDENCE ~ v + Q_AGE + Q_DEMOGRAPHICS_2, detailed=TRUE )
+```ith("Q_DEMOGRAPHICS_2_"), list(freq=~sum(.x) / n() * 100,yes=~sum(.x), no = ~n()-sum(.x))))
 
 df
 
@@ -377,10 +397,10 @@ ggscatter(Telerobot_ages, x = "Q_ROBOT_NARS", y = "Q_ROBOTS_SLIDER_4",
 
 
 ### General attitude toward the outgroup
-```{r}
+```{r, fig.width=9}
 ggdensity(Telerobot_ages %>% 
   select(Q_GROUP_SLIDER_1, v)
-  ,x = "Q_GROUP_SLIDER_1", fill = "lightgreen",facet.by = "v")
+  ,x = "Q_GROUP_SLIDER_1", fill = "lightblue",facet.by = "v", xlab = "Feeling thermometer value toward the outgroup")
 
 df <- Telerobot_ages %>% 
 select(Q_GROUP_SLIDER_1,v,Q_AGE, Q_DEMOGRAPHICS_2) %>% 
@@ -1248,12 +1268,46 @@ df
 ### In outgroup scenario
 ```{r, fig.width=10,fig.asp=0.5}
 df <-
-  Telerobot_ages %>% select("Q_TELEROBOT_DISP_G", 'ResponseId','v') %>%    
+  Telerobot_ages %>% select("Q_TELEROBOT_DISP_G", 'ResponseId','v','Q_GROUP_SLIDER_1') %>%    
   drop_na() %>%
   mutate(Visibility=as_factor(Q_TELEROBOT_DISP_G)) %>%
   group_by(v,Visibility) %>%
   summarise(n = n()) %>%
   mutate(freq = n / sum(n), total_n = sum(n))
+
+
+df
+
+ ggbarplot(
+   df, 
+   y = "freq",
+   fill = "Visibility",
+   facet.by = "v",
+   panel.labs = list(v = c(
+     paste0("IL (n = ",(df %>% filter(v == 'IL'))$total_n[1] ,")"),
+     paste0("PS (n = ",(df %>% filter(v == 'PS'))$total_n[1] ,")")
+   )),
+   palette = get_palette("npg", 5)
+) + coord_polar("y", start=0) + 
+     theme(
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+      )
+
+
+df <-
+  Telerobot_ages %>% select("Q_TELEROBOT_DISP_G", 'ResponseId','v','Q_GROUP_SLIDER_1') %>%    
+  drop_na() %>%
+  filter(Q_GROUP_SLIDER_1 < 50) %>%
+  mutate(Visibility=as_factor(Q_TELEROBOT_DISP_G)) %>%
+  group_by(v,Visibility) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n), total_n = sum(n))
+
 
  ggbarplot(
    df, 
@@ -1278,7 +1332,7 @@ df <-
 ### Comparion betwen same population, was there in increase in will for anonimity
 ```{r, fig.width=10}
 
-base_df <-  Telerobot_ages %>% select(matches("Q_TELEROBOT_DISP"), 'ResponseId','v') %>%    
+base_df <-  Telerobot_ages %>% select(matches("Q_TELEROBOT_DISP"), 'ResponseId','v','Q_GROUP_SLIDER_1') %>%    
   drop_na()
 
 df <- melt(
@@ -1326,7 +1380,14 @@ melt(
   #summarise(value, list(yes = sum,no = ~n()-sum(.x)))
 
 
- 
+ ggscatter(cox_df, x = "DISP_G_1", y = "Q_GROUP_SLIDER_1",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+       #   facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
 ```
 
 ## General attitude toward outgroup
