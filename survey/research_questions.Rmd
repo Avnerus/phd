@@ -251,7 +251,8 @@ select(v,starts_with("Q_DEMOGRAPHICS_2_")) %>%
 drop_na() %>%
 mutate(across(starts_with("Q_DEMOGRAPHICS_2_"), ~(.x %% 2))) %>%
 group_by(v) %>%
-summarise(across(starts_w### Q: What was the distribution of tech confidence?
+summarise(across(starts_with("Q_DEMOGRAPHICS_2_"), list(freq=~sum(.x) / n() * 100,yes=~sum(.x), no = ~n()-sum(.x))))
+
 
 Telerobot_ages %>%
 select(v,Q_TECH_CONFIDENCE) %>%
@@ -271,13 +272,12 @@ Telerobot_ages %>%
 select(v,Q_TECH_CONFIDENCE, Q_DEMOGRAPHICS_2, Q_AGE) %>%
 drop_na() %>%
 anova_test(Q_TECH_CONFIDENCE ~ v + Q_AGE + Q_DEMOGRAPHICS_2, detailed=TRUE )
-```ith("Q_DEMOGRAPHICS_2_"), list(freq=~sum(.x) / n() * 100,yes=~sum(.x), no = ~n()-sum(.x))))
 
 df
 
 df %>%
 dplyr::select(Q_DEMOGRAPHICS_2_3_yes,Q_DEMOGRAPHICS_2_3_no) %>%
-chisq.test()
+chisq.test() %>% tidy
 ```
 
 ## General attitude toward robots
