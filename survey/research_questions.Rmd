@@ -937,6 +937,7 @@ df %>% select(-IDENT) %>% chisq.test
 df <- melt(
   Telerobot_ages %>%  
   filter(if_any(starts_with("Q_TELEROBOT_IDENT_G"), ~ . == 1)) %>%
+  filter(if_any(matches("^Q_TELEROBOT_IDENT_\\d$"), ~ . == 1)) %>%
   mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_")),replace_na, 0) %>%
   mutate(
     IDENT_1_DIFF = Q_TELEROBOT_IDENT_G_1 - Q_TELEROBOT_IDENT_1,
@@ -1066,6 +1067,93 @@ df %>% arrange(FEAT)
 
 anova_res
  
+
+```
+
+### Demographic redictors for specific features?
+```{r}
+
+base_df <- Telerobot_ages %>%  select(matches("^Q_TELEROBOT_FEAT_\\d$"), 'ResponseId','v', 'Q_AGE', 'Q_DEMOGRAPHICS_2', 'Q_ROBOT_NARS') %>%    
+  drop_na() 
+
+feat_cols <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_\\d$")) %>% colnames
+
+mean_df <- base_df %>%
+rowwise() %>% mutate(m = mean(c_across(Q_TELEROBOT_FEAT_1:Q_TELEROBOT_FEAT_9)))
+
+for (feat_col in feat_cols) {
+  mean_df[paste0(feat_col,"_M")] = mean_df[feat_col] - mean_df["m"]
+}
+
+base_df_m <- mean_df %>% select(matches("^Q_TELEROBOT_FEAT_\\d_M$"),'ResponseId','v', 'Q_AGE', 'Q_DEMOGRAPHICS_2', 'Q_ROBOT_NARS')
+
+
+
+feat_cols <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_\\d$")) %>% colnames
+anova_res <- NULL
+
+
+for (feat_col in feat_cols) {
+
+  res <- bind_rows(
+    # as_tibble(base_df_m %>% anova_test(as.formula(paste0(feat_col,"_M ~ v")),detailed = TRUE,effect.size = "pes")),
+    # as_tibble(base_df_m %>% anova_test(as.formula(paste0(feat_col,"_M ~ v * Q_AGE")) ,detailed = TRUE,effect.size = "pes")),
+    # as_tibble(base_df_m %>% anova_test(as.formula(paste0(feat_col,"_M ~ v * Q_DEMOGRAPHICS_2")) ,detailed = TRUE,effect.size = "pes"))
+    as_tibble(base_df %>% anova_test(as.formula(paste0(feat_col," ~ v")),detailed = TRUE,effect.size = "pes")),
+    as_tibble(base_df %>% anova_test(as.formula(paste0(feat_col," ~ v * Q_AGE")) ,detailed = TRUE,effect.size = "pes")),
+    as_tibble(base_df %>% anova_test(as.formula(paste0(feat_col," ~ v * Q_DEMOGRAPHICS_2")) ,detailed = TRUE,effect.size = "pes"))
+    #as_tibble(base_df_m %>% anova_test(as.formula(paste0(feat_col,"_M ~ Q_ROBOT_NARS")) ,detailed = TRUE,effect.size = "pes"))
+  )
+  res["FEAT"] = COLUMN_DICTIONARY[feat_col]
+  res_tibble <- as_tibble(res)
+
+  if (is.null(anova_res)) {
+    anova_res <- res_tibble
+  } else {
+    anova_res <-bind_rows(anova_res,res_tibble)
+  }
+}
+
+anova_res
+
+ggscatter(base_df, x = "Q_AGE", y = "Q_TELEROBOT_FEAT_2",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+
+ggscatter(base_df, x = "Q_AGE", y = "Q_TELEROBOT_FEAT_3",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+ggscatter(base_df, x = "Q_AGE", y = "Q_TELEROBOT_FEAT_4",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+ggscatter(base_df, x = "Q_AGE", y = "Q_TELEROBOT_FEAT_9",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+
 
 ```
 
@@ -1232,11 +1320,67 @@ df %>% arrange(FEAT)
 anova_res
 ```
 
+### Correlate with other demographics?
+```{r}
+base_df <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_G_\\d$"), 'ResponseId','v', 'Q_AGE', 'Q_DEMOGRAPHICS_2', 'Q_ROBOT_NARS' ) %>%    
+  drop_na() 
+
+feat_cols <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_G_\\d$")) %>% colnames
+
+mean_df <- base_df %>%
+rowwise() %>% mutate(m = mean(c_across(Q_TELEROBOT_FEAT_G_1:Q_TELEROBOT_FEAT_G_9)))
+
+for (feat_col in feat_cols) {
+  mean_df[paste0(feat_col,"_M")] = mean_df[feat_col] - mean_df["m"]
+}
+
+base_df_m <- mean_df %>% select(matches("^Q_TELEROBOT_FEAT_G_\\d_M$"), 'ResponseId','v', 'Q_AGE', 'Q_DEMOGRAPHICS_2', 'Q_ROBOT_NARS')
+
+anova_res <- NULL
+
+for (feat_col in feat_cols) {
+    res <- bind_rows(
+    as_tibble(base_df_m %>% anova_test(as.formula(paste0(feat_col,"_M ~ v")),detailed = TRUE,effect.size = "pes")),
+    as_tibble(base_df_m %>% anova_test(as.formula(paste0(feat_col,"_M ~ v * Q_AGE")) ,detailed = TRUE,effect.size = "pes")),
+    as_tibble(base_df_m %>% anova_test(as.formula(paste0(feat_col,"_M ~ v * Q_DEMOGRAPHICS_2")) ,detailed = TRUE,effect.size = "pes")),
+    # as_tibble(base_df_m %>% anova_test(as.formula(paste0(feat_col,"_M ~ Q_ROBOT_NARS")) ,detailed = TRUE,effect.size = "pes"))
+    # as_tibble(base_df %>% anova_test(as.formula(paste0(feat_col," ~ v")),detailed = TRUE,effect.size = "pes")),
+    # as_tibble(base_df %>% anova_test(as.formula(paste0(feat_col," ~ v * Q_AGE")) ,detailed = TRUE,effect.size = "pes")),
+    # as_tibble(base_df %>% anova_test(as.formula(paste0(feat_col," ~ v * Q_DEMOGRAPHICS_2")) ,detailed = TRUE,effect.size = "pes"))
+   # as_tibble(base_df %>% anova_test(as.formula(paste0(feat_col," ~ Q_ROBOT_NARS")) ,detailed = TRUE,effect.size = "pes"))
+      
+  )
+  res["FEAT"] = COLUMN_DICTIONARY[feat_col]
+  res_tibble <- as_tibble(res)
+
+  if (is.null(anova_res)) {
+    anova_res <- res_tibble
+  } else {
+    anova_res <-bind_rows(anova_res,res_tibble)
+  }
+}
+
+anova_res
+
+ggscatter(base_df_m, x = "Q_AGE", y = "Q_TELEROBOT_FEAT_G_3_M",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+```
+
+
 ### Visibility preferences
 ```{r, fig.width=10,fig.asp=0.5}
+base_df <- Telerobot_ages %>% select("Q_TELEROBOT_DISP", 'ResponseId','v', 'Q_AGE', 'Q_DEMOGRAPHICS_2') %>%    
+  drop_na() 
+
 df <-
-  Telerobot_ages %>% select("Q_TELEROBOT_DISP", 'ResponseId','v') %>%    
-  drop_na() %>%
+  base_df %>%
   mutate(Visibility=as_factor(Q_TELEROBOT_DISP)) %>%
   group_by(v,Visibility) %>%
   summarise(n = n()) %>%
@@ -1263,10 +1407,38 @@ df
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
       )
+ 
+ 
+ bind_rows(
+    as_tibble(base_df %>% anova_test(as.formula(paste0('Q_TELEROBOT_DISP'," ~ v")),detailed = TRUE,effect.size = "pes")),
+    as_tibble(base_df %>% anova_test(as.formula(paste0('Q_TELEROBOT_DISP'," ~ v * Q_AGE")) ,detailed = TRUE,effect.size = "pes")),
+    as_tibble(base_df %>% anova_test(as.formula(paste0('Q_TELEROBOT_DISP'," ~ v * Q_DEMOGRAPHICS_2")) ,detailed = TRUE,effect.size = "pes")),
+)
+ 
+ 
+ bin_df <- base_df %>%
+mutate(present = 1) %>%
+spread('Q_TELEROBOT_DISP', present, fill = 0)
+
+bin_df %>% correlation::cor_test("Q_AGE", "1");
+bin_df %>% correlation::cor_test("Q_AGE", "2");
+bin_df %>% correlation::cor_test("Q_AGE", "3");
+
+bin_df %>% filter(v == "IL") %>% correlation::cor_test("Q_AGE", "1");
+bin_df %>% filter(v == "IL") %>% correlation::cor_test("Q_AGE", "2");
+bin_df %>% filter(v == "IL") %>% correlation::cor_test("Q_AGE", "3");
+
+bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_AGE", "1");
+bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_AGE", "2");
+bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_AGE", "3");
 ```  
 
 ### In outgroup scenario
 ```{r, fig.width=10,fig.asp=0.5}
+
+base_df <- Telerobot_ages %>% select("Q_TELEROBOT_DISP_G", 'ResponseId','v','Q_GROUP_SLIDER_1','Q_AGE','Q_DEMOGRAPHICS_2') %>% drop_na()
+
+
 df <-
   Telerobot_ages %>% select("Q_TELEROBOT_DISP_G", 'ResponseId','v','Q_GROUP_SLIDER_1') %>%    
   drop_na() %>%
@@ -1328,6 +1500,63 @@ df <-
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
       )
+ 
+ 
+bind_rows(
+    as_tibble(base_df %>% anova_test(as.formula(paste0('Q_TELEROBOT_DISP_G'," ~ v")),detailed = TRUE,effect.size = "pes")),
+    as_tibble(base_df %>% anova_test(as.formula(paste0('Q_TELEROBOT_DISP_G'," ~ v * Q_AGE")) ,detailed = TRUE,effect.size = "pes")),
+    as_tibble(base_df %>% anova_test(as.formula(paste0('Q_TELEROBOT_DISP_G'," ~ v * Q_DEMOGRAPHICS_2")) ,detailed = TRUE,effect.size = "pes")),
+)
+
+
+
+bin_df <- base_df %>%
+mutate(present = 1) %>%
+spread('Q_TELEROBOT_DISP_G', present, fill = 0)
+
+bind_rows(
+as_tibble(bin_df %>% correlation::cor_test("Q_AGE", "1")),
+as_tibble(bin_df %>% correlation::cor_test("Q_AGE", "2")),
+as_tibble(bin_df %>% correlation::cor_test("Q_AGE", "3")),
+
+as_tibble(bin_df %>% filter(v == "IL") %>% correlation::cor_test("Q_AGE", "1")),
+as_tibble(bin_df %>% filter(v == "IL") %>% correlation::cor_test("Q_AGE", "2")),
+as_tibble(bin_df %>% filter(v == "IL") %>% correlation::cor_test("Q_AGE", "3")),
+
+as_tibble(bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_AGE", "1")),
+as_tibble(bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_AGE", "2")),
+as_tibble(bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_AGE", "3"))
+)
+
+
+
+
+bind_rows(
+# as_tibble(bin_df %>% correlation::cor_test("Q_GROUP_SLIDER_1", "1")),
+# as_tibble(bin_df %>% correlation::cor_test("Q_GROUP_SLIDER_1", "2")),
+# as_tibble(bin_df %>% correlation::cor_test("Q_GROUP_SLIDER_1", "3")),
+# 
+# as_tibble(bin_df %>% filter(v == "IL") %>% correlation::cor_test("Q_GROUP_SLIDER_1", "1")),
+# as_tibble(bin_df %>% filter(v == "IL") %>% correlation::cor_test("Q_GROUP_SLIDER_1", "2")),
+# as_tibble(bin_df %>% filter(v == "IL") %>% correlation::cor_test("Q_GROUP_SLIDER_1", "3")),
+# 
+# as_tibble(bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_GROUP_SLIDER_1", "1")),
+# as_tibble(bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_GROUP_SLIDER_1", "2")),
+# as_tibble(bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_GROUP_SLIDER_1", "3"))
+)
+
+bin_df %>% correlation::cor_test("Q_GROUP_SLIDER_1", "1");
+bin_df %>% correlation::cor_test("Q_GROUP_SLIDER_1", "2");
+bin_df %>% correlation::cor_test("Q_GROUP_SLIDER_1", "3");
+
+bin_df %>% filter(v == "IL") %>% correlation::cor_test("Q_GROUP_SLIDER_1", "1");
+bin_df %>% filter(v == "IL") %>% correlation::cor_test("Q_GROUP_SLIDER_1", "2");
+bin_df %>% filter(v == "IL") %>% correlation::cor_test("Q_GROUP_SLIDER_1", "3");
+
+bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_GROUP_SLIDER_1", "1");
+bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_GROUP_SLIDER_1", "2");
+bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_GROUP_SLIDER_1", "3");
+ 
 ```  
 ### Comparion betwen same population, was there in increase in will for anonimity
 ```{r, fig.width=10}
@@ -1468,7 +1697,6 @@ ggscatter(df, x = "Q_AGE", y = "Q_GROUP_INTEREST_4",
 
 
 ```
-``
 
 ### Correlation between one appearance choice and interest of meeting via telerobot
 ```{r}
@@ -1595,7 +1823,7 @@ wilcox.test(df$PUPPET_INTEREST, df$NON_PUPPET_INTEREST, paired=TRUE)
 ### Q: Interest of puppet show in general, difference in chosing larger than 3?
 ```{r, fig.width=10,fig.asp=0.5}
 
-  base_df <-Telerobot_ages %>% select('Q_PUPPET_INTEREST', 'ResponseId','v') %>% drop_na()
+  base_df <-Telerobot_ages %>% select('Q_PUPPET_INTEREST', 'Q_AGE', 'Q_DEMOGRAPHICS_2', 'Q_ROBOT_NARS', 'Q_DEMOGRAPHICS_2_4', 'ResponseId','v') %>% drop_na()
 
   ggsummarystats(
   base_df,
@@ -1604,6 +1832,14 @@ wilcox.test(df$PUPPET_INTEREST, df$NON_PUPPET_INTEREST, paired=TRUE)
   summaries = c("n", "median", "mean"),
   digits = 3,
   table.font.size = 3
+)
+  
+bind_rows(
+  as_tibble(base_df %>% anova_test(Q_PUPPET_INTEREST ~ v ,detailed = TRUE,effect.size = "pes")),
+  as_tibble(base_df %>% anova_test(Q_PUPPET_INTEREST ~ v * Q_AGE ,detailed = TRUE,effect.size = "pes")),
+  as_tibble(base_df %>% anova_test(Q_PUPPET_INTEREST ~ v * Q_DEMOGRAPHICS_2 ,detailed = TRUE,effect.size = "pes")),
+  as_tibble(base_df %>% anova_test(Q_PUPPET_INTEREST ~ v * Q_ROBOT_NARS ,detailed = TRUE,effect.size = "pes")),
+  as_tibble(base_df %>% anova_test(Q_PUPPET_INTEREST ~ v * Q_DEMOGRAPHICS_2_4 ,detailed = TRUE,effect.size = "pes"))
 )
 
  base_df %>% 
@@ -1614,6 +1850,17 @@ wilcox.test(df$PUPPET_INTEREST, df$NON_PUPPET_INTEREST, paired=TRUE)
   ungroup %>%
   dplyr::select(-v) %>%
   chisq.test()
+ 
+ 
+    ggscatter(base_df, x = "Q_DEMOGRAPHICS_2", y = "Q_PUPPET_INTEREST",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -10, label.y = 20)
+ 
 ```
 ### Q: Interest of puppet show in general - what effects - ANOVA?
 
