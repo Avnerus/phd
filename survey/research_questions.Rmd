@@ -2,11 +2,14 @@
 title: "Research Questions"
 author: "Avner Peled"
 date: "9/27/2021"
-output: word_document
+output:
+  word_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+load("/home/avnerus/Nextcloud/PhD/Survey/R/09042022.RData")
 library(dplyr)
 library(ggpubr)
 library(tidyr)
@@ -15,8 +18,7 @@ library(grid)
 library(purrr)
 library(haven)
 library(rstatix)
-```
-```{r}
+
 COLUMN_DICTIONARY <-
   c(
     Q_GROUP_INTEREST_1 = "Telerobot",
@@ -369,13 +371,14 @@ t_test(Q_ROBOTS_SLIDER_4 ~ v)
 df <- Telerobot_ages %>%
 #filter(v == 'PS') %>%
 select(v,Q_ROBOT_NARS, Q_TECH_CONFIDENCE,Q_ROBOTS_SLIDER_4, starts_with("Q_DEMOGRAPHICS_2_")) %>%
-drop_na() %>%
-mutate(across(starts_with("Q_DEMOGRAPHICS_2_"), ~(.x %% 2))) 
+drop_na() #%>%
+#mutate(across(starts_with("Q_DEMOGRAPHICS_2_"), ~(.x %% 2))) 
 
   
 ggscatter(df, x = "Q_DEMOGRAPHICS_2_2", y = "Q_ROBOT_NARS",
           add = "reg.line",                                 # Add regression line
           conf.int = TRUE,                                  # Add confidence interval
+          #facet.by = 'v',
           add.params = list(color = "blue",
                             fill = "lightgray")
           )+
@@ -446,6 +449,38 @@ filter(v == "PS") %>%
 t_test(Q_GROUP_SLIDER_1 ~ Q_GENDER)
 )
 ```
+### Effect of friends or being in organized encounter with the outgroup
+```{r, fig.width=9}
+df <- Telerobot_ages %>% 
+select(Q_GROUP_SLIDER_1,v,Q_AGE, Q_DEMOGRAPHICS_2_5, Q_DEMOGRAPHICS_2_6 ) %>% 
+drop_na()
+
+df %>% 
+filter(Q_DEMOGRAPHICS_2_5 == 1 | Q_DEMOGRAPHICS_2_6 == 1) %>%
+group_by(v) %>%
+summarise(across(c("Q_GROUP_SLIDER_1"), list(mean=mean,sd=sd,total=~n())))
+
+anova_test(df, Q_GROUP_SLIDER_1 ~ Q_DEMOGRAPHICS_2_5, detailed = TRUE, effect.size = "pes")
+anova_test(df, Q_GROUP_SLIDER_1 ~ Q_DEMOGRAPHICS_2_6, detailed = TRUE, effect.size = "pes")
+
+ggscatter(df, x = "Q_DEMOGRAPHICS_2_5", y = "Q_GROUP_SLIDER_1",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = 0, label.y = 60)
+
+
+ggscatter(df, x = "Q_DEMOGRAPHICS_2_6", y = "Q_GROUP_SLIDER_1",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = 0, label.y = 60)
+```
+
 ## Willingness to interact with a robot
 
 ### Q: What were the frequencies in each scenario?
@@ -528,6 +563,41 @@ ggscatter(df, x = "Q_ROBOT_NARS", y = "Q_TELEROBOT_WOULD_U_3",
   stat_cor(method = "pearson", label.x = -15, label.y = 60)
 
 
+```
+
+### Interest in making an avatar
+```{r}
+
+base_df <- Telerobot_ages %>%
+select(v,Q_TELEROBOT_MAKE, Q_DEMOGRAPHICS_2, Q_AGE, Q_ROBOT_NARS) %>%
+drop_na()
+
+ggbarplot(
+   base_df %>% filter(Q_DEMOGRAPHICS_2 <= 2) %>%
+  mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)),
+   x = "Q_GENDER",
+   y = "Q_TELEROBOT_MAKE",
+   add="mean",
+  fill = "Q_GENDER",
+   facet.by = "v",
+  palette = get_palette("npg", 3)
+)
+
+ bind_rows(
+    as_tibble(base_df %>% anova_test(as.formula(paste0('Q_TELEROBOT_MAKE'," ~ v")),detailed = TRUE,effect.size = "pes")),
+    as_tibble(base_df %>% anova_test(as.formula(paste0('Q_TELEROBOT_MAKE'," ~ v * Q_AGE")) ,detailed = TRUE,effect.size = "pes")),
+    as_tibble(base_df %>% anova_test(as.formula(paste0('Q_TELEROBOT_MAKE'," ~ v * Q_DEMOGRAPHICS_2")) ,detailed = TRUE,effect.size = "pes")),
+    as_tibble(base_df %>% anova_test(as.formula(paste0('Q_TELEROBOT_MAKE'," ~ v * Q_ROBOT_NARS")) ,detailed = TRUE,effect.size = "pes"))
+)
+ 
+ ggscatter(base_df, x = "Q_ROBOT_NARS", y = "Q_TELEROBOT_MAKE",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          #facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
 ```
 
 ## Telerobot preference
@@ -965,7 +1035,38 @@ coord_flip() +
 facet_wrap(~ v, 
   labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
 )
+```
+### Q: How many chose that they would try to be someone else or not reveal them selves, but still be seen?
+```{r}
+base_df <-
+  Telerobot_ages %>% select(matches("Q_TELEROBOT_IDENT_G"), 'ResponseId','v', "Q_TELEROBOT_DISP_G") %>%    
+  filter(if_any(starts_with("Q_TELEROBOT_IDENT_G"), ~ . == 1)) %>%
+  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_G")),replace_na, 0) %>% drop_na()
 
+base_df %>%
+filter(Q_TELEROBOT_IDENT_G_10 == 1 | Q_TELEROBOT_IDENT_G_11 == 1) %>%
+group_by(v) %>%
+count
+
+base_df %>%
+filter((Q_TELEROBOT_IDENT_G_10 == 1 | Q_TELEROBOT_IDENT_G_11 == 1) & (Q_TELEROBOT_DISP_G == 2)) %>%
+group_by(v) %>%
+count
+
+base_df <-
+  Telerobot_ages %>% select(matches("^Q_TELEROBOT_IDENT_\\d$"), 'ResponseId','v', "Q_TELEROBOT_DISP") %>%    
+  filter(if_any(matches("^Q_TELEROBOT_IDENT_\\d$"), ~ . == 1)) %>%
+  mutate_at(vars(matches("^Q_TELEROBOT_IDENT_\\d$")),replace_na, 0)  %>% drop_na()
+
+base_df %>%
+filter(Q_TELEROBOT_IDENT_7 == 1 | Q_TELEROBOT_IDENT_8 == 1) %>%
+group_by(v) %>%
+count
+
+base_df %>%
+filter((Q_TELEROBOT_IDENT_7 == 1 | Q_TELEROBOT_IDENT_8 == 1) & (Q_TELEROBOT_DISP == 2)) %>%
+group_by(v) %>%
+count
 ```
 
 ### Q: How did participants rate the robot's feature importance? 
@@ -1014,6 +1115,7 @@ for (feat_col in feat_cols) {
 anova_res
  
 ```
+
 ### What if I take for each participant the value in relation to mean value given?
 ```{r, fig.width=10,fig.asp=0.5}
 
@@ -1066,8 +1168,6 @@ df %>% arrange(FEAT)
 }
 
 anova_res
- 
-
 ```
 
 ### Demographic redictors for specific features?
@@ -1236,7 +1336,7 @@ facet_wrap(~ v,
 )
 ```
 ### Significant overall change?
-````{r}
+```{r}
 base_df <- Telerobot_ages %>% select(matches("Q_TELEROBOT_FEAT_"), 'ResponseId','v') %>%    
   drop_na()
 
@@ -1262,13 +1362,10 @@ for (group in c("IL","PS")) {
 }
 
 cox_res
-
-
 ```
 
 ### What if I take for each participant the value in relation to mean value given (in OUTGROUP)?
 ```{r, fig.width=10,fig.asp=0.5}
-
 base_df <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_G_\\d$"), 'ResponseId','v') %>%    
   drop_na() 
 
@@ -1698,6 +1795,85 @@ ggscatter(df, x = "Q_AGE", y = "Q_GROUP_INTEREST_4",
 
 ```
 
+### How many are willing to meet via telerobot and not otherwise?
+```{r}
+df <- Telerobot_ages %>%
+select(v,starts_with("Q_GROUP_INTEREST")) %>%
+drop_na()
+
+df %>%
+  filter(
+    Q_GROUP_INTEREST_3 <= 2 & Q_GROUP_INTEREST_4 <= 2 
+) %>%
+  group_by(v) %>%
+  count
+
+df %>%
+  filter(
+    Q_GROUP_INTEREST_3 <= 2 & Q_GROUP_INTEREST_4 <= 2 &  (
+      Q_GROUP_INTEREST_1 >= 3 | Q_GROUP_INTEREST_2 >= 3
+    )
+) %>%
+  group_by(v) %>%
+  count
+
+df %>%
+  filter(
+    Q_GROUP_INTEREST_3 >= 3 | Q_GROUP_INTEREST_4 >=3 
+) %>%
+  group_by(v) %>%
+  count
+
+df %>%
+  filter(
+    (Q_GROUP_INTEREST_3 >=3 | Q_GROUP_INTEREST_4 >= 3) &  (
+      Q_GROUP_INTEREST_1 <=2 & Q_GROUP_INTEREST_2 <= 2
+    )
+) %>%
+  group_by(v) %>%
+  count
+
+
+df %>%
+  filter(
+    Q_GROUP_INTEREST_4 >= 3 
+) %>%
+  group_by(v) %>%
+  count
+
+df %>%
+  filter(
+    (Q_GROUP_INTEREST_4 >=3) &  (
+      Q_GROUP_INTEREST_1 <=2 & Q_GROUP_INTEREST_2 <= 2
+    )
+) %>%
+  group_by(v) %>%
+  count
+
+```
+### How many were not willing to operate a telerobot in the casual scenario but would do it with the outgroup?
+```{r}
+df <- Telerobot_ages %>%
+select(v,starts_with("Q_GROUP_INTEREST"),"Q_TELEROBOT_WOULD_U_3") %>%
+drop_na()
+
+df %>%
+  filter(
+    Q_TELEROBOT_WOULD_U_3 <= 2 
+) %>%
+  group_by(v) %>%
+  count
+
+df %>%
+  filter(
+    Q_TELEROBOT_WOULD_U_3 <=2 &  (
+      Q_GROUP_INTEREST_1 >= 3 | Q_GROUP_INTEREST_2 >= 3
+    )
+) %>%
+  group_by(v) %>%
+  count
+```
+
 ### Correlation between one appearance choice and interest of meeting via telerobot
 ```{r}
 appr <- attributes(Telerobot_ages$Q_TELEROBOT_APP)$labels;
@@ -1935,7 +2111,6 @@ bind_rows(
   as_tibble(df %>% anova_test(Q_SHOW_INTEREST ~ v * Q_AGE ,detailed = TRUE,effect.size = "pes")),
   as_tibble(df %>% anova_test(Q_SHOW_INTEREST ~ v * Q_DEMOGRAPHICS_2 ,detailed = TRUE,effect.size = "pes")),
   as_tibble(df %>% anova_test(Q_SHOW_INTEREST ~ v * Q_ROBOT_NARS ,detailed = TRUE,effect.size = "pes")),
-  as_tibble(df %>% anova_test(Q_SHOW_INTEREST ~ v * Q_ROBOT_NARS ,detailed = TRUE,effect.size = "pes"))
 )
 
 ggsummarystats(
