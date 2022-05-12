@@ -9,7 +9,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-load("/home/avnerus/Nextcloud/PhD/Survey/R/09042022.RData")
+#load("/home/avnerus/Nextcloud/PhD/Survey/R/09042022.RData")
 library(dplyr)
 library(ggpubr)
 library(tidyr)
@@ -90,6 +90,15 @@ COLUMN_DICTIONARY <-
     Q_TELEROBOT_FEAT_7_M = "Show personal content",
     Q_TELEROBOT_FEAT_8_M = "Play games",
     Q_TELEROBOT_FEAT_9_M = "Suggest topics",
+    Q_TELEROBOT_FEAT_G_1_M = "Translate speech",
+    Q_TELEROBOT_FEAT_G_2_M = "Travel around",
+    Q_TELEROBOT_FEAT_G_3_M = "Hand gestures",
+    Q_TELEROBOT_FEAT_G_4_M = "Touch feedback",
+    Q_TELEROBOT_FEAT_G_5_M = "Show emotions",
+    Q_TELEROBOT_FEAT_G_6_M = "Play online content",
+    Q_TELEROBOT_FEAT_G_7_M = "Show personal content",
+    Q_TELEROBOT_FEAT_G_8_M = "Play games",
+    Q_TELEROBOT_FEAT_G_9_M = "Suggest topics",
     Q_SHOW_GENRE_1 = "Political satire",
     Q_SHOW_GENRE_2 = "Children's theater",
     Q_SHOW_GENRE_3 = "Adult drama",
@@ -314,7 +323,9 @@ ggbarplot(
 ```{r}
 ggdensity(Telerobot_ages %>% 
   select(Q_ROBOT_NARS, v) %>% 
-    mutate(Q_ROBOT_NARS_INV = Q_ROBOT_NARS * -1) ,x = "Q_ROBOT_NARS_INV", fill = "lightgreen",facet.by = "v")
+    mutate(Q_ROBOT_NARS_INV = Q_ROBOT_NARS * -1) ,x = "Q_ROBOT_NARS_INV", fill = "lightblue",facet.by = "v",xlab = "Positive attidue toward robots (NARS inverted)" )
+
+
 
 df <- Telerobot_ages %>% 
 select(Q_ROBOT_NARS,v,Q_AGE, Q_DEMOGRAPHICS_2, Q_TECH_CONFIDENCE,Q_ROBOTS_SLIDER_4) %>% 
@@ -387,6 +398,26 @@ ggscatter(df, x = "Q_DEMOGRAPHICS_2_2", y = "Q_ROBOT_NARS",
 
 summary(lm(Q_ROBOT_NARS ~ Q_DEMOGRAPHICS_2_2, data = df))
 ```
+### Is gender a factor when tech confidence is a co-variate?
+```{r}
+base_df <- Telerobot_ages %>% select("v", "Q_ROBOT_NARS", "Q_DEMOGRAPHICS_2", "Q_TECH_CONFIDENCE", "Q_ROBOTS_SLIDER_4") %>% drop_na()
+
+anova_test(base_df %>% filter (v == "IL"), Q_ROBOT_NARS ~ Q_DEMOGRAPHICS_2, detailed = TRUE, effect.size = "pes")
+anova_test(base_df %>% filter (v == "PS"), Q_ROBOT_NARS ~ Q_DEMOGRAPHICS_2, detailed = TRUE, effect.size = "pes")
+
+anova_test(base_df %>% filter (v == "IL"), Q_ROBOT_NARS ~ Q_DEMOGRAPHICS_2, covariate = Q_TECH_CONFIDENCE, detailed = TRUE, effect.size = "pes")
+anova_test(base_df %>% filter (v == "PS"), Q_ROBOT_NARS ~ Q_DEMOGRAPHICS_2, covariate = Q_TECH_CONFIDENCE, detailed = TRUE, effect.size = "pes")
+
+anova_test(base_df %>% filter (v == "IL"), Q_ROBOT_NARS ~ Q_DEMOGRAPHICS_2 * Q_TECH_CONFIDENCE, covariate = Q_TECH_CONFIDENCE, detailed = TRUE, effect.size = "pes")
+
+anova_test(base_df %>% filter (v == "IL"), Q_ROBOTS_SLIDER_4 ~ Q_DEMOGRAPHICS_2 , covariate = Q_TECH_CONFIDENCE, detailed = TRUE, effect.size = "pes")
+anova_test(base_df %>% filter (v == "IL"), Q_ROBOTS_SLIDER_4 ~ Q_DEMOGRAPHICS_2 * Q_TECH_CONFIDENCE, covariate = Q_TECH_CONFIDENCE, detailed = TRUE, effect.size = "pes")
+
+
+
+```
+
+
 ### What's the correlation between NARS and the feeling thermometer?
 ```{r}
 ggscatter(Telerobot_ages, x = "Q_ROBOT_NARS", y = "Q_ROBOTS_SLIDER_4",
@@ -998,6 +1029,37 @@ df
 
 df %>% select(-IDENT) %>% chisq.test
 
+cox_res <- NULL
+
+for (group in c("IL","PS")) {
+  df <- base_df %>% filter(v == group)
+  for (i in 1:8) {
+    col <- paste0("Q_TELEROBOT_IDENT_", i)
+    i_g <- i
+    if (i <= 8 && i >= 6) {
+      i_g <- i + 3
+    }
+    if (i == 5) {
+      i_g <- 6
+    }
+    col_g <- paste0("Q_TELEROBOT_IDENT_G_", i_g)
+  
+    res <- wilcox.test(df[[col]], df[[col_g]], paired=TRUE) 
+    res_tibble <- tidy(res)
+    res_tibble["Identity"] <- COLUMN_DICTIONARY[col]
+    res_tibble["Group"] <- group
+    res_tibble["i"] <- col
+    res_tibble["i_g"] <- col_g
+    
+    if (is.null(cox_res)) {
+      cox_res <- res_tibble
+    } else {
+      cox_res <-bind_rows(cox_res,res_tibble)
+    }
+  }
+}
+res
+cox_res
 
 ```
 
@@ -1470,6 +1532,49 @@ ggscatter(base_df_m, x = "Q_AGE", y = "Q_TELEROBOT_FEAT_G_3_M",
 
 ```
 
+### Seeing all relative values
+```{r, fig.width=10,fig.asp=0.5}
+base_df <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_\\d$"),matches("^Q_TELEROBOT_FEAT_G_\\d$"), 'ResponseId','v') %>%    
+  drop_na() 
+
+mean_df <- base_df %>%
+rowwise() %>% mutate(m_g = mean(c_across(Q_TELEROBOT_FEAT_G_1:Q_TELEROBOT_FEAT_G_9)), m = mean(c_across(Q_TELEROBOT_FEAT_1:Q_TELEROBOT_FEAT_9)))
+
+feat_cols_g <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_G_\\d$")) %>% colnames
+
+for (feat_col_g in feat_cols_g) {
+  mean_df[paste0(feat_col_g,"_M")] = mean_df[feat_col_g] - mean_df["m_g"]
+}
+
+feat_cols <- Telerobot_ages %>% select(matches("^Q_TELEROBOT_FEAT_\\d$")) %>% colnames
+
+for (feat_col in feat_cols) {
+  mean_df[paste0(feat_col,"_M")] = mean_df[feat_col] - mean_df["m"]
+}
+
+df <- melt(
+  mean_df %>% select(matches("^Q_TELEROBOT_FEAT_G_\\d_M$"),matches("^Q_TELEROBOT_FEAT_\\d_M$"), 'ResponseId','v')
+ , id=c('ResponseId','v'),variable.name = "FEAT"
+) %>%
+  group_by(v,FEAT) %>%
+  summarise(across(c("value"), list(mean = ~mean(.x), n = ~ n()))) %>%
+  mutate(type = if_else(grepl("Q_TELEROBOT_FEAT_G", FEAT),"Outgroup","Casual")) %>%
+  mutate(across(FEAT, ~ unlist(map(.x,~ COLUMN_DICTIONARY[toString(.x)]))))
+
+df %>% arrange(v,FEAT)
+
+ ggplot(df, aes(x=reorder(FEAT, -value_mean),y=value_mean,fill=type)) +
+ ylab("Mean rank relative to each participant's mean score") +
+ xlab("Telerobot feature") +
+ geom_bar(position="dodge", stat="identity") +
+ coord_flip() +
+ facet_wrap(~ v,
+     labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(df %>% filter(v == .x))$value_n[1] ,")")))
+ )
+
+
+```
+
 
 ### Visibility preferences
 ```{r, fig.width=10,fig.asp=0.5}
@@ -1724,18 +1829,22 @@ melt(
 ```{r}
 ggdensity(Telerobot_ages %>% select(Q_GROUP_SLIDER_1,v),x = "Q_GROUP_SLIDER_1", fill = "lightgray",facet.by = "v")
 ```
+
 ### Q: How willing are the groups to meat each other with the different scenarios?
 
 ```{r, fig.width=12,fig.asp=0.5}
-  ggsummarystats(
-  melt(Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v') %>% drop_na() %>%     plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "Medium", value.name = "Interest"),
+
+base_df <- Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v') %>% drop_na()
+
+ggsummarystats(
+  melt(base_df %>% plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "Medium", value.name = "Interest"),
   x = "Medium", y = "Interest", digits = 3,
   ggfunc = ggboxplot, palette="npg", add="jitter", color="Medium",
   legend = "none",
-  summaries = c("n", "median", "mean"),
-  
+  summaries = c("n", "median", "mean","sd"),
   facet.by = "v"
 )
+
 
 df <- Telerobot_ages %>%
 #filter(Q_DEMOGRAPHICS_2 <= 2) %>%
@@ -1791,6 +1900,22 @@ ggscatter(df, x = "Q_AGE", y = "Q_GROUP_INTEREST_4",
                             fill = "lightgray")
           )+
   stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+
+```
+
+### Trying some kind of clustering/factor analysis
+```{r, fig.width=12,fig.asp=0.5}
+
+base_df <- Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v') %>% drop_na()
+
+num_df <- base_df %>% mutate(across(starts_with("Q_GROUP_INTEREST"),as.numeric)) %>%
+mutate(Q_GROUP_INTEREST_3_4 = (Q_GROUP_INTEREST_3 + Q_GROUP_INTEREST_4) / 2) %>%
+mutate(Q_GROUP_INTEREST_1_2 = (Q_GROUP_INTEREST_1 + Q_GROUP_INTEREST_2) / 2)
+
+
+ggplot(num_df, aes(x=Q_GROUP_INTEREST_3, y=Q_GROUP_INTEREST_1,color=stat(n))) + geom_count() + scale_size_area(max_size = 20) +   scale_color_continuous(type="viridis") + facet_wrap(vars(v))
+
 
 
 ```
