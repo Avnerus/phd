@@ -15,6 +15,7 @@ library(knitr)
 library(tidytext)
 library(textdata)
 library(wordcloud)
+library(wordcloud2)
 library(ggplot2)
 #load("/home/avnerus/Code/R/survey/tests.RData")
 #knitr::opts_chunk$set(echo = TRUE)
@@ -86,6 +87,23 @@ df <- Telerobot_ages %>%
   dplyr::filter(v == "IL") %>%
   select("Q_TELEROBOT_IMAGINE_TRANS") %>%
   drop_na() 
+
+  df %>%
+  unnest_tokens(word, "Q_TELEROBOT_IMAGINE_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  filter(!grepl("(.*n['’]t)|(robot)", .$word)) %>%
+  with(wordcloud(word, n, max.words = 50, scale = c(3.5,.5), colors=brewer.pal(8, "Dark2")))
+  #mutate(freq = sprintf("%0.2f%%",n / sum(n) * 100)) %>% arrange(desc(n))
+
+
+  df %>%
+  unnest_tokens(word, "Q_TELEROBOT_IMAGINE_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  filter(!grepl("(.*n['’]t)|(robot)", .$word)) %>%
+  with(wordcloud(word, n, max.words = 50, scale = c(5,1), colors=brewer.pal(8, "Dark2")))
+  #mutate(freq = sprintf("%0.2f%%",n / sum(n) * 100)) %>% arrange(desc(n))
 
 
   df %>%
@@ -232,6 +250,43 @@ words_res %>% arrange(v,desc(freq))
   word_df %>% wordcloud2(size = 0.2 )
   
 ```
+### wordcloud2 features
+```{r}
+  df <- Telerobot_ages %>% 
+  dplyr::filter(v == "IL") %>%
+  select("Q_TELEROBOT_OTHER_TRANS") %>%
+  drop_na()
+
+
+  
+  word_df <- df %>%
+  unnest_tokens(word, "Q_TELEROBOT_OTHER_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word,sort=TRUE,name = "freq") %>%
+  filter(!grepl("(.*n['’]t)|(robot)|(ability)", .$word))
+  
+  word_df
+  word_df %>% wordcloud2(size = 0.5 )
+  
+  df <- Telerobot_ages %>% 
+  dplyr::filter(v == "PS") %>%
+  select("Q_TELEROBOT_OTHER_TRANS") %>%
+  drop_na()
+
+
+  
+  word_df <- df %>%
+  unnest_tokens(word, "Q_TELEROBOT_OTHER_TRANS") %>%
+  anti_join(stop_words) %>%
+  count(word,sort=TRUE,name = "freq") %>%
+  filter(!grepl("(.*n['’]t)|(robot)|(ability)", .$word))
+  
+  word_df
+  word_df %>% wordcloud2(size = 0.2 )
+  
+```
+
+
 ### Wordcloud2: hopes and concerns
 ```{r}
   df <- Telerobot_ages %>% 

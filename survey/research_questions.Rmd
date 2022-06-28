@@ -634,12 +634,23 @@ ggbarplot(
 ## Telerobot preference
 
 
-### Q: Would Israerlies use a robot for shopping significantly more than Palestinians?
+### Q: Would Israerlies use a robot for shopping significantly more than Palestinians? Palestinians for cleaning?
 ```{r}
 Telerobot_sorted %>% 
 select("Q_TELEROBOT_IMAGINE_TRANS",'v') %>%
 drop_na() %>%
 mutate(ROBOT_SHOPPING = ifelse(grepl(".*shop.*", Q_TELEROBOT_IMAGINE_TRANS,ignore.case = TRUE), "Yes", "No")) %>%
+group_by(v, ROBOT_SHOPPING) %>%
+summarize(n = n()) %>%
+spread(ROBOT_SHOPPING ,n) %>%
+ungroup %>%
+dplyr::select(-v) %>%
+chisq.test()
+
+Telerobot_sorted %>% 
+select("Q_TELEROBOT_IMAGINE_TRANS",'v') %>%
+drop_na() %>%
+mutate(ROBOT_SHOPPING = ifelse(grepl(".*clean*", Q_TELEROBOT_IMAGINE_TRANS,ignore.case = TRUE), "Yes", "No")) %>%
 group_by(v, ROBOT_SHOPPING) %>%
 summarize(n = n()) %>%
 spread(ROBOT_SHOPPING ,n) %>%
@@ -1820,6 +1831,34 @@ melt(
           )+
   stat_cor(method = "pearson", label.x = -15, label.y = 60)
 ```
+  
+### Checking correlation between visiblity/anonimity and human appearance and traveling in space
+```{r}
+
+base_df <-Telerobot_ages %>% select(matches("Q_TELEROBOT_DISP_G"), 'ResponseId','v','Q_TELEROBOT_APP_G') %>%    
+  drop_na() %>%
+  mutate(App_G = as_factor(Q_TELEROBOT_APP_G), Disp_G = as_factor(Q_TELEROBOT_DISP_G)) %>%
+  mutate(Appearance = ifelse(as_factor(Q_TELEROBOT_APP_G) == "A human.", 'Human', 'Nonhuman')) %>%
+  mutate(Visibility = ifelse(Q_TELEROBOT_DISP_G == 2, 'Visible', 'Anonymous'))
+  
+  
+# base_df
+
+base_df %>%
+group_by(v) %>%
+count(Appearance,Visibility, sort=TRUE )
+
+# ggbarplot(
+#    base_df, 
+#    x = "Q_GENDER",
+#    y = "Q_ROBOTS_SLIDER_4",
+#    add="sum",
+#   fill = "Q_GENDER",
+#    facet.by = "v",
+#   palette = get_palette("npg", 3)
+# )
+```
+
 
 ## General attitude toward outgroup
 
@@ -1836,7 +1875,7 @@ ggdensity(Telerobot_ages %>% select(Q_GROUP_SLIDER_1,v),x = "Q_GROUP_SLIDER_1", 
 
 base_df <- Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v') %>% drop_na()
 
-ggsummarystats(
+summary_fig <- ggsummarystats(
   melt(base_df %>% plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "Medium", value.name = "Interest"),
   x = "Medium", y = "Interest", digits = 3,
   ggfunc = ggboxplot, palette="npg", add="jitter", color="Medium",
@@ -1844,6 +1883,7 @@ ggsummarystats(
   summaries = c("n", "median", "mean","sd"),
   facet.by = "v"
 )
+summary_fig
 
 
 df <- Telerobot_ages %>%
@@ -1854,10 +1894,18 @@ mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
 select(v,starts_with("Q_GROUP_INTEREST"), Q_GENDER, Q_AGE, Q_TECH_CONFIDENCE, Q_ROBOT_NARS) %>%
 drop_na()
 
+anova_df <- bind_rows(
 c("Q_GROUP_INTEREST_1","Q_GROUP_INTEREST_2","Q_GROUP_INTEREST_3","Q_GROUP_INTEREST_4") %>%
-#map(~ data.frame(append(anova_test(as.formula(paste0(.x," ~ v * Q_GENDER * Q_AGE")), data=df),c(test=.x))))
-map(~ anova_test(as.formula(paste0(.x," ~  v")), data=df,effect.size = "pes"),c(test=.x))
+map(~ as_tibble(anova_test(as.formula(paste0(.x," ~  v")), data=base_df,effect.size = "pes",detailed = TRUE)) %>% mutate(Medium = COLUMN_DICTIONARY[.x]))
+)
 
+anova_fig <- ggtexttable(
+  anova_df %>% mutate(Effect="Nationality") %>% relocate(Medium, .before = Effect),
+  rows = NULL
+)
+
+anova_fig
+#ggarrange(summary_fig, anova_fig, ncol = 1, nrow = 2, heights = c(1, 0.5))
 
 df %>%
 group_by(v) %>%
@@ -1902,6 +1950,26 @@ ggscatter(df, x = "Q_AGE", y = "Q_GROUP_INTEREST_4",
   stat_cor(method = "pearson", label.x = -15, label.y = 60)
 
 
+
+
+ggscatter(df, x = "Q_GROUP_INTEREST_3", y = "Q_GROUP_INTEREST_1",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+ggscatter(df, x = "Q_GROUP_INTEREST_4", y = "Q_GROUP_INTEREST_1",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
 ```
 
 ### Trying some kind of clustering/factor analysis
@@ -1916,6 +1984,23 @@ mutate(Q_GROUP_INTEREST_1_2 = (Q_GROUP_INTEREST_1 + Q_GROUP_INTEREST_2) / 2)
 
 ggplot(num_df, aes(x=Q_GROUP_INTEREST_3, y=Q_GROUP_INTEREST_1,color=stat(n))) + geom_count() + scale_size_area(max_size = 20) +   scale_color_continuous(type="viridis") + facet_wrap(vars(v))
 
+ggplot(num_df, aes(x=Q_GROUP_INTEREST_4, y=Q_GROUP_INTEREST_1,color=stat(n))) + geom_count() + scale_size_area(max_size = 20) +   scale_color_continuous(type="viridis") + facet_wrap(vars(v))
+
+
+df <- melt(base_df %>% plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "Medium", value.name = "Interest")
+
+
+ggdensity(
+  df %>%
+  filter(v == "IL")
+  ,x = "Interest", fill = "lightblue",facet.by = "Medium"
+)
+
+ggdensity(
+  df %>%
+  filter(v == "PS")
+  ,x = "Interest", fill = "lightblue",facet.by = "Medium"
+)
 
 
 ```
@@ -1936,7 +2021,7 @@ df %>%
 df %>%
   filter(
     Q_GROUP_INTEREST_3 <= 2 & Q_GROUP_INTEREST_4 <= 2 &  (
-      Q_GROUP_INTEREST_1 >= 3 | Q_GROUP_INTEREST_2 >= 3
+      Q_GROUP_INTEREST_1 > 3 | Q_GROUP_INTEREST_2 >  3
     )
 ) %>%
   group_by(v) %>%
@@ -1944,14 +2029,14 @@ df %>%
 
 df %>%
   filter(
-    Q_GROUP_INTEREST_3 >= 3 | Q_GROUP_INTEREST_4 >=3 
+    Q_GROUP_INTEREST_3 > 3 | Q_GROUP_INTEREST_4 > 3 
 ) %>%
   group_by(v) %>%
   count
 
 df %>%
   filter(
-    (Q_GROUP_INTEREST_3 >=3 | Q_GROUP_INTEREST_4 >= 3) &  (
+    (Q_GROUP_INTEREST_3 > 3 | Q_GROUP_INTEREST_4 > 3) &  (
       Q_GROUP_INTEREST_1 <=2 & Q_GROUP_INTEREST_2 <= 2
     )
 ) %>%
@@ -1961,15 +2046,16 @@ df %>%
 
 df %>%
   filter(
-    Q_GROUP_INTEREST_4 >= 3 
+    Q_GROUP_INTEREST_3 == 1 &
+    Q_GROUP_INTEREST_4 == 1
 ) %>%
   group_by(v) %>%
   count
 
 df %>%
   filter(
-    (Q_GROUP_INTEREST_4 >=3) &  (
-      Q_GROUP_INTEREST_1 <=2 & Q_GROUP_INTEREST_2 <= 2
+    (Q_GROUP_INTEREST_3 == 1 & Q_GROUP_INTEREST_4 == 1) &  (
+      Q_GROUP_INTEREST_1 == 2 | Q_GROUP_INTEREST_2 == 2
     )
 ) %>%
   group_by(v) %>%
@@ -2085,8 +2171,17 @@ df <- Telerobot_sorted %>%
 filter(v == 'PS') %>%
 select(starts_with("Q_GROUP_INTEREST"),'v') %>%
 drop_na() %>%
-#mutate(ROBOT_INTEREST=(Q_GROUP_INTEREST_1 + Q_GROUP_INTEREST_2) / 2, NON_ROBOT_INTEREST=(Q_GROUP_INTEREST_3 + Q_GROUP_INTEREST_4) / 2)
-mutate(ROBOT_INTEREST=(Q_GROUP_INTEREST_1), NON_ROBOT_INTEREST=(Q_GROUP_INTEREST_2))
+mutate(ROBOT_INTEREST=(Q_GROUP_INTEREST_1 + Q_GROUP_INTEREST_2) / 2, NON_ROBOT_INTEREST=(Q_GROUP_INTEREST_3 + Q_GROUP_INTEREST_4) / 2)
+#mutate(ROBOT_INTEREST=(Q_GROUP_INTEREST_1), NON_ROBOT_INTEREST=(Q_GROUP_INTEREST_2))
+
+wilcox.test(df$ROBOT_INTEREST, df$NON_ROBOT_INTEREST, paired=TRUE) 
+
+df <- Telerobot_sorted %>% 
+filter(v == 'IL') %>%
+select(starts_with("Q_GROUP_INTEREST"),'v') %>%
+drop_na() %>%
+mutate(ROBOT_INTEREST=(Q_GROUP_INTEREST_1 + Q_GROUP_INTEREST_2) / 2, NON_ROBOT_INTEREST=(Q_GROUP_INTEREST_3 + Q_GROUP_INTEREST_4) / 2)
+#mutate(ROBOT_INTEREST=(Q_GROUP_INTEREST_1), NON_ROBOT_INTEREST=(Q_GROUP_INTEREST_2))
 
 wilcox.test(df$ROBOT_INTEREST, df$NON_ROBOT_INTEREST, paired=TRUE) 
   

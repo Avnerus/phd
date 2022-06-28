@@ -41,6 +41,10 @@ How many Finished the survey from each side?
   According to the survey flow, Q_TELEROBOT_APP_G (robot apperance) is asked only if meeting the outgroup using a telerobot is higher than "Probably not"
   
 ```{r}
+ Telerobot_ages %>% select(v,Q_AGE) %>% drop_na() %>% filter(Q_AGE < 15) %>% count(v)
+```
+
+```{r}
 Telerobot_ages %>% 
   mutate(OUTGROUP_TELEROBOTS = !is.na(Q_TELEROBOT_APP_G)) %>%
   count(v, OUTGROUP_TELEROBOTS) %>%
