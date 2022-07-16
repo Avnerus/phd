@@ -349,7 +349,7 @@ ggbarplot(
 ```{r}
 ggdensity(Telerobot_ages %>% 
   select(Q_ROBOT_NARS, v) %>% 
-    mutate(Q_ROBOT_NARS_INV = Q_ROBOT_NARS * -1) ,x = "Q_ROBOT_NARS", fill = "lightblue",facet.by = "v",xlab = "NARS value" )
+    mutate(Q_ROBOT_NARS_INV = Q_ROBOT_NARS * -1) ,x = "Q_ROBOT_NARS", fill = "lightblue",facet.by = "v",xlab = "NARS value", ylab="")
 
 
 
@@ -460,7 +460,7 @@ ggscatter(Telerobot_ages, x = "Q_ROBOT_NARS", y = "Q_ROBOTS_SLIDER_4",
 ```{r, fig.width=9}
 ggdensity(Telerobot_ages %>% 
   select(Q_GROUP_SLIDER_1, v)
-  ,x = "Q_GROUP_SLIDER_1", fill = "lightblue",facet.by = "v", xlab = "Feeling thermometer value toward the outgroup")
+  ,x = "Q_GROUP_SLIDER_1", fill = "lightblue",facet.by = "v", xlab = "Feeling thermometer value toward the outgroup", ylab = "")
 
 base_df <- Telerobot_ages %>% 
 select(Q_GROUP_SLIDER_1,v,Q_AGE, Q_DEMOGRAPHICS_2) %>% 
@@ -2056,7 +2056,7 @@ ggdensity(Telerobot_ages %>% select(Q_GROUP_SLIDER_1,v),x = "Q_GROUP_SLIDER_1", 
 base_df <- Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v',Q_DEMOGRAPHICS_2) %>% drop_na()
 
 summary_fig <- ggsummarystats(
-  melt(base_df %>% filter(Q_DEMOGRAPHICS_2 == 2) %>% plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "Medium", value.name = "Interest"),
+  melt(base_df %>% plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "Medium", value.name = "Interest"),
   x = "Medium", y = "Interest", digits = 3,
   ggfunc = ggboxplot, palette="npg", add="jitter", color="Medium",
   legend = "none",
@@ -2158,6 +2158,22 @@ ggscatter(df, x = "Q_TELEROBOT_WOULD_U_3", y = "Q_GROUP_INTEREST_1",
                             fill = "lightgray")
           )+
   stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+
+test_df <- Telerobot_ages %>%
+select(v,ResponseId, starts_with("Q_GROUP_INTEREST"), Q_TELEROBOT_WOULD_U_3) %>%
+drop_na() %>% 
+filter(Q_TELEROBOT_WOULD_U_3 >= 5)
+
+
+ggsummarystats(
+  melt(test_df %>% plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "Medium", value.name = "Interest"),
+  x = "Medium", y = "Interest", digits = 3,
+  ggfunc = ggboxplot, palette="npg", add="jitter", color="Medium",
+  legend = "none",
+  summaries = c("n", "median", "mean","sd"),
+  facet.by = "v"
+)
 
 ```
 
