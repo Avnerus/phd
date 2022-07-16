@@ -26,9 +26,9 @@ COLUMN_DICTIONARY <-
     Q_GROUP_INTEREST_3 = "F2F",
     Q_GROUP_INTEREST_4 = "Video",
     Q_SHOW_INTEREST = "Puppet show (outgroup)",
-    Q_TELEROBOT_WOULD_U_1 = "Approach",
-    Q_TELEROBOT_WOULD_U_2 = "at home",
-    Q_TELEROBOT_WOULD_U_3 = "Operate",
+    Q_TELEROBOT_WOULD_U_1 = "Approaching",
+    Q_TELEROBOT_WOULD_U_2 = "Having at home",
+    Q_TELEROBOT_WOULD_U_3 = "Operating",
     Q_PUPPET_INTEREST = "Telepuppet",
     Q_TELEROBOT_IDENT_1 = "Same nationality",
     Q_TELEROBOT_IDENT_2 = "Same age",
@@ -236,19 +236,24 @@ t_test(Q_AGE ~ v)
 
 ### Q: What was the distribution of tech confidence?
 ```{r}
-Telerobot_ages %>%
+base_df <- Telerobot_ages %>%
 select(v,Q_TECH_CONFIDENCE) %>%
-drop_na() %>%
+drop_na() 
+  
+base_df %>%
 group_by(v) %>%
 summarize(mean_tech_conf = mean(Q_TECH_CONFIDENCE), sd_tech_conf = sd(Q_TECH_CONFIDENCE))
 
 
 ggdensity(
-  Telerobot_ages %>%
+  base_df %>%
   transmute(Q_TECH_CONFIDENCE = as.numeric(Q_TECH_CONFIDENCE),v) %>%
   drop_na() 
   ,x = "Q_TECH_CONFIDENCE", fill = "lightblue",facet.by = "v"
 )
+
+base_df %>% t_test(Q_TECH_CONFIDENCE ~ v)
+
 
 Telerobot_ages %>% 
 select(v,Q_TECH_CONFIDENCE, Q_DEMOGRAPHICS_2, Q_AGE) %>%
@@ -286,9 +291,30 @@ anova_test(Q_TECH_CONFIDENCE ~ v + Q_AGE + Q_DEMOGRAPHICS_2, detailed=TRUE )
 
 df
 
-df %>%
-dplyr::select(Q_DEMOGRAPHICS_2_3_yes,Q_DEMOGRAPHICS_2_3_no) %>%
-chisq.test() %>% tidy
+questions <- c(1,2,3,4,5,6)
+
+chi_res <- NULL
+
+for (question in questions ) {
+
+  chi_df <- df %>%
+  dplyr::select(paste0('Q_DEMOGRAPHICS_2_',question,'_yes'),paste0('Q_DEMOGRAPHICS_2_',question,'_no')) 
+            
+  res <- chi_df %>%
+  chisq.test() %>% tidy
+  
+  res["Question"] = paste0('Q_DEMOGRAPHICS_2_',question)
+
+  
+  if (is.null(chi_res)) {
+    chi_res <- res
+  } else {
+    chi_res <-bind_rows(chi_res,res)
+  }
+}
+
+chi_res
+
 ```
 
 ## General attitude toward robots
@@ -323,7 +349,7 @@ ggbarplot(
 ```{r}
 ggdensity(Telerobot_ages %>% 
   select(Q_ROBOT_NARS, v) %>% 
-    mutate(Q_ROBOT_NARS_INV = Q_ROBOT_NARS * -1) ,x = "Q_ROBOT_NARS_INV", fill = "lightblue",facet.by = "v",xlab = "Positive attidue toward robots (NARS inverted)" )
+    mutate(Q_ROBOT_NARS_INV = Q_ROBOT_NARS * -1) ,x = "Q_ROBOT_NARS", fill = "lightblue",facet.by = "v",xlab = "NARS value" )
 
 
 
@@ -333,7 +359,7 @@ filter(Q_DEMOGRAPHICS_2 <= 2) %>%
 mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
 drop_na()
 
-anova_test(df, Q_ROBOT_NARS ~ v * Q_AGE * Q_DEMOGRAPHICS_2, covariate = Q_TECH_CONFIDENCE, detailed = TRUE, effect.size = "pes")
+anova_test(df, Q_ROBOT_NARS ~ v * Q_DEMOGRAPHICS_2, covariate = Q_TECH_CONFIDENCE, detailed = TRUE, effect.size = "pes")
 
 ggbarplot(
    df, 
@@ -436,18 +462,25 @@ ggdensity(Telerobot_ages %>%
   select(Q_GROUP_SLIDER_1, v)
   ,x = "Q_GROUP_SLIDER_1", fill = "lightblue",facet.by = "v", xlab = "Feeling thermometer value toward the outgroup")
 
-df <- Telerobot_ages %>% 
+base_df <- Telerobot_ages %>% 
 select(Q_GROUP_SLIDER_1,v,Q_AGE, Q_DEMOGRAPHICS_2) %>% 
+drop_na()
+  
+df <- base_df %>%
 filter(Q_DEMOGRAPHICS_2 <= 2) %>%
 mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
 drop_na()
+
+
+df %>% 
+summarise(across(c("Q_GROUP_SLIDER_1"), list(mean=mean,sd=sd,total=~n())))
 
 df %>% 
 group_by(v) %>%
 summarise(across(c("Q_GROUP_SLIDER_1"), list(mean=mean,sd=sd,total=~n())))
 
 
-anova_test(df, Q_GROUP_SLIDER_1 ~ v * Q_AGE * Q_DEMOGRAPHICS_2, detailed = TRUE, effect.size = "pes")
+anova_test(base_df, Q_GROUP_SLIDER_1 ~ v, detailed = TRUE, effect.size = "pes")
 
 ggscatter(df, x = "Q_AGE", y = "Q_GROUP_SLIDER_1",
           add = "reg.line",                                 # Add regression line
@@ -515,23 +548,76 @@ ggscatter(df, x = "Q_DEMOGRAPHICS_2_6", y = "Q_GROUP_SLIDER_1",
 ## Willingness to interact with a robot
 
 ### Q: What were the frequencies in each scenario?
-```{r}
-df <- Telerobot_ages %>%
+```{r, fig.width=10, fig.asp=0.4}
+
+base_df <- 
+  Telerobot_ages %>%
+select(v,starts_with("Q_TELEROBOT_WOULD_U"), ResponseId, Q_DEMOGRAPHICS_2, Q_AGE, Q_TECH_CONFIDENCE, Q_ROBOT_NARS) %>%
+drop_na()
+  
+df <- base_df %>%
 filter(Q_DEMOGRAPHICS_2 <= 2) %>%
-mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
-#filter(Q_GENDER == 'Female') %>%
-#filter(v == 'IL') %>%
-select(v,starts_with("Q_TELEROBOT_WOULD_U"), Q_GENDER, Q_AGE, Q_TECH_CONFIDENCE, Q_ROBOT_NARS) %>%
+mutate(Gender = as_factor(Q_DEMOGRAPHICS_2)) %>%
 drop_na()
 
 c("Q_TELEROBOT_WOULD_U_1","Q_TELEROBOT_WOULD_U_2","Q_TELEROBOT_WOULD_U_3") %>%
 #map(~ data.frame(append(anova_test(as.formula(paste0(.x," ~ v * Q_GENDER * Q_AGE")), data=df),c(test=.x))))
-map(~ anova_test(as.formula(paste0(.x," ~ v * Q_AGE * Q_GENDER")), data=df,effect.size = "pes"),c(test=.x))
+map(~ anova_test(as.formula(paste0(.x," ~ v * Q_AGE * Gender")), data=df,effect.size = "pes"),c(test=.x))
 
 
-df %>%
-group_by(v, Q_GENDER) %>%
-summarise(across(starts_with("Q_TELEROBOT_WOULD_U"), list(mean=mean)))
+anova_test(Q_TELEROBOT_WOULD_U_1 ~ v, data=df %>% filter(Gender == 'Female') ,effect.size = "pes")
+anova_test(Q_TELEROBOT_WOULD_U_3 ~ v, data=df %>% filter(Gender == 'Male') ,effect.size = "pes")
+
+
+
+
+#gender_df <- df %>%
+#group_by(v, Q_GENDER) %>%
+#summarise(across(starts_with("Q_TELEROBOT_WOULD_U"), list(mean=mean)))
+
+gender_df <- melt(df %>% select(v,starts_with("Q_TELEROBOT_WOULD_U"),Gender) %>% plyr::rename(COLUMN_DICTIONARY),
+ id=c('v','Gender'), variable.name = "Scenario") %>%
+  group_by(v,Gender,Scenario) %>%
+  summarise(across(c("value"), list(mean = ~mean(.x), n = ~ n(),sd)))
+
+gender_df
+  
+
+ ggplot(gender_df , aes(x=reorder(Scenario, -value_mean),y=value_mean,fill=Gender)) +
+ ylab("Mean") +
+ xlab("Scenario") +
+ geom_bar(position="dodge", stat="identity") +
+ coord_flip() +
+ facet_wrap(~ v#,
+ #    labeller = as_labeller(~map(.x,~paste0(.x, " (n = ",(gender_df %>% filter(v == .x))$value_n[1] ,")")))
+ )
+
+summary_df <- melt(base_df %>% select(v,starts_with("Q_TELEROBOT_WOULD_U"),ResponseId) %>% plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "Telerobot_scenario", value.name = "Interest") %>%
+  group_by(v,Telerobot_scenario) %>%
+  get_summary_stats(type = "common")
+
+
+summary_df
+
+ggsummarytable(
+  summary_df, x = "Telerobot_scenario", y = c("n", "median", "mean", "sd"),
+  ggtheme = theme_bw(),
+  digits = 3,
+  facet.by = "v",
+  size=3.5
+)
+
+summary_fig <- ggsummarystats(
+  melt(base_df %>% select(v,starts_with("Q_TELEROBOT_WOULD_U"),ResponseId) %>% plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "Telerobot_scenario", value.name = "Interest"),
+  x = "Telerobot_scenario", y = "Interest", digits = 3,
+  ggfunc = ggboxplot, palette="npg",color="Telerobot_scenario", fill="Telerobot_scenario",
+  legend = "none",
+  summaries = c("n", "median", "mean","sd"),
+  facet.by = "v",
+  size=0.8
+)
+summary_fig
+
 
 
 ggscatter(df, x = "Q_AGE", y = "Q_TELEROBOT_WOULD_U_1",
@@ -545,10 +631,10 @@ ggscatter(df, x = "Q_AGE", y = "Q_TELEROBOT_WOULD_U_1",
 
 ggbarplot(
    df,
-   x = "Q_GENDER",
+   x = "Gender",
    y = "Q_TELEROBOT_WOULD_U_1",
    add="mean",
-  fill = "Q_GENDER",
+  fill = "Gender",
    facet.by = "v",
   palette = get_palette("npg", 3)
 )
@@ -565,26 +651,35 @@ ggscatter(df, x = "Q_ROBOT_NARS", y = "Q_TELEROBOT_WOULD_U_1",
 
 ggbarplot(
    df,
-   x = "Q_GENDER",
+   x = "Gender",
    y = "Q_TELEROBOT_WOULD_U_2",
    add="mean",
-  fill = "Q_GENDER",
+  fill = "Gender",
    facet.by = "v",
   palette = get_palette("npg", 3)
 )
 
 ggbarplot(
    df,
-   x = "Q_GENDER",
+   x = "Gender",
    y = "Q_TELEROBOT_WOULD_U_3",
    add="mean",
-  fill = "Q_GENDER",
+  fill = "Gender",
    facet.by = "v",
   palette = get_palette("npg", 3)
 )
 
 
 ggscatter(df, x = "Q_ROBOT_NARS", y = "Q_TELEROBOT_WOULD_U_3",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+   #       facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+ggscatter(df, x = "Q_ROBOT_NARS", y = "Q_TELEROBOT_WOULD_U_2",
           add = "reg.line",                                 # Add regression line
           conf.int = TRUE,                                  # Add confidence interval
    #       facet.by = "v",
@@ -1832,10 +1927,11 @@ melt(
   stat_cor(method = "pearson", label.x = -15, label.y = 60)
 ```
   
-### Checking correlation between visiblity/anonimity and human appearance and traveling in space
+### Checking correlation between visiblity/anonimity and human appearance 
+### Checking anonimity also through the robot identity questions 
 ```{r}
 
-base_df <-Telerobot_ages %>% select(matches("Q_TELEROBOT_DISP_G"), 'ResponseId','v','Q_TELEROBOT_APP_G') %>%    
+base_df <-Telerobot_ages %>% select("Q_TELEROBOT_DISP_G", 'ResponseId','v','Q_TELEROBOT_APP_G') %>%    
   drop_na() %>%
   mutate(App_G = as_factor(Q_TELEROBOT_APP_G), Disp_G = as_factor(Q_TELEROBOT_DISP_G)) %>%
   mutate(Appearance = ifelse(as_factor(Q_TELEROBOT_APP_G) == "A human.", 'Human', 'Nonhuman')) %>%
@@ -1844,19 +1940,103 @@ base_df <-Telerobot_ages %>% select(matches("Q_TELEROBOT_DISP_G"), 'ResponseId',
   
 # base_df
 
-base_df %>%
+df <- base_df %>%
 group_by(v) %>%
 count(Appearance,Visibility, sort=TRUE )
 
-# ggbarplot(
-#    base_df, 
-#    x = "Q_GENDER",
-#    y = "Q_ROBOTS_SLIDER_4",
-#    add="sum",
-#   fill = "Q_GENDER",
-#    facet.by = "v",
-#   palette = get_palette("npg", 3)
-# )
+chi_df <- df %>% filter(v == "IL") %>% pivot_wider(names_from = Visibility, values_from = n)
+chi_df
+
+chi_df %>% ungroup() %>% select(-c(v,Appearance)) %>% chisq.test()
+
+
+base_df_ident <-
+  Telerobot_ages %>% select(matches("Q_TELEROBOT_IDENT_G"), 'ResponseId','v','Q_TELEROBOT_APP_G') %>%    
+  filter(if_any(starts_with("Q_TELEROBOT_IDENT_G"), ~ . == 1)) %>%
+  mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_G")),replace_na, 0) %>%
+  drop_na() %>%
+  mutate(Identity = ifelse(Q_TELEROBOT_IDENT_G_9 == 1 | Q_TELEROBOT_IDENT_G_10 == 1  , 'Hide identity', 'Reveal identity')) %>%
+  mutate(App_G = as_factor(Q_TELEROBOT_APP_G)) %>%
+  mutate(Appearance = ifelse(as_factor(Q_TELEROBOT_APP_G) == "A human.", 'Human', 'Nonhuman'))
+  
+df_ident<- base_df_ident %>%
+group_by(v) %>%
+count(Appearance,Identity, sort=TRUE )
+
+chi_df_ident <- df_ident %>% filter(v == "IL") %>% pivot_wider(names_from = Identity, values_from = n)
+
+chi_df_ident
+
+chi_df_ident %>% ungroup() %>% select(-c(v,Appearance)) %>% chisq.test()
+
+
+# What about the casual scenario
+base_df_casual <-Telerobot_ages %>% select("Q_TELEROBOT_DISP", 'ResponseId','v','Q_TELEROBOT_APP') %>%    
+  drop_na() %>%
+  mutate(App = as_factor(Q_TELEROBOT_APP), Disp = as_factor(Q_TELEROBOT_DISP)) %>%
+  mutate(Appearance = ifelse(as_factor(Q_TELEROBOT_APP) == "A human.", 'Human', 'Nonhuman')) %>%
+  mutate(Visibility = ifelse(Q_TELEROBOT_DISP == 2, 'Visible', 'Anonymous'))
+  
+base_df_casual
+  
+df_casual <- base_df_casual %>%
+group_by(v) %>%
+count(Appearance,Visibility, sort=TRUE )
+
+chi_df_casual <- df_casual %>% filter(v == "IL") %>% pivot_wider(names_from = Visibility, values_from = n)
+chi_df_casual
+
+chi_df_casual %>% ungroup() %>% select(-c(v,Appearance)) %>% chisq.test()
+
+
+```
+### Checking correlation between visiblity/anonimity and traveling in space
+### Checking anonimity also through the robot identity questions 
+```{r}
+
+base_df <-Telerobot_ages %>% select(matches("Q_TELEROBOT_DISP_G"), 'ResponseId','v','Q_TELEROBOT_FEAT_G_2') %>%    
+  drop_na() %>%
+  mutate(Visibility = ifelse(Q_TELEROBOT_DISP_G == 2, 'Visible', 'Anonymous'))
+  
+  
+base_df
+
+df <- base_df %>%
+group_by(v, Visibility) %>%
+summarise(across(c("Q_TELEROBOT_FEAT_G_2"), list(mean=mean,sd=sd,n=~n())))
+
+df
+
+base_df %>% anova_test(Q_TELEROBOT_FEAT_G_2 ~ v * Visibility ,detailed = TRUE,effect.size = "pes")
+
+t.test(Q_TELEROBOT_FEAT_G_2 ~ Visibility,data=base_df)
+
+# chi_df <- df %>% filter(v == "IL") %>% pivot_wider(names_from = Visibility, values_from = n)
+# chi_df
+# 
+# chi_df %>% ungroup() %>% select(-c(v,Appearance)) %>% chisq.test()
+# 
+# 
+# base_df_ident <-
+#   Telerobot_ages %>% select(matches("Q_TELEROBOT_IDENT_G"), 'ResponseId','v','Q_TELEROBOT_APP_G') %>%    
+#   filter(if_any(starts_with("Q_TELEROBOT_IDENT_G"), ~ . == 1)) %>%
+#   mutate_at(vars(starts_with("Q_TELEROBOT_IDENT_G")),replace_na, 0) %>%
+#   drop_na() %>%
+#   mutate(Identity = ifelse(Q_TELEROBOT_IDENT_G_9 == 1 | Q_TELEROBOT_IDENT_G_10 == 1  , 'Hide identity', 'Reveal identity')) %>%
+#   mutate(App_G = as_factor(Q_TELEROBOT_APP_G)) %>%
+#   mutate(Appearance = ifelse(as_factor(Q_TELEROBOT_APP_G) == "A human.", 'Human', 'Nonhuman'))
+#   
+# df_ident<- base_df_ident %>%
+# group_by(v) %>%
+# count(Appearance,Identity, sort=TRUE )
+# 
+# chi_df_ident <- df_ident %>% filter(v == "IL") %>% pivot_wider(names_from = Identity, values_from = n)
+# 
+# chi_df_ident
+# 
+# chi_df_ident %>% ungroup() %>% select(-c(v,Appearance)) %>% chisq.test()
+
+
 ```
 
 
@@ -1873,10 +2053,10 @@ ggdensity(Telerobot_ages %>% select(Q_GROUP_SLIDER_1,v),x = "Q_GROUP_SLIDER_1", 
 
 ```{r, fig.width=12,fig.asp=0.5}
 
-base_df <- Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v') %>% drop_na()
+base_df <- Telerobot_ages %>% select(starts_with("Q_GROUP_INTEREST"), 'ResponseId','v',Q_DEMOGRAPHICS_2) %>% drop_na()
 
 summary_fig <- ggsummarystats(
-  melt(base_df %>% plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "Medium", value.name = "Interest"),
+  melt(base_df %>% filter(Q_DEMOGRAPHICS_2 == 2) %>% plyr::rename(COLUMN_DICTIONARY), id=c('ResponseId','v'),variable.name = "Medium", value.name = "Interest"),
   x = "Medium", y = "Interest", digits = 3,
   ggfunc = ggboxplot, palette="npg", add="jitter", color="Medium",
   legend = "none",
@@ -1891,7 +2071,7 @@ df <- Telerobot_ages %>%
 mutate(Q_GENDER = as_factor(Q_DEMOGRAPHICS_2)) %>%
 #filter(Q_GENDER == 'Female') %>%
 #filter(v == 'PS') %>%
-select(v,starts_with("Q_GROUP_INTEREST"), Q_GENDER, Q_AGE, Q_TECH_CONFIDENCE, Q_ROBOT_NARS) %>%
+select(v,starts_with("Q_GROUP_INTEREST"), Q_GENDER, Q_AGE, Q_TECH_CONFIDENCE, Q_ROBOT_NARS,Q_TELEROBOT_WOULD_U_3) %>%
 drop_na()
 
 anova_df <- bind_rows(
@@ -1962,6 +2142,15 @@ ggscatter(df, x = "Q_GROUP_INTEREST_3", y = "Q_GROUP_INTEREST_1",
   stat_cor(method = "pearson", label.x = -15, label.y = 60)
 
 ggscatter(df, x = "Q_GROUP_INTEREST_4", y = "Q_GROUP_INTEREST_1",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+ggscatter(df, x = "Q_TELEROBOT_WOULD_U_3", y = "Q_GROUP_INTEREST_1",
           add = "reg.line",                                 # Add regression line
           conf.int = TRUE,                                  # Add confidence interval
           facet.by = "v",
