@@ -352,6 +352,15 @@ ggdensity(Telerobot_ages %>%
     mutate(Q_ROBOT_NARS_INV = Q_ROBOT_NARS * -1) ,x = "Q_ROBOT_NARS", fill = "lightblue",facet.by = "v",xlab = "NARS value", ylab="")
 
 
+base_df <- Telerobot_ages %>% 
+select(Q_ROBOT_NARS,v, Q_ROBOTS_SLIDER_4, Q_TECH_CONFIDENCE) %>% 
+drop_na()
+
+anova_test(base_df, Q_ROBOT_NARS ~ v,, detailed = TRUE, effect.size = "pes")
+anova_test(base_df, Q_ROBOTS_SLIDER_4 ~ v, detailed = TRUE, effect.size = "pes")
+anova_test(base_df, Q_ROBOT_NARS ~ v, covariate = Q_TECH_CONFIDENCE, detailed = TRUE, effect.size = "pes")
+anova_test(base_df, Q_ROBOTS_SLIDER_4 ~ v, covariate = Q_TECH_CONFIDENCE, detailed = TRUE, effect.size = "pes")
+
 
 df <- Telerobot_ages %>% 
 select(Q_ROBOT_NARS,v,Q_AGE, Q_DEMOGRAPHICS_2, Q_TECH_CONFIDENCE,Q_ROBOTS_SLIDER_4) %>% 
@@ -415,7 +424,25 @@ drop_na() #%>%
 ggscatter(df, x = "Q_DEMOGRAPHICS_2_2", y = "Q_ROBOT_NARS",
           add = "reg.line",                                 # Add regression line
           conf.int = TRUE,                                  # Add confidence interval
-          #facet.by = 'v',
+          facet.by = 'v',
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -10, label.y = 20)
+
+ggscatter(df, x = "Q_DEMOGRAPHICS_2_3", y = "Q_ROBOT_NARS",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = 'v',
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -10, label.y = 20)
+
+ggscatter(df, x = "Q_DEMOGRAPHICS_2_3", y = "Q_ROBOTS_SLIDER_4",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = 'v',
           add.params = list(color = "blue",
                             fill = "lightgray")
           )+
@@ -463,7 +490,7 @@ ggdensity(Telerobot_ages %>%
   ,x = "Q_GROUP_SLIDER_1", fill = "lightblue",facet.by = "v", xlab = "Feeling thermometer value toward the outgroup", ylab = "")
 
 base_df <- Telerobot_ages %>% 
-select(Q_GROUP_SLIDER_1,v,Q_AGE, Q_DEMOGRAPHICS_2) %>% 
+select(Q_GROUP_SLIDER_1,v,Q_AGE, Q_DEMOGRAPHICS_2) %>% Q_GROUP_
 drop_na()
   
 df <- base_df %>%
@@ -560,9 +587,17 @@ filter(Q_DEMOGRAPHICS_2 <= 2) %>%
 mutate(Gender = as_factor(Q_DEMOGRAPHICS_2)) %>%
 drop_na()
 
+
+
+anova_test(Q_TELEROBOT_WOULD_U_1 ~ v, data=base_df,effect.size = "pes")
+anova_test(Q_TELEROBOT_WOULD_U_3 ~ v, data=base_df,effect.size = "pes")
+
 c("Q_TELEROBOT_WOULD_U_1","Q_TELEROBOT_WOULD_U_2","Q_TELEROBOT_WOULD_U_3") %>%
 #map(~ data.frame(append(anova_test(as.formula(paste0(.x," ~ v * Q_GENDER * Q_AGE")), data=df),c(test=.x))))
 map(~ anova_test(as.formula(paste0(.x," ~ v * Q_AGE * Gender")), data=df,effect.size = "pes"),c(test=.x))
+
+
+
 
 
 anova_test(Q_TELEROBOT_WOULD_U_1 ~ v, data=df %>% filter(Gender == 'Female') ,effect.size = "pes")
@@ -846,6 +881,14 @@ df
    Telerobot_ages %>% select("Q_TELEROBOT_APP", 'v') %>%    
   drop_na() %>%
   mutate(Human = ifelse(as_factor(Q_TELEROBOT_APP) == "A human.", 1, 0), Nonhuman = ifelse(as_factor((Q_TELEROBOT_APP)) == "A human.", 0, 1))  %>%
+  group_by(v) %>%
+  summarise(across(c('Human', 'Nonhuman'), list(sum = sum))) %>%
+  select(-v) %>%
+  chisq.test()
+
+   df <- Telerobot_ages %>% select("Q_TELEROBOT_APP_G", 'v') %>%    
+  drop_na() %>%
+  mutate(Human = ifelse(as_factor(Q_TELEROBOT_APP_G) == "A human.", 1, 0), Nonhuman = ifelse(as_factor((Q_TELEROBOT_APP_G)) == "A human.", 0, 1))  %>%
   group_by(v) %>%
   summarise(across(c('Human', 'Nonhuman'), list(sum = sum))) %>%
   select(-v) %>%
@@ -1822,6 +1865,8 @@ bin_df <- base_df %>%
 mutate(present = 1) %>%
 spread('Q_TELEROBOT_DISP_G', present, fill = 0)
 
+bin_df
+
 bind_rows(
 as_tibble(bin_df %>% correlation::cor_test("Q_AGE", "1")),
 as_tibble(bin_df %>% correlation::cor_test("Q_AGE", "2")),
@@ -1835,9 +1880,6 @@ as_tibble(bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_AGE", "1")),
 as_tibble(bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_AGE", "2")),
 as_tibble(bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_AGE", "3"))
 )
-
-
-
 
 bind_rows(
 # as_tibble(bin_df %>% correlation::cor_test("Q_GROUP_SLIDER_1", "1")),
@@ -1869,7 +1911,7 @@ bin_df %>% filter(v == "PS") %>% correlation::cor_test("Q_GROUP_SLIDER_1", "3");
 ### Comparion betwen same population, was there in increase in will for anonimity
 ```{r, fig.width=10}
 
-base_df <-  Telerobot_ages %>% select(matches("Q_TELEROBOT_DISP"), 'ResponseId','v','Q_GROUP_SLIDER_1') %>%    
+base_df <-  Telerobot_ages %>% select(matches("Q_TELEROBOT_DISP"), 'ResponseId','v','Q_GROUP_SLIDER_1', 'Q_AGE') %>%    
   drop_na()
 
 df <- melt(
@@ -1904,6 +1946,13 @@ mutate(DISP_1 = if_else(Q_TELEROBOT_DISP == 1, 1, 0),
        DISP_G_3 = if_else(Q_TELEROBOT_DISP_G == 3, 1, 0)
 )
 
+
+df <- cox_df %>% filter(v == "PS")
+df
+wilcox.test(df$DISP_1, df$DISP_G_1, paired=TRUE) 
+wilcox.test(df$DISP_2, df$DISP_G_2, paired=TRUE) 
+wilcox.test(df$DISP_3, df$DISP_G_3, paired=TRUE) 
+
 df <- cox_df %>% filter(v == "IL")
 df
 wilcox.test(df$DISP_1, df$DISP_G_1, paired=TRUE) 
@@ -1925,6 +1974,19 @@ melt(
                             fill = "lightgray")
           )+
   stat_cor(method = "pearson", label.x = -15, label.y = 60)
+ 
+ 
+ 
+ 
+  ggscatter(cox_df, x = "Q_AGE", y = "DISP_G_1",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+         facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+ 
 ```
   
 ### Checking correlation between visiblity/anonimity and human appearance 
@@ -2141,7 +2203,8 @@ ggscatter(df, x = "Q_GROUP_INTEREST_3", y = "Q_GROUP_INTEREST_1",
           )+
   stat_cor(method = "pearson", label.x = -15, label.y = 60)
 
-ggscatter(df, x = "Q_GROUP_INTEREST_4", y = "Q_GROUP_INTEREST_1",
+
+ggscatter(df, x = "Q_TELEROBOT_WOULD_U_3", y = "Q_GROUP_INTEREST_1",
           add = "reg.line",                                 # Add regression line
           conf.int = TRUE,                                  # Add confidence interval
           facet.by = "v",
@@ -2151,6 +2214,24 @@ ggscatter(df, x = "Q_GROUP_INTEREST_4", y = "Q_GROUP_INTEREST_1",
   stat_cor(method = "pearson", label.x = -15, label.y = 60)
 
 ggscatter(df, x = "Q_TELEROBOT_WOULD_U_3", y = "Q_GROUP_INTEREST_1",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+ggscatter(df, x = "Q_ROBOT_NARS", y = "Q_GROUP_INTEREST_1",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -15, label.y = 60)
+
+ggscatter(df, x = "Q_ROBOT_NARS", y = "Q_GROUP_INTEREST_2",
           add = "reg.line",                                 # Add regression line
           conf.int = TRUE,                                  # Add confidence interval
           facet.by = "v",
@@ -2398,8 +2479,17 @@ wilcox.test(df$ROBOT_INTEREST, df$NON_ROBOT_INTEREST, paired=TRUE)
 # chisq.test()
 
 ```
-### Did Israelis significantly prefer not puppet than puppet?
+### Did Palestinians and Israelis significantly prefer not puppet than puppet?
 ```{r}
+
+df <- Telerobot_sorted %>% 
+filter(v == 'PS') %>%
+select(starts_with("Q_GROUP_INTEREST"),'v') %>%
+drop_na() %>%
+mutate(PUPPET_INTEREST=(Q_GROUP_INTEREST_2), NON_PUPPET_INTEREST=(Q_GROUP_INTEREST_1))
+
+wilcox.test(df$PUPPET_INTEREST, df$NON_PUPPET_INTEREST, paired=TRUE) 
+
 df <- Telerobot_sorted %>% 
 filter(v == 'IL') %>%
 select(starts_with("Q_GROUP_INTEREST"),'v') %>%
@@ -2454,6 +2544,16 @@ bind_rows(
  
  
     ggscatter(base_df, x = "Q_DEMOGRAPHICS_2", y = "Q_PUPPET_INTEREST",
+          add = "reg.line",                                 # Add regression line
+          conf.int = TRUE,                                  # Add confidence interval
+          facet.by = "v",
+          add.params = list(color = "blue",
+                            fill = "lightgray")
+          )+
+  stat_cor(method = "pearson", label.x = -10, label.y = 20)
+    
+    
+        ggscatter(base_df, x = "Q_ROBOT_NARS", y = "Q_PUPPET_INTEREST",
           add = "reg.line",                                 # Add regression line
           conf.int = TRUE,                                  # Add confidence interval
           facet.by = "v",

@@ -39,7 +39,7 @@ header-includes: |
  \renewcommand\UrlFont{\color{blue}\rmfamily}
  \authorrunning{P. Avner et al.} \institute{Department of Media, Aalto University, Espoo, Finland \\
  \email{\{avner.peled, teemu.leinonen\}@aalto.fi} \\
- \and Sammy Ofer School of Communications, Interdisciplinary Center Herzliya, Herzliya, Israel \\
+ \and Sammy Ofer School of Communications, Reichman University, Israel \\
  \email{hbeatrice@idc.ac.il}}
  ```
 ...
